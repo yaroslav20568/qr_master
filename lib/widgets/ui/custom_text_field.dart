@@ -57,7 +57,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           Text(
             widget.label!,
             style: AppTextStyles.caption.copyWith(
-              fontSize: 13.08,
+              fontSize: 13,
               fontWeight: FontWeight.w500,
               letterSpacing: -0.44,
               color: AppColors.textPrimary,
