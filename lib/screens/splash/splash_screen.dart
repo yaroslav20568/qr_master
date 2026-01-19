@@ -11,15 +11,27 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  late final Future<String> _versionFuture;
+
   @override
   void initState() {
     super.initState();
+    _versionFuture = _loadVersion();
     _initializeApp();
+  }
+
+  Future<String> _loadVersion() async {
+    try {
+      await AppInfoService.initialize();
+      return AppInfoService.versionString;
+    } catch (e) {
+      return 'Version 1.0.0';
+    }
   }
 
   Future<void> _initializeApp() async {
     try {
-      await Future.delayed(const Duration(seconds: 500));
+      await Future.delayed(const Duration(seconds: 60));
 
       if (!mounted) return;
 
@@ -191,11 +203,16 @@ class _SplashScreenState extends State<SplashScreen> {
                 const SizedBox(height: 50),
                 const Loader(),
                 const SizedBox(height: 50),
-                Text(
-                  'Version 1.0.0',
-                  style: AppTextStyles.small.copyWith(
-                    color: AppColors.textDisabled,
-                  ),
+                FutureBuilder<String>(
+                  future: _versionFuture,
+                  builder: (context, snapshot) {
+                    return Text(
+                      snapshot.data ?? 'Version 1.0.0',
+                      style: AppTextStyles.small.copyWith(
+                        color: AppColors.textDisabled,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
