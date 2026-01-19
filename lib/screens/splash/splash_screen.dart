@@ -56,61 +56,46 @@ class _SplashScreenState extends State<SplashScreen> {
                 Positioned(
                   left: -50,
                   top: 508,
-                  child: Container(
-                    width: 97.66,
-                    height: 97.66,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.14),
-                      shape: BoxShape.circle,
-                    ),
+                  child: const Dot(
+                    size: 97.66,
+                    opacity: 0.14,
+                    color: AppColors.primary,
                   ),
                 ),
                 Positioned(
                   left: -24.38,
                   top: 610.39,
-                  child: Container(
-                    width: 168.92,
-                    height: 168.92,
-                    decoration: BoxDecoration(
-                      color: AppColors.success.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
-                    ),
+                  child: const Dot(
+                    size: 168.92,
+                    opacity: 0.1,
+                    color: AppColors.success,
                   ),
                 ),
                 Positioned(
                   right: -14,
                   top: 547,
-                  child: Container(
-                    width: 87,
-                    height: 87,
-                    decoration: BoxDecoration(
-                      color: AppColors.warning.withValues(alpha: 0.06),
-                      shape: BoxShape.circle,
-                    ),
+                  child: const Dot(
+                    size: 87,
+                    opacity: 0.06,
+                    color: AppColors.warning,
                   ),
                 ),
                 Positioned(
                   right: 52,
                   top: 216,
-                  child: Container(
-                    width: 74,
-                    height: 74,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.14),
-                      shape: BoxShape.circle,
-                    ),
+                  child: const Dot(
+                    size: 74,
+                    opacity: 0.14,
+                    color: AppColors.primary,
                   ),
                 ),
                 Positioned(
                   right: 25,
                   top: 93,
-                  child: Container(
-                    width: 87,
-                    height: 87,
-                    decoration: BoxDecoration(
-                      color: AppColors.warning.withValues(alpha: 0.06),
-                      shape: BoxShape.circle,
-                    ),
+                  child: const Dot(
+                    size: 87,
+                    opacity: 0.06,
+                    color: AppColors.warning,
                   ),
                 ),
               ],
@@ -178,38 +163,17 @@ class _SplashScreenState extends State<SplashScreen> {
                     Positioned(
                       right: -16.92,
                       top: -16,
-                      child: Container(
-                        width: 12,
-                        height: 12,
-                        decoration: const BoxDecoration(
-                          color: AppColors.primary,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
+                      child: const Dot(size: 12, color: AppColors.primary),
                     ),
                     Positioned(
                       left: -16,
                       bottom: -8.5,
-                      child: Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          color: AppColors.success,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
+                      child: const Dot(size: 8, color: AppColors.success),
                     ),
                     Positioned(
                       left: -32,
                       top: 32,
-                      child: Container(
-                        width: 6,
-                        height: 6,
-                        decoration: const BoxDecoration(
-                          color: AppColors.warning,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
+                      child: const Dot(size: 6, color: AppColors.warning),
                     ),
                   ],
                 ),
