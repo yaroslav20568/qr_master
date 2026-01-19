@@ -8,7 +8,9 @@ class AppColors {
   static const Color success = Color(0xFF77C97E);
   static const Color warning = Color(0xFFFFB86C);
 
-  static const Color textPrimary = Color(0xFF111111);
+  static const Color dark = Color(0xFF111111);
+
+  static const Color textPrimary = dark;
   static const Color textSecondary = Color(0xFF5A5A5A);
   static const Color textDisabled = Color(0xFFB0B0B0);
 
