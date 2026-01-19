@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/widgets/ui/index.dart';
 
@@ -22,18 +23,11 @@ class SplashScreenContent extends StatelessWidget {
                 height: 128,
                 decoration: BoxDecoration(
                   gradient: AppColors.primaryGradient,
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(AppBorderRadius.xxl),
                   boxShadow: [AppShadows.primaryGlow],
                 ),
-                child: Container(
-                  margin: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                ),
               ),
-              const Icon(Icons.qr_code_scanner, size: 64, color: Colors.white),
+              SvgPicture.asset('assets/icons/qr_code_icon.svg'),
             ],
           ),
           const SizedBox(height: 32),
