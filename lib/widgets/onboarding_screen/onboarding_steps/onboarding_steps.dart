@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qr_master/constants/index.dart';
+import 'package:qr_master/constants/app_routes.dart';
 import 'package:qr_master/services/index.dart';
 import 'package:qr_master/widgets/onboarding_screen/onboarding_steps/index.dart';
 
@@ -47,49 +47,40 @@ class _OnboardingStepsState extends State<OnboardingSteps> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(gradient: AppColors.onboardingGradient),
-      child: Column(
-        children: [
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentPage = index;
-                });
-              },
-              children: const [
-                OnboardingStep1(),
-                OnboardingStep2(),
-                OnboardingStep3(),
-                OnboardingStep4(),
-              ],
-            ),
+    return Column(
+      children: [
+        Expanded(
+          child: PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _currentPage = index;
+              });
+            },
+            children: const [
+              OnboardingStep1(),
+              OnboardingStep2(),
+              OnboardingStep3(),
+              OnboardingStep4(),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.xl,
-              vertical: AppSpacing.xl,
+        ),
+        Column(
+          children: [
+            OnboardingStepsIndicator(
+              currentPage: _currentPage,
+              totalPages: _totalPages,
             ),
-            child: Column(
-              children: [
-                OnboardingStepsIndicator(
-                  currentPage: _currentPage,
-                  totalPages: _totalPages,
-                ),
-                const SizedBox(height: 21),
-                OnboardingStepsActions(
-                  currentPage: _currentPage,
-                  totalPages: _totalPages,
-                  onNext: _nextPage,
-                  onSkip: _skipOnboarding,
-                ),
-              ],
+            const SizedBox(height: 21),
+            OnboardingStepsActions(
+              currentPage: _currentPage,
+              totalPages: _totalPages,
+              onNext: _nextPage,
+              onSkip: _skipOnboarding,
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      ],
     );
   }
 }

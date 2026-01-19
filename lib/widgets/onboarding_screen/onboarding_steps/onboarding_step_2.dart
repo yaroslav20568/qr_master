@@ -29,8 +29,8 @@ class OnboardingStep2 extends StatelessWidget {
             children: [
               SvgPicture.asset('assets/icons/scan_qr_icon.svg'),
               Positioned(
-                top: -16,
-                right: -16,
+                top: -20,
+                right: -20,
                 child: BackgroundCircleIcon(
                   child: SvgPicture.asset(
                     'assets/icons/flash_icon.svg',
@@ -42,8 +42,8 @@ class OnboardingStep2 extends StatelessWidget {
                 ),
               ),
               Positioned(
-                bottom: -16,
-                left: -16,
+                bottom: -20,
+                left: -20,
                 child: BackgroundCircleIcon(
                   child: SvgPicture.asset(
                     'assets/icons/switch_camera_icon.svg',

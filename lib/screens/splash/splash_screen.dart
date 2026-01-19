@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/services/index.dart';
+import 'package:qr_master/widgets/layouts/index.dart';
 import 'package:qr_master/widgets/splash_screen/index.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -57,25 +58,23 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.primaryBg,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final screenWidth = constraints.maxWidth;
-            final screenHeight = constraints.maxHeight;
+    return ScreenLayout(
+      paddingZero: true,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final screenWidth = constraints.maxWidth;
+          final screenHeight = constraints.maxHeight;
 
-            return Stack(
-              children: [
-                CirclesLayout(
-                  screenWidth: screenWidth,
-                  screenHeight: screenHeight,
-                ),
-                SplashScreenContent(versionFuture: _versionFuture),
-              ],
-            );
-          },
-        ),
+          return Stack(
+            children: [
+              CirclesLayout(
+                screenWidth: screenWidth,
+                screenHeight: screenHeight,
+              ),
+              SplashScreenContent(versionFuture: _versionFuture),
+            ],
+          );
+        },
       ),
     );
   }

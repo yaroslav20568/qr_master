@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
+import 'package:qr_master/widgets/layouts/index.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.primaryBg,
-      body: SafeArea(
-        child: Center(
-          child: Text('Home Screen', style: AppTextStyles.largeTitle),
-        ),
+    return ScreenLayout(
+      child: Center(
+        child: Text('Home Screen', style: AppTextStyles.largeTitle),
       ),
     );
   }
