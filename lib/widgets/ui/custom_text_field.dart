@@ -72,9 +72,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             color: AppColors.primaryBg,
             borderRadius: BorderRadius.circular(AppBorderRadius.md),
             border: Border.all(
-              color: _isFocused
-                  ? AppColors.primary
-                  : Colors.transparent,
+              color: _isFocused ? AppColors.primary : Colors.transparent,
               width: _isFocused ? 2 : 1,
             ),
           ),
