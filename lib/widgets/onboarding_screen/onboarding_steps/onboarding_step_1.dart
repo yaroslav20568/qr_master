@@ -18,13 +18,10 @@ class OnboardingStep1 extends StatelessWidget {
         const SizedBox(height: 37),
         SvgPicture.asset('assets/icons/welcome_icon.svg'),
         const SizedBox(height: 38),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-          child: Text(
-            'Scan, Create & Manage\nQR Codes Easily',
-            style: AppTextStyles.title2.copyWith(fontSize: 24, height: 1.46),
-            textAlign: TextAlign.center,
-          ),
+        Text(
+          'Scan, Create & Manage QR Codes Easily',
+          style: AppTextStyles.title2.copyWith(fontSize: 24, height: 1.46),
+          textAlign: TextAlign.center,
         ),
       ],
     );
