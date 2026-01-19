@@ -1,7 +1,8 @@
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:qr_master/models/index.dart';
+
 import 'package:logger/logger.dart';
+import 'package:qr_master/models/index.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageService {
   static const String _qrCodesKey = 'qr_codes';
