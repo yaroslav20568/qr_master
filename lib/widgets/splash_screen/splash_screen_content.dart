@@ -5,10 +5,7 @@ import 'package:qr_master/widgets/ui/index.dart';
 class SplashScreenContent extends StatelessWidget {
   final Future<String> versionFuture;
 
-  const SplashScreenContent({
-    super.key,
-    required this.versionFuture,
-  });
+  const SplashScreenContent({super.key, required this.versionFuture});
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +33,7 @@ class SplashScreenContent extends StatelessWidget {
                   ),
                 ),
               ),
-              const Icon(
-                Icons.qr_code_scanner,
-                size: 64,
-                color: Colors.white,
-              ),
+              const Icon(Icons.qr_code_scanner, size: 64, color: Colors.white),
             ],
           ),
           const SizedBox(height: 32),
@@ -48,10 +41,7 @@ class SplashScreenContent extends StatelessWidget {
             children: [
               Text('QR Master', style: AppTextStyles.largeTitle),
               const SizedBox(height: 8),
-              Text(
-                'Scan • Create • Manage',
-                style: AppTextStyles.caption,
-              ),
+              Text('Scan • Create • Manage', style: AppTextStyles.caption),
             ],
           ),
           const SizedBox(height: 50),
@@ -61,7 +51,7 @@ class SplashScreenContent extends StatelessWidget {
             future: versionFuture,
             builder: (context, snapshot) {
               return Text(
-                snapshot.data ?? 'Version 1.0.0',
+                snapshot.data ?? AppInfo.defaultVersionString,
                 style: AppTextStyles.small.copyWith(
                   color: AppColors.textDisabled,
                 ),

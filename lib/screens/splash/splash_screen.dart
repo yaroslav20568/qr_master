@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
       await AppInfoService.initialize();
       return AppInfoService.versionString;
     } catch (e) {
-      return 'Version 1.0.0';
+      return AppInfo.defaultVersionString;
     }
   }
 
