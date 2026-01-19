@@ -15,8 +15,8 @@ class Button extends StatelessWidget {
     required this.text,
     this.onPressed,
     this.variant = ButtonVariant.primary,
-    this.width,
-    this.height,
+    this.width = double.infinity,
+    this.height = 60,
   });
 
   @override
@@ -31,8 +31,8 @@ class Button extends StatelessWidget {
 
   Widget _buildPrimaryButton() {
     return Container(
-      width: width ?? double.infinity,
-      height: height ?? 60,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         gradient: AppColors.primaryGradient,
         borderRadius: BorderRadius.circular(AppBorderRadius.xl),
@@ -58,7 +58,7 @@ class Button extends StatelessWidget {
 
   Widget _buildWithoutBackgroundButton() {
     return SizedBox(
-      width: width ?? double.infinity,
+      width: width,
       child: TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(
