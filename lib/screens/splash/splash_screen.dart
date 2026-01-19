@@ -31,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _initializeApp() async {
     try {
-      await Future.delayed(const Duration(seconds: 500));
+      await Future.delayed(const Duration(seconds: 2));
 
       if (!mounted) return;
 
@@ -59,21 +59,23 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primaryBg,
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final screenWidth = constraints.maxWidth;
-          final screenHeight = constraints.maxHeight;
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final screenWidth = constraints.maxWidth;
+            final screenHeight = constraints.maxHeight;
 
-          return Stack(
-            children: [
-              CirclesLayout(
-                screenWidth: screenWidth,
-                screenHeight: screenHeight,
-              ),
-              SplashScreenContent(versionFuture: _versionFuture),
-            ],
-          );
-        },
+            return Stack(
+              children: [
+                CirclesLayout(
+                  screenWidth: screenWidth,
+                  screenHeight: screenHeight,
+                ),
+                SplashScreenContent(versionFuture: _versionFuture),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

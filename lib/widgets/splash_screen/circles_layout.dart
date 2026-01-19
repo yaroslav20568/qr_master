@@ -92,7 +92,7 @@ class CirclesLayout extends StatelessWidget {
                     Positioned(
                       left: 123,
                       bottom: 182,
-                      child: const Dot(size: 8, color: AppColors.success),
+                      child: const Dot(color: AppColors.success),
                     ),
                     Positioned(
                       left: 106,

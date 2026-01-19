@@ -1,0 +1,32 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:qr_master/constants/index.dart';
+
+class OnboardingStep1 extends StatelessWidget {
+  const OnboardingStep1({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Welcome',
+          style: AppTextStyles.title1.copyWith(fontSize: 36, height: 1.19),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 37),
+        SvgPicture.asset('assets/icons/welcome_icon.svg'),
+        const SizedBox(height: 38),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+          child: Text(
+            'Scan, Create & Manage\nQR Codes Easily',
+            style: AppTextStyles.title2.copyWith(fontSize: 24, height: 1.46),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    );
+  }
+}

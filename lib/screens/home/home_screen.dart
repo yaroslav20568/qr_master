@@ -8,7 +8,11 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primaryBg,
-      body: Center(child: Text('Home Screen', style: AppTextStyles.largeTitle)),
+      body: SafeArea(
+        child: Center(
+          child: Text('Home Screen', style: AppTextStyles.largeTitle),
+        ),
+      ),
     );
   }
 }

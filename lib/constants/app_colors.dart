@@ -21,4 +21,10 @@ class AppColors {
     end: Alignment.bottomRight,
     colors: [Color(0xFF7ACBFF), Color(0xFF4DA6FF)],
   );
+
+  static const LinearGradient onboardingGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFFFFFFFF), Color(0xFFE8F7FF)],
+  );
 }
