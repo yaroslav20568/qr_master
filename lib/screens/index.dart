@@ -1,3 +1,4 @@
+export 'auth/index.dart';
 export 'create_qr/index.dart';
 export 'history/index.dart';
 export 'home/index.dart';

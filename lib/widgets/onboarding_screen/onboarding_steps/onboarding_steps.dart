@@ -43,7 +43,12 @@ class _OnboardingStepsState extends State<OnboardingSteps> {
 
     if (!mounted) return;
 
-    Navigator.of(context).pushReplacementNamed(AppRoutes.main);
+    final authService = AuthService();
+    final isAuthenticated = authService.isAuthenticated;
+
+    final route = isAuthenticated ? AppRoutes.main : AppRoutes.auth;
+
+    Navigator.of(context).pushReplacementNamed(route);
   }
 
   @override

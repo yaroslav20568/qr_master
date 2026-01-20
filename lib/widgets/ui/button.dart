@@ -12,6 +12,7 @@ class Button extends StatelessWidget {
   final ButtonSize size;
   final double? width;
   final double? height;
+  final bool loading;
 
   const Button({
     super.key,
@@ -21,6 +22,7 @@ class Button extends StatelessWidget {
     this.size = ButtonSize.big,
     this.width,
     this.height,
+    this.loading = false,
   });
 
   @override
@@ -61,18 +63,29 @@ class Button extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: onPressed,
+          onTap: loading ? null : onPressed,
           borderRadius: BorderRadius.circular(borderRadius),
           child: Center(
-            child: Text(
-              text,
-              style: AppFonts.interSemiBold.copyWith(
-                fontSize: fontSize,
-                height: 1.53,
-                letterSpacing: -0.5,
-                color: AppColors.primaryBg,
-              ),
-            ),
+            child: loading
+                ? SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        AppColors.primaryBg,
+                      ),
+                    ),
+                  )
+                : Text(
+                    text,
+                    style: AppFonts.interSemiBold.copyWith(
+                      fontSize: fontSize,
+                      height: 1.53,
+                      letterSpacing: -0.5,
+                      color: AppColors.primaryBg,
+                    ),
+                  ),
           ),
         ),
       ),

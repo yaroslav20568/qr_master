@@ -36,11 +36,13 @@ class _SplashScreenState extends State<SplashScreen> {
     try {
       LoggerService.info('Initializing app');
 
-      await Future.delayed(const Duration(seconds: 2));
-
       if (!mounted) return;
 
-      await _checkAuthAndSetupUser();
+      final isAuthenticated = _authService.isAuthenticated;
+
+      if (isAuthenticated) {
+        await _checkAuthAndSetupUser();
+      }
 
       if (!mounted) return;
 
@@ -52,9 +54,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
       await FirebaseService.logAppOpen();
 
-      final route = isOnboardingCompleted
-          ? AppRoutes.main
-          : AppRoutes.onboarding;
+      String route;
+
+      if (isAuthenticated) {
+        route = AppRoutes.main;
+      } else if (isOnboardingCompleted) {
+        route = AppRoutes.auth;
+      } else {
+        route = AppRoutes.onboarding;
+      }
 
       if (mounted) {
         Navigator.of(context).pushReplacementNamed(route);
