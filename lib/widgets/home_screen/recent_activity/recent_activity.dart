@@ -58,12 +58,16 @@ class RecentActivity extends StatelessWidget {
         const SizedBox(height: 16),
         Column(
           children: items
+              .asMap()
+              .entries
               .map(
-                (item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
+                (entry) => Padding(
+                  padding: EdgeInsets.only(
+                    bottom: entry.key < items.length - 1 ? 12 : 0,
+                  ),
                   child: RecentActivityItem(
-                    item: item,
-                    onTap: () => onItemTap?.call(item),
+                    item: entry.value,
+                    onTap: () => onItemTap?.call(entry.value),
                   ),
                 ),
               )
