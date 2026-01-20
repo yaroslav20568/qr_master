@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/widgets/home_screen/recent_activity/recent_activity_item.dart';
+import 'package:qr_master/widgets/ui/index.dart';
 
 class RecentActivity extends StatelessWidget {
   final Function(ScanHistoryItem)? onItemTap;
@@ -56,23 +57,25 @@ class RecentActivity extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        Column(
-          children: items
-              .asMap()
-              .entries
-              .map(
-                (entry) => Padding(
-                  padding: EdgeInsets.only(
-                    bottom: entry.key < items.length - 1 ? 12 : 0,
-                  ),
-                  child: RecentActivityItem(
-                    item: entry.value,
-                    onTap: () => onItemTap?.call(entry.value),
-                  ),
-                ),
-              )
-              .toList(),
-        ),
+        items.isEmpty
+            ? const EmptyData()
+            : Column(
+                children: items
+                    .asMap()
+                    .entries
+                    .map(
+                      (entry) => Padding(
+                        padding: EdgeInsets.only(
+                          bottom: entry.key < items.length - 1 ? 12 : 0,
+                        ),
+                        child: RecentActivityItem(
+                          item: entry.value,
+                          onTap: () => onItemTap?.call(entry.value),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
       ],
     );
   }
