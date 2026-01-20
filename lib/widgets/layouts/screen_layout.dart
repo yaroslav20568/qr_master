@@ -15,7 +15,7 @@ class ScreenLayout extends StatelessWidget {
   const ScreenLayout({
     super.key,
     required this.child,
-    this.backgroundColor = AppColors.primaryBg,
+    this.backgroundColor = AppColors.secondaryBg,
     this.gradient,
     this.paddingTop = 24.0,
     this.paddingBottom = 24.0,

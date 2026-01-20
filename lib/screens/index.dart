@@ -1,3 +1,9 @@
+export 'create_qr/index.dart';
+export 'history/index.dart';
 export 'home/index.dart';
+export 'main/index.dart';
+export 'my_qr_codes/index.dart';
 export 'onboarding/index.dart';
+export 'scan/index.dart';
+export 'scan_result/index.dart';
 export 'splash/index.dart';

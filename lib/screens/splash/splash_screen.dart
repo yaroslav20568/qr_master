@@ -43,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (!mounted) return;
 
       final route = isOnboardingCompleted
-          ? AppRoutes.home
+          ? AppRoutes.main
           : AppRoutes.onboarding;
 
       if (mounted) {
@@ -59,6 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return ScreenLayout(
+      backgroundColor: AppColors.primaryBg,
       paddingZero: true,
       child: LayoutBuilder(
         builder: (context, constraints) {

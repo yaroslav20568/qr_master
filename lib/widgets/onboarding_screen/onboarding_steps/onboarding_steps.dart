@@ -43,7 +43,7 @@ class _OnboardingStepsState extends State<OnboardingSteps> {
 
     if (!mounted) return;
 
-    Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+    Navigator.of(context).pushReplacementNamed(AppRoutes.main);
   }
 
   @override

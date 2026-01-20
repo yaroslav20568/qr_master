@@ -4,6 +4,9 @@ import 'package:qr_master/screens/index.dart';
 
 Map<String, WidgetBuilder> get appRoutes => {
   AppRoutes.splash: (context) => const SplashScreen(),
-  AppRoutes.home: (context) => const HomeScreen(),
+  AppRoutes.main: (context) => const MainScreen(),
   AppRoutes.onboarding: (context) => const OnboardingScreen(),
+  AppRoutes.scanResult: (context) => const ScanResultScreen(),
+  AppRoutes.subscription: (context) =>
+      const Scaffold(body: Center(child: Text('Subscription Screen'))),
 };
