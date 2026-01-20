@@ -1,4 +1,7 @@
 export 'app_info_service.dart';
+export 'auth_service.dart';
+export 'firebase_service.dart';
+export 'firestore_service.dart';
 export 'image_picker_service.dart';
 export 'logger_service.dart';
 export 'main_tabs_service.dart';

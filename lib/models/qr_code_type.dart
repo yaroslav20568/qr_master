@@ -1,9 +1,4 @@
-enum QrCodeType {
-  url,
-  text,
-  contact,
-  wifi,
-}
+enum QrCodeType { url, text, contact, wifi }
 
 extension QrCodeTypeExtension on QrCodeType {
   String get displayName {

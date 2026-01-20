@@ -13,6 +13,8 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   late final Future<String> _versionFuture;
+  final AuthService _authService = AuthService();
+  final FirestoreService _firestoreService = FirestoreService();
 
   @override
   void initState() {
@@ -32,7 +34,13 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _initializeApp() async {
     try {
+      LoggerService.info('Initializing app');
+
       await Future.delayed(const Duration(seconds: 2));
+
+      if (!mounted) return;
+
+      await _checkAuthAndSetupUser();
 
       if (!mounted) return;
 
@@ -42,6 +50,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
       if (!mounted) return;
 
+      await FirebaseService.logAppOpen();
+
       final route = isOnboardingCompleted
           ? AppRoutes.main
           : AppRoutes.onboarding;
@@ -50,9 +60,37 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.of(context).pushReplacementNamed(route);
       }
     } catch (e) {
+      LoggerService.error('Error during app initialization', error: e);
       if (mounted) {
         Navigator.of(context).pushReplacementNamed(AppRoutes.onboarding);
       }
+    }
+  }
+
+  Future<void> _checkAuthAndSetupUser() async {
+    try {
+      final user = _authService.currentUser;
+
+      if (user != null) {
+        LoggerService.info('User authenticated: ${user.email}');
+
+        final existingProfile = await _firestoreService.getUserProfile();
+
+        if (existingProfile == null) {
+          await _firestoreService.createUserProfile(user);
+        } else {
+          await _firestoreService.updateUserProfile({
+            'lastLoginAt': DateTime.now().toIso8601String(),
+          });
+        }
+
+        await FirebaseService.setUserId(user.uid);
+        await FirebaseService.setUserProperty(name: 'email', value: user.email);
+      } else {
+        LoggerService.info('No authenticated user');
+      }
+    } catch (e) {
+      LoggerService.error('Error checking auth status', error: e);
     }
   }
 

@@ -33,10 +33,7 @@ class PaddingLayout extends StatelessWidget {
           );
 
     return SafeArea(
-      child: Padding(
-        padding: padding,
-        child: child,
-      ),
+      child: Padding(padding: padding, child: child),
     );
   }
 }
