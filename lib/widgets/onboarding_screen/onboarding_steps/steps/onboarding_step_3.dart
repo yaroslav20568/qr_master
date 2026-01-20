@@ -46,8 +46,16 @@ class OnboardingStep3 extends StatelessWidget {
                 blurRadius: 15.78,
                 offset: Offset.zero,
               ),
-              AppShadows.soft,
-              AppShadows.primaryGlow,
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.06),
+                offset: const Offset(0, 4),
+                blurRadius: 16,
+              ),
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.45),
+                offset: Offset.zero,
+                blurRadius: 34.88,
+              ),
             ],
           ),
           child: Icon(Icons.qr_code_2, size: 80, color: AppColors.primary),

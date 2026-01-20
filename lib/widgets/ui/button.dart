@@ -37,7 +37,11 @@ class Button extends StatelessWidget {
         gradient: AppColors.primaryGradient,
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
-          AppShadows.soft,
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            offset: const Offset(0, 4),
+            blurRadius: 16,
+          ),
           BoxShadow(
             color: AppColors.primary.withValues(alpha: 0.15),
             offset: const Offset(0, 2),

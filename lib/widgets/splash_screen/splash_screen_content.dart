@@ -24,7 +24,13 @@ class SplashScreenContent extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: AppColors.primaryGradient,
                   borderRadius: BorderRadius.circular(24),
-                  boxShadow: [AppShadows.primaryGlow],
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.45),
+                      offset: Offset.zero,
+                      blurRadius: 34.88,
+                    ),
+                  ],
                 ),
               ),
               SvgPicture.asset('assets/icons/qr_code_icon.svg'),
