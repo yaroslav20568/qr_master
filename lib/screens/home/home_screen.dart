@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/services/index.dart';
+import 'package:qr_master/utils/index.dart';
 import 'package:qr_master/widgets/home_screen/index.dart';
 import 'package:qr_master/widgets/layouts/index.dart';
 
@@ -28,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const HomeHeader(),
+              HomeHeader(userName: UserUtils.getUserDisplayName()),
               const SizedBox(height: 29),
               ActionCards(
                 onScanTap: () => _tabsService.switchToScan(),
