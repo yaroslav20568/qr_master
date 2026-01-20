@@ -70,7 +70,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           decoration: BoxDecoration(
             color: AppColors.primaryBg,
-            borderRadius: BorderRadius.circular(AppBorderRadius.md),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: _isFocused ? AppColors.primary : Colors.transparent,
               width: _isFocused ? 2 : 1,

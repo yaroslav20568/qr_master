@@ -30,7 +30,7 @@ class QrCard extends StatelessWidget {
       padding: EdgeInsets.all(isLarge ? AppSpacing.md : 11),
       decoration: BoxDecoration(
         color: AppColors.primaryBg,
-        borderRadius: BorderRadius.circular(isLarge ? AppBorderRadius.lg : 11),
+        borderRadius: BorderRadius.circular(isLarge ? 16 : 11),
         border: Border.all(color: AppColors.border, width: 0),
         boxShadow: [
           BoxShadow(
@@ -52,7 +52,7 @@ class QrCard extends StatelessWidget {
               gradient: isLarge
                   ? AppColors.qrCardLargeGradient
                   : AppColors.qrCardSmallGradient,
-              borderRadius: BorderRadius.circular(AppBorderRadius.md),
+              borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.primary.withValues(alpha: 0.45),

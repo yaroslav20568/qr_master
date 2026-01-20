@@ -26,7 +26,7 @@ class OnboardingStepsIndicator extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: AppColors.primary,
-              borderRadius: BorderRadius.circular(AppBorderRadius.full),
+              borderRadius: BorderRadius.circular(9999),
             ),
           );
         } else {

@@ -24,7 +24,7 @@ class OnboardingStep2 extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 39, horizontal: 38),
               decoration: BoxDecoration(
                 color: AppColors.primaryBg,
-                borderRadius: BorderRadius.circular(AppBorderRadius.xxl),
+                borderRadius: BorderRadius.circular(24),
                 border: Border.all(color: AppColors.primary, width: 2),
               ),
               child: Stack(

@@ -39,7 +39,7 @@ class OnboardingStep3 extends StatelessWidget {
           height: 107,
           decoration: BoxDecoration(
             color: AppColors.primaryBg,
-            borderRadius: BorderRadius.circular(AppBorderRadius.md),
+            borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
                 color: AppColors.primary.withValues(alpha: 0.15),
