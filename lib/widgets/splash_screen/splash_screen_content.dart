@@ -39,7 +39,7 @@ class SplashScreenContent extends StatelessWidget {
           const SizedBox(height: 32),
           Column(
             children: [
-              Text('QR Master', style: AppTextStyles.largeTitle),
+              Text(AppInfo.appName, style: AppTextStyles.largeTitle),
               const SizedBox(height: 8),
               Text('Scan • Create • Manage', style: AppTextStyles.caption),
             ],
