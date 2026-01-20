@@ -57,7 +57,7 @@ class _OnboardingStepsState extends State<OnboardingSteps> {
                 _currentPage = index;
               });
             },
-            children: const [
+            children: [
               OnboardingStep1(),
               OnboardingStep2(),
               OnboardingStep3(),

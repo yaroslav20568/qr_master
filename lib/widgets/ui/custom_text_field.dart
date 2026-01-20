@@ -86,12 +86,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   enabled: !widget.disabled,
                   style: AppFonts.interRegular.copyWith(
                     fontSize: 15,
+                    letterSpacing: -0.5,
                     color: AppColors.textPrimary,
                   ),
                   decoration: InputDecoration(
                     hintText: widget.hintText,
                     hintStyle: AppFonts.interRegular.copyWith(
                       fontSize: 15,
+                      letterSpacing: -0.5,
                       color: AppColors.textDisabled,
                     ),
                     border: InputBorder.none,

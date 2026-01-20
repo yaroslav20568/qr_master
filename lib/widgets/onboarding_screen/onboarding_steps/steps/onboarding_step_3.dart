@@ -13,7 +13,12 @@ class OnboardingStep3 extends StatelessWidget {
       children: [
         Text(
           'Create QR Codes',
-          style: AppFonts.interBold.copyWith(fontSize: 36, height: 1.19),
+          style: AppFonts.interBold.copyWith(
+            fontSize: 36,
+            height: 1.19,
+            letterSpacing: -0.5,
+            color: AppColors.textPrimary,
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 46),
@@ -68,13 +73,20 @@ class OnboardingStep3 extends StatelessWidget {
               style: AppFonts.interSemiBold.copyWith(
                 fontSize: 24,
                 height: 1.46,
+                letterSpacing: -0.5,
+                color: AppColors.textPrimary,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
             Text(
               'Enter URL, text, or contact info and get your custom QR',
-              style: AppFonts.interRegular.copyWith(fontSize: 16, height: 1.31),
+              style: AppFonts.interRegular.copyWith(
+                fontSize: 16,
+                height: 1.31,
+                letterSpacing: -0.5,
+                color: AppColors.textPrimary,
+              ),
               textAlign: TextAlign.center,
             ),
           ],

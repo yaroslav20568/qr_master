@@ -14,7 +14,15 @@ class Loader extends StatelessWidget {
         const LoadingDots(),
         if (showText) ...[
           const SizedBox(height: 16),
-          Text('Loading...', style: AppFonts.interRegular),
+          Text(
+            'Loading...',
+            style: AppFonts.interRegular.copyWith(
+              fontSize: 15,
+              height: 1.53,
+              letterSpacing: -0.5,
+              color: AppColors.textSecondary,
+            ),
+          ),
         ],
       ],
     );

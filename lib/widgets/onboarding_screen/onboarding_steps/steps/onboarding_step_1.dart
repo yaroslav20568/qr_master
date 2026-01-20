@@ -12,7 +12,12 @@ class OnboardingStep1 extends StatelessWidget {
       children: [
         Text(
           'Welcome',
-          style: AppFonts.interBold.copyWith(fontSize: 36, height: 1.19),
+          style: AppFonts.interBold.copyWith(
+            fontSize: 36,
+            height: 1.19,
+            letterSpacing: -0.5,
+            color: AppColors.textPrimary,
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 37),
@@ -20,7 +25,12 @@ class OnboardingStep1 extends StatelessWidget {
         const SizedBox(height: 38),
         Text(
           'Scan, Create & Manage QR Codes Easily',
-          style: AppFonts.interSemiBold.copyWith(fontSize: 24, height: 1.46),
+          style: AppFonts.interSemiBold.copyWith(
+            fontSize: 24,
+            height: 1.46,
+            letterSpacing: -0.5,
+            color: AppColors.textPrimary,
+          ),
           textAlign: TextAlign.center,
         ),
       ],

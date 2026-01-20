@@ -54,7 +54,17 @@ class Button extends StatelessWidget {
         child: InkWell(
           onTap: onPressed,
           borderRadius: BorderRadius.circular(18),
-          child: Center(child: Text(text, style: AppFonts.interSemiBold)),
+          child: Center(
+            child: Text(
+              text,
+              style: AppFonts.interSemiBold.copyWith(
+                fontSize: 17,
+                height: 1.53,
+                letterSpacing: -0.5,
+                color: AppColors.primaryBg,
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -72,7 +82,12 @@ class Button extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: AppFonts.interRegular.copyWith(color: AppColors.textSecondary),
+          style: AppFonts.interRegular.copyWith(
+            fontSize: 15,
+            height: 1.53,
+            letterSpacing: -0.5,
+            color: AppColors.textSecondary,
+          ),
         ),
       ),
     );
