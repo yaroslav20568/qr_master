@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_master/constants/app_routes.dart';
 import 'package:qr_master/services/index.dart';
+import 'package:qr_master/utils/responsive_utils.dart';
 import 'package:qr_master/widgets/onboarding_screen/onboarding_steps/index.dart';
 
 class OnboardingSteps extends StatefulWidget {
@@ -113,20 +114,19 @@ class _OnboardingStepsState extends State<OnboardingSteps> {
             ],
           ),
         ),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final screenHeight = MediaQuery.of(context).size.height;
-            final isSmallScreen = screenHeight < 480;
+        Builder(
+          builder: (context) {
+            final isSmallHeight = context.isSmallHeight;
 
             return Column(
               children: [
-                if (!isSmallScreen) ...[
+                if (!isSmallHeight) ...[
                   OnboardingStepsIndicator(
                     currentPage: _currentPage,
                     totalPages: _totalPages,
                   ),
                 ],
-                SizedBox(height: !isSmallScreen ? 21 : 10),
+                SizedBox(height: !isSmallHeight ? 21 : 10),
                 OnboardingStepsActions(
                   currentPage: _currentPage,
                   totalPages: _totalPages,

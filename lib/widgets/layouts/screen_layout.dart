@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
+import 'package:qr_master/utils/responsive_utils.dart';
 
 class ScreenLayout extends StatelessWidget {
   final Widget child;
@@ -25,16 +26,15 @@ class ScreenLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final isSmallScreen = screenHeight < 480;
+    final isSmallHeight = context.isSmallHeight;
 
     final padding = paddingZero
         ? EdgeInsets.zero
         : EdgeInsets.only(
-            top: isSmallScreen ? paddingTop * 0.5 : paddingTop,
-            bottom: isSmallScreen ? paddingBottom * 0.5 : paddingBottom,
-            left: isSmallScreen ? paddingLeft * 0.5 : paddingLeft,
-            right: isSmallScreen ? paddingRight * 0.5 : paddingRight,
+            top: isSmallHeight ? paddingTop * 0.5 : paddingTop,
+            bottom: isSmallHeight ? paddingBottom * 0.5 : paddingBottom,
+            left: isSmallHeight ? paddingLeft * 0.5 : paddingLeft,
+            right: isSmallHeight ? paddingRight * 0.5 : paddingRight,
           );
 
     final body = SafeArea(

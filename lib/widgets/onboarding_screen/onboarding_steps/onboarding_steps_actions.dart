@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qr_master/utils/responsive_utils.dart';
 import 'package:qr_master/widgets/ui/index.dart';
 
 class OnboardingStepsActions extends StatelessWidget {
@@ -17,14 +18,12 @@ class OnboardingStepsActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isSmallHeight = context.isSmallHeight;
+    final buttonSize = isSmallHeight ? ButtonSize.small : ButtonSize.big;
+
     return LayoutBuilder(
       builder: (context, constraints) {
-        final screenHeight = MediaQuery.of(context).size.height;
-        final isSmallScreen = screenHeight < 480;
-
-        final buttonSize = isSmallScreen ? ButtonSize.small : ButtonSize.big;
-
-        if (isSmallScreen) {
+        if (isSmallHeight) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
