@@ -63,11 +63,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
               color: AppColors.textPrimary,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: 16),
         ],
         Container(
           height: 52,
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
             color: AppColors.primaryBg,
             borderRadius: BorderRadius.circular(12),

@@ -27,7 +27,7 @@ class QrCard extends StatelessWidget {
     final isLarge = size == QrCardSize.l;
 
     return Container(
-      padding: EdgeInsets.all(isLarge ? AppSpacing.md : 11),
+      padding: EdgeInsets.all(isLarge ? 16 : 11),
       decoration: BoxDecoration(
         color: AppColors.primaryBg,
         borderRadius: BorderRadius.circular(isLarge ? 16 : 11),
@@ -74,7 +74,7 @@ class QrCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: isLarge ? AppSpacing.sm : AppSpacing.xs),
+          SizedBox(height: isLarge ? 12 : 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

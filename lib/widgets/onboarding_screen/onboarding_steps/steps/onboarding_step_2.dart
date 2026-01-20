@@ -89,7 +89,7 @@ class OnboardingStep2 extends StatelessWidget {
               style: AppTextStyles.title2.copyWith(fontSize: 24, height: 1.46),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: 12),
             Text(
               'Align QR codes in frame and get instant results',
               style: AppTextStyles.body.copyWith(fontSize: 16, height: 1.31),

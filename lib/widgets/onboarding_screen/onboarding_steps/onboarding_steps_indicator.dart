@@ -21,9 +21,7 @@ class OnboardingStepsIndicator extends StatelessWidget {
           return Container(
             width: 32,
             height: 8,
-            margin: EdgeInsets.only(
-              right: index < totalPages - 1 ? AppSpacing.xs : 0,
-            ),
+            margin: EdgeInsets.only(right: index < totalPages - 1 ? 8 : 0),
             decoration: BoxDecoration(
               color: AppColors.primary,
               borderRadius: BorderRadius.circular(9999),
@@ -31,9 +29,7 @@ class OnboardingStepsIndicator extends StatelessWidget {
           );
         } else {
           return Padding(
-            padding: EdgeInsets.only(
-              right: index < totalPages - 1 ? AppSpacing.xs : 0,
-            ),
+            padding: EdgeInsets.only(right: index < totalPages - 1 ? 8 : 0),
             child: const Dot(size: 8, color: AppColors.border),
           );
         }

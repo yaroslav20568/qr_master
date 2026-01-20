@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/widgets/ui/index.dart';
 
 class OnboardingStepsActions extends StatelessWidget {
@@ -27,14 +26,14 @@ class OnboardingStepsActions extends StatelessWidget {
           variant: ButtonVariant.primary,
         ),
         if (currentPage < totalPages - 1) ...[
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: 16),
           Button(
             text: 'Skip',
             onPressed: onSkip,
             variant: ButtonVariant.withoutBackground,
           ),
         ] else ...[
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: 16),
           SizedBox(height: 23),
         ],
       ],

@@ -33,7 +33,7 @@ class OnboardingStep3 extends StatelessWidget {
           width: 327,
           height: 50,
         ),
-        const SizedBox(height: AppSpacing.lg),
+        const SizedBox(height: 20),
         Container(
           width: 107,
           height: 107,
@@ -68,7 +68,7 @@ class OnboardingStep3 extends StatelessWidget {
               style: AppTextStyles.title2.copyWith(fontSize: 24, height: 1.46),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: 12),
             Text(
               'Enter URL, text, or contact info and get your custom QR',
               style: AppTextStyles.body.copyWith(fontSize: 16, height: 1.31),
