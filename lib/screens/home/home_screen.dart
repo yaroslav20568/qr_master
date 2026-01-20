@@ -8,9 +8,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenLayout(
-      child: Center(
-        child: Text('Home Screen', style: AppTextStyles.largeTitle),
-      ),
+      child: Center(child: Text('Home Screen', style: AppFonts.interBold)),
     );
   }
 }

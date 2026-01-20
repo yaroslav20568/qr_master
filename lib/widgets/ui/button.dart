@@ -54,7 +54,7 @@ class Button extends StatelessWidget {
         child: InkWell(
           onTap: onPressed,
           borderRadius: BorderRadius.circular(18),
-          child: Center(child: Text(text, style: AppTextStyles.button)),
+          child: Center(child: Text(text, style: AppFonts.interSemiBold)),
         ),
       ),
     );
@@ -72,10 +72,7 @@ class Button extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: AppTextStyles.caption.copyWith(
-            fontWeight: FontWeight.w400,
-            color: AppColors.textSecondary,
-          ),
+          style: AppFonts.interRegular.copyWith(color: AppColors.textSecondary),
         ),
       ),
     );

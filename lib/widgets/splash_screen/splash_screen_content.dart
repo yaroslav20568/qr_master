@@ -39,9 +39,9 @@ class SplashScreenContent extends StatelessWidget {
           const SizedBox(height: 32),
           Column(
             children: [
-              Text(AppInfo.appName, style: AppTextStyles.largeTitle),
+              Text(AppInfo.appName, style: AppFonts.interBold),
               const SizedBox(height: 8),
-              Text('Scan • Create • Manage', style: AppTextStyles.caption),
+              Text('Scan • Create • Manage', style: AppFonts.interRegular),
             ],
           ),
           const SizedBox(height: 50),
@@ -52,7 +52,7 @@ class SplashScreenContent extends StatelessWidget {
             builder: (context, snapshot) {
               return Text(
                 snapshot.data ?? AppInfo.defaultVersionString,
-                style: AppTextStyles.small.copyWith(
+                style: AppFonts.interRegular.copyWith(
                   color: AppColors.textDisabled,
                 ),
               );

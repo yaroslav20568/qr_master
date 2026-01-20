@@ -39,7 +39,7 @@ class OnboardingStep4 extends StatelessWidget {
       children: [
         Text(
           'Manage & Share',
-          style: AppTextStyles.title1.copyWith(fontSize: 36, height: 1.19),
+          style: AppFonts.interBold.copyWith(fontSize: 36, height: 1.19),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 29),
@@ -91,13 +91,16 @@ class OnboardingStep4 extends StatelessWidget {
           children: [
             Text(
               'Save, Share, and Track All Your QR Codes',
-              style: AppTextStyles.title2.copyWith(fontSize: 24, height: 1.46),
+              style: AppFonts.interSemiBold.copyWith(
+                fontSize: 24,
+                height: 1.46,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 6),
             Text(
               'Access My QR Codes and History anytime',
-              style: AppTextStyles.body.copyWith(fontSize: 16, height: 1.31),
+              style: AppFonts.interRegular.copyWith(fontSize: 16, height: 1.31),
               textAlign: TextAlign.center,
             ),
           ],

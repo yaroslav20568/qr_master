@@ -56,9 +56,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
         if (widget.label != null) ...[
           Text(
             widget.label!,
-            style: AppTextStyles.caption.copyWith(
+            style: AppFonts.interMedium.copyWith(
               fontSize: 13,
-              fontWeight: FontWeight.w500,
               letterSpacing: -0.44,
               color: AppColors.textPrimary,
             ),
@@ -85,13 +84,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   onChanged: widget.onChanged,
                   keyboardType: widget.keyboardType,
                   enabled: !widget.disabled,
-                  style: AppTextStyles.body.copyWith(
+                  style: AppFonts.interRegular.copyWith(
                     fontSize: 15,
                     color: AppColors.textPrimary,
                   ),
                   decoration: InputDecoration(
                     hintText: widget.hintText,
-                    hintStyle: AppTextStyles.body.copyWith(
+                    hintStyle: AppFonts.interRegular.copyWith(
                       fontSize: 15,
                       color: AppColors.textDisabled,
                     ),

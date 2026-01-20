@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/widgets/ui/background_circle_icon.dart';
 
@@ -81,9 +80,8 @@ class QrCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
-                  style: GoogleFonts.inter(
+                  style: AppFonts.interSemiBold.copyWith(
                     fontSize: isLarge ? 15 : 10.17,
-                    fontWeight: FontWeight.w600,
                     height: isLarge ? 23 / 15 : 15.6 / 10.17,
                     letterSpacing: isLarge ? -0.5 : -0.34,
                     color: AppColors.textPrimary,
@@ -102,9 +100,8 @@ class QrCard extends StatelessWidget {
           SizedBox(height: isLarge ? 8 : 5),
           Text(
             subtitle,
-            style: GoogleFonts.inter(
+            style: AppFonts.interRegular.copyWith(
               fontSize: isLarge ? 13 : 8.81,
-              fontWeight: FontWeight.w400,
               letterSpacing: isLarge ? -0.5 : -0.34,
               color: AppColors.textSecondary,
             ),
@@ -117,9 +114,8 @@ class QrCard extends StatelessWidget {
             children: [
               Text(
                 date,
-                style: GoogleFonts.inter(
+                style: AppFonts.interRegular.copyWith(
                   fontSize: isLarge ? 10 : 8.13,
-                  fontWeight: FontWeight.w400,
                   height: isLarge ? 15.6 / 10 : 12.2 / 8.13,
                   letterSpacing: isLarge ? -0.5 : -0.34,
                   color: AppColors.textDisabled,
@@ -131,9 +127,8 @@ class QrCard extends StatelessWidget {
                   SizedBox(width: isLarge ? 4 : 3),
                   Text(
                     views,
-                    style: GoogleFonts.inter(
+                    style: AppFonts.interRegular.copyWith(
                       fontSize: isLarge ? 10 : 8.13,
-                      fontWeight: FontWeight.w400,
                       height: isLarge ? 15.6 / 10 : 12.2 / 8.13,
                       letterSpacing: isLarge ? -0.5 : -0.34,
                       color: AppColors.textDisabled,

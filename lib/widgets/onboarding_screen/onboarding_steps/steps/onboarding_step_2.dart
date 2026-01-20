@@ -13,7 +13,7 @@ class OnboardingStep2 extends StatelessWidget {
       children: [
         Text(
           'Scan QR Codes',
-          style: AppTextStyles.title1.copyWith(fontSize: 36, height: 1.19),
+          style: AppFonts.interBold.copyWith(fontSize: 36, height: 1.19),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 43),
@@ -79,13 +79,16 @@ class OnboardingStep2 extends StatelessWidget {
           children: [
             Text(
               'Quickly Scan Any QR Code',
-              style: AppTextStyles.title2.copyWith(fontSize: 24, height: 1.46),
+              style: AppFonts.interSemiBold.copyWith(
+                fontSize: 24,
+                height: 1.46,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
             Text(
               'Align QR codes in frame and get instant results',
-              style: AppTextStyles.body.copyWith(fontSize: 16, height: 1.31),
+              style: AppFonts.interRegular.copyWith(fontSize: 16, height: 1.31),
               textAlign: TextAlign.center,
             ),
           ],
