@@ -33,6 +33,9 @@ class OnboardingStepsActions extends StatelessWidget {
             onPressed: onSkip,
             variant: ButtonVariant.withoutBackground,
           ),
+        ] else ...[
+          const SizedBox(height: AppSpacing.md),
+          SizedBox(height: 23),
         ],
       ],
     );

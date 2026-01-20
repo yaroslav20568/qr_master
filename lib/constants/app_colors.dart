@@ -22,6 +22,18 @@ class AppColors {
     colors: [Color(0xFF7ACBFF), Color(0xFF4DA6FF)],
   );
 
+  static const LinearGradient qrCardLargeGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFF7ACBFF), Color(0xFF4DA6FF)],
+  );
+
+  static const LinearGradient qrCardSmallGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFF7ACBFF), Color(0xFF4DA6FF)],
+  );
+
   static const LinearGradient onboardingGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

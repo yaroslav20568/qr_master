@@ -17,45 +17,69 @@ class OnboardingStep2 extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 43),
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 39, horizontal: 38),
-          decoration: BoxDecoration(
-            color: AppColors.primaryBg,
-            borderRadius: BorderRadius.circular(AppBorderRadius.xxl),
-            border: Border.all(color: AppColors.primary, width: 2),
-          ),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              SvgPicture.asset('assets/icons/scan_qr_icon.svg'),
-              Positioned(
-                top: -20,
-                right: -20,
-                child: BackgroundCircleIcon(
-                  child: SvgPicture.asset(
-                    'assets/icons/flash_icon.svg',
-                    colorFilter: ColorFilter.mode(
-                      AppColors.primaryBg,
-                      BlendMode.srcIn,
+        Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 39, horizontal: 38),
+              decoration: BoxDecoration(
+                color: AppColors.primaryBg,
+                borderRadius: BorderRadius.circular(AppBorderRadius.xxl),
+                border: Border.all(color: AppColors.primary, width: 2),
+              ),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  SvgPicture.asset('assets/icons/scan_qr_icon.svg'),
+                  Positioned(
+                    top: -20,
+                    right: -20,
+                    child: BackgroundCircleIcon(
+                      child: SvgPicture.asset(
+                        'assets/icons/flash_icon.svg',
+                        colorFilter: ColorFilter.mode(
+                          AppColors.primaryBg,
+                          BlendMode.srcIn,
+                        ),
+                      ),
                     ),
+                  ),
+                  Positioned(
+                    bottom: -20,
+                    left: -20,
+                    child: BackgroundCircleIcon(
+                      child: SvgPicture.asset(
+                        'assets/icons/switch_camera_icon.svg',
+                        colorFilter: ColorFilter.mode(
+                          AppColors.primaryBg,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 84,
+              child: Container(
+                width: double.infinity,
+                height: 2,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.transparent,
+                      AppColors.primary,
+                      Colors.transparent,
+                    ],
+                    stops: const [0.0, 0.5, 1.0],
                   ),
                 ),
               ),
-              Positioned(
-                bottom: -20,
-                left: -20,
-                child: BackgroundCircleIcon(
-                  child: SvgPicture.asset(
-                    'assets/icons/switch_camera_icon.svg',
-                    colorFilter: ColorFilter.mode(
-                      AppColors.primaryBg,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
         const SizedBox(height: 43),
         Column(
