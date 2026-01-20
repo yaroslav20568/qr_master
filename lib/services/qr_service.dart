@@ -49,18 +49,10 @@ class QrService {
   QrCodeType detectQrCodeType(String content) {
     if (content.startsWith('http://') || content.startsWith('https://')) {
       return QrCodeType.url;
-    } else if (content.startsWith('mailto:')) {
-      return QrCodeType.email;
-    } else if (content.startsWith('tel:')) {
-      return QrCodeType.phone;
-    } else if (content.startsWith('sms:')) {
-      return QrCodeType.sms;
     } else if (content.startsWith('WIFI:')) {
       return QrCodeType.wifi;
     } else if (content.startsWith('BEGIN:VCARD')) {
       return QrCodeType.contact;
-    } else if (content.startsWith('BEGIN:VEVENT')) {
-      return QrCodeType.calendar;
     } else {
       return QrCodeType.text;
     }

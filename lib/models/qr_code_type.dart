@@ -3,11 +3,6 @@ enum QrCodeType {
   text,
   contact,
   wifi,
-  email,
-  phone,
-  sms,
-  calendar,
-  social,
 }
 
 extension QrCodeTypeExtension on QrCodeType {
@@ -21,16 +16,6 @@ extension QrCodeTypeExtension on QrCodeType {
         return 'Contact';
       case QrCodeType.wifi:
         return 'WiFi';
-      case QrCodeType.email:
-        return 'Email';
-      case QrCodeType.phone:
-        return 'Phone';
-      case QrCodeType.sms:
-        return 'SMS';
-      case QrCodeType.calendar:
-        return 'Calendar';
-      case QrCodeType.social:
-        return 'Social';
     }
   }
 }

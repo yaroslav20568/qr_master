@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/services/index.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  final storageService = StorageService();
+  await storageService.initializeFirstLaunch();
+  
   runApp(const MyApp());
 }
 

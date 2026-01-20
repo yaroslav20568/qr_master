@@ -60,7 +60,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return ScreenLayout(
       backgroundColor: AppColors.primaryBg,
-      paddingZero: true,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final screenWidth = constraints.maxWidth;

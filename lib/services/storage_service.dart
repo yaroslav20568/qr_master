@@ -9,6 +9,7 @@ class StorageService {
   static const String _historyKey = 'scan_history';
   static const String _onboardingKey = 'onboarding_completed';
   static const String _subscriptionKey = 'subscription_info';
+  static const String _firstLaunchKey = 'first_launch';
 
   final Logger _logger = Logger();
 
@@ -164,6 +165,52 @@ class StorageService {
     } catch (e) {
       _logger.e('Error saving subscription info', error: e);
       return false;
+    }
+  }
+
+  Future<bool> isFirstLaunch() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getBool(_firstLaunchKey) ?? true;
+    } catch (e) {
+      _logger.e('Error checking first launch status', error: e);
+      return true;
+    }
+  }
+
+  Future<bool> setFirstLaunchCompleted() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return await prefs.setBool(_firstLaunchKey, false);
+    } catch (e) {
+      _logger.e('Error saving first launch status', error: e);
+      return false;
+    }
+  }
+
+  Future<void> initializeFirstLaunch() async {
+    try {
+      final isFirst = await isFirstLaunch();
+      if (!isFirst) return;
+
+      final prefs = await SharedPreferences.getInstance();
+
+      await prefs.setString(_qrCodesKey, jsonEncode([]));
+      await prefs.setString(_historyKey, jsonEncode([]));
+      await prefs.setBool(_onboardingKey, false);
+
+      final defaultSubscription = {
+        'status': SubscriptionStatus.none.name,
+        'expiresAt': null,
+        'productId': null,
+        'isTrial': false,
+      };
+      await prefs.setString(_subscriptionKey, jsonEncode(defaultSubscription));
+
+      await setFirstLaunchCompleted();
+      _logger.i('First launch initialization completed');
+    } catch (e) {
+      _logger.e('Error initializing first launch', error: e);
     }
   }
 }
