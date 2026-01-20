@@ -5,7 +5,7 @@ import 'package:qr_master/services/index.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await FirebaseService.initialize();
+  await AppInitializationService.initialize();
 
   runApp(const MyApp());
 }
