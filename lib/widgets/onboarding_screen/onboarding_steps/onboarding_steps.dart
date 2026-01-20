@@ -58,27 +58,84 @@ class _OnboardingStepsState extends State<OnboardingSteps> {
               });
             },
             children: [
-              OnboardingStep1(),
-              OnboardingStep2(),
-              OnboardingStep3(),
-              OnboardingStep4(),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: Center(child: OnboardingStep1()),
+                    ),
+                  );
+                },
+              ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: Center(child: OnboardingStep2()),
+                    ),
+                  );
+                },
+              ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: Center(child: OnboardingStep3()),
+                    ),
+                  );
+                },
+              ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: Center(child: OnboardingStep4()),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),
-        Column(
-          children: [
-            OnboardingStepsIndicator(
-              currentPage: _currentPage,
-              totalPages: _totalPages,
-            ),
-            const SizedBox(height: 21),
-            OnboardingStepsActions(
-              currentPage: _currentPage,
-              totalPages: _totalPages,
-              onNext: _nextPage,
-              onSkip: _skipOnboarding,
-            ),
-          ],
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final screenHeight = MediaQuery.of(context).size.height;
+            final isSmallScreen = screenHeight < 480;
+
+            return Column(
+              children: [
+                if (!isSmallScreen) ...[
+                  OnboardingStepsIndicator(
+                    currentPage: _currentPage,
+                    totalPages: _totalPages,
+                  ),
+                ],
+                SizedBox(height: !isSmallScreen ? 21 : 10),
+                OnboardingStepsActions(
+                  currentPage: _currentPage,
+                  totalPages: _totalPages,
+                  onNext: _nextPage,
+                  onSkip: _skipOnboarding,
+                ),
+              ],
+            );
+          },
         ),
       ],
     );

@@ -13,6 +13,7 @@ class SplashScreenContent extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Stack(
             alignment: Alignment.center,
@@ -38,6 +39,7 @@ class SplashScreenContent extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 AppInfo.appName,

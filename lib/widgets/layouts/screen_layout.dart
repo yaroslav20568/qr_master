@@ -25,18 +25,20 @@ class ScreenLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isSmallScreen = screenHeight < 480;
+
+    final padding = paddingZero
+        ? EdgeInsets.zero
+        : EdgeInsets.only(
+            top: isSmallScreen ? paddingTop * 0.5 : paddingTop,
+            bottom: isSmallScreen ? paddingBottom * 0.5 : paddingBottom,
+            left: isSmallScreen ? paddingLeft * 0.5 : paddingLeft,
+            right: isSmallScreen ? paddingRight * 0.5 : paddingRight,
+          );
+
     final body = SafeArea(
-      child: Padding(
-        padding: paddingZero
-            ? EdgeInsets.zero
-            : EdgeInsets.only(
-                top: paddingTop,
-                bottom: paddingBottom,
-                left: paddingLeft,
-                right: paddingRight,
-              ),
-        child: child,
-      ),
+      child: Padding(padding: padding, child: child),
     );
 
     if (gradient != null) {

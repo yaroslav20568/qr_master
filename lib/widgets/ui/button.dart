@@ -3,10 +3,13 @@ import 'package:qr_master/constants/index.dart';
 
 enum ButtonVariant { primary, withoutBackground }
 
+enum ButtonSize { small, big }
+
 class Button extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
   final ButtonVariant variant;
+  final ButtonSize size;
   final double? width;
   final double? height;
 
@@ -15,8 +18,9 @@ class Button extends StatelessWidget {
     required this.text,
     this.onPressed,
     this.variant = ButtonVariant.primary,
-    this.width = double.infinity,
-    this.height = 60,
+    this.size = ButtonSize.big,
+    this.width,
+    this.height,
   });
 
   @override
@@ -30,12 +34,17 @@ class Button extends StatelessWidget {
   }
 
   Widget _buildPrimaryButton() {
+    final isSmall = size == ButtonSize.small;
+    final buttonHeight = height ?? (isSmall ? 44.0 : 60.0);
+    final fontSize = isSmall ? 15.0 : 17.0;
+    final borderRadius = isSmall ? 14.0 : 18.0;
+
     return Container(
-      width: width,
-      height: height,
+      width: width ?? double.infinity,
+      height: buttonHeight,
       decoration: BoxDecoration(
         gradient: AppGradients.primaryGradient,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(borderRadius),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.06),
@@ -53,12 +62,12 @@ class Button extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onPressed,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(borderRadius),
           child: Center(
             child: Text(
               text,
               style: AppFonts.interSemiBold.copyWith(
-                fontSize: 17,
+                fontSize: fontSize,
                 height: 1.53,
                 letterSpacing: -0.5,
                 color: AppColors.primaryBg,
@@ -71,8 +80,11 @@ class Button extends StatelessWidget {
   }
 
   Widget _buildWithoutBackgroundButton() {
+    final isSmall = size == ButtonSize.small;
+    final fontSize = isSmall ? 13.0 : 15.0;
+
     return SizedBox(
-      width: width,
+      width: width ?? double.infinity,
       child: TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(
@@ -83,7 +95,7 @@ class Button extends StatelessWidget {
         child: Text(
           text,
           style: AppFonts.interRegular.copyWith(
-            fontSize: 15,
+            fontSize: fontSize,
             height: 1.53,
             letterSpacing: -0.5,
             color: AppColors.textSecondary,
