@@ -50,8 +50,8 @@ class QrCard extends StatelessWidget {
             height: isLarge ? 96 : 65,
             decoration: BoxDecoration(
               gradient: isLarge
-                  ? AppColors.qrCardLargeGradient
-                  : AppColors.qrCardSmallGradient,
+                  ? AppGradients.qrCardLargeGradient
+                  : AppGradients.qrCardSmallGradient,
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(

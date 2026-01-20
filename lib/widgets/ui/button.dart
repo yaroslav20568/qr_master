@@ -34,7 +34,7 @@ class Button extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
+        gradient: AppGradients.primaryGradient,
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(

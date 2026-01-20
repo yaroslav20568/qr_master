@@ -15,28 +15,4 @@ class AppColors {
   static const Color textDisabled = Color(0xFFB0B0B0);
 
   static const Color border = Color(0xFFE3E3E3);
-
-  static const LinearGradient primaryGradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [Color(0xFF7ACBFF), Color(0xFF4DA6FF)],
-  );
-
-  static const LinearGradient qrCardLargeGradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [Color(0xFF7ACBFF), Color(0xFF4DA6FF)],
-  );
-
-  static const LinearGradient qrCardSmallGradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [Color(0xFF7ACBFF), Color(0xFF4DA6FF)],
-  );
-
-  static const LinearGradient onboardingGradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [Color(0xFFE8F7FF), Color(0xFFFFFFFF)],
-  );
 }

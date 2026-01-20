@@ -68,14 +68,7 @@ class OnboardingStep2 extends StatelessWidget {
                 width: double.infinity,
                 height: 2,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.transparent,
-                      AppColors.primary,
-                      Colors.transparent,
-                    ],
-                    stops: const [0.0, 0.5, 1.0],
-                  ),
+                  gradient: AppGradients.scanningLineGradient,
                 ),
               ),
             ),

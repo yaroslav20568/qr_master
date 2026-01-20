@@ -22,7 +22,7 @@ class SplashScreenContent extends StatelessWidget {
                 width: 128,
                 height: 128,
                 decoration: BoxDecoration(
-                  gradient: AppColors.primaryGradient,
+                  gradient: AppGradients.primaryGradient,
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
