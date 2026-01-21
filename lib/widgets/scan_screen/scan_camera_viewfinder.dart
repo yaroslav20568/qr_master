@@ -30,12 +30,13 @@ class ScanCameraViewfinder extends StatelessWidget {
         child: Stack(
           children: [
             cameraWidget ?? const SizedBox.shrink(),
-            const Positioned(
-              bottom: 84,
-              left: 0,
-              right: 0,
-              child: ScanningLine(),
-            ),
+            if (cameraWidget == null)
+              const Positioned(
+                bottom: 84,
+                left: 0,
+                right: 0,
+                child: ScanningLine(),
+              ),
           ],
         ),
       ),
