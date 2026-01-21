@@ -26,6 +26,8 @@ class AppGradients {
   );
 
   static const LinearGradient scanningLineGradient = LinearGradient(
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
     colors: [Color(0x00000000), Color(0xFF7ACBFF), Color(0x00000000)],
     stops: [0.0, 0.5, 1.0],
   );

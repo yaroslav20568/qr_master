@@ -5,3 +5,4 @@ export 'dot.dart';
 export 'empty_data.dart';
 export 'loader/index.dart';
 export 'qr_card.dart';
+export 'scanning_line.dart';
