@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/services/index.dart';
 import 'package:qr_master/utils/index.dart';
-import 'package:qr_master/widgets/home_screen/index.dart';
-import 'package:qr_master/widgets/layouts/index.dart';
+import 'package:qr_master/widgets/index.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

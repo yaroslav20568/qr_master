@@ -5,8 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/services/index.dart';
-import 'package:qr_master/widgets/layouts/index.dart';
-import 'package:qr_master/widgets/scan_screen/index.dart';
+import 'package:qr_master/widgets/index.dart';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});

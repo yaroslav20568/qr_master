@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/services/index.dart';
-import 'package:qr_master/widgets/layouts/index.dart';
-import 'package:qr_master/widgets/main_screen/index.dart';
-import 'package:qr_master/widgets/scan_result_screen/index.dart';
-import 'package:qr_master/widgets/ui/index.dart';
+import 'package:qr_master/widgets/index.dart';
 
 class ScanResultScreen extends StatelessWidget {
   final ScanHistoryItem? scanItem;

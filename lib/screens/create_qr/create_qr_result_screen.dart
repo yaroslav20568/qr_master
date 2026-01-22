@@ -4,13 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
-import 'package:qr_master/services/firestore_service.dart';
-import 'package:qr_master/services/image_service.dart';
-import 'package:qr_master/services/logger_service.dart';
-import 'package:qr_master/services/main_tabs_service.dart';
-import 'package:qr_master/widgets/layouts/index.dart';
-import 'package:qr_master/widgets/main_screen/index.dart';
-import 'package:qr_master/widgets/ui/index.dart';
+import 'package:qr_master/services/index.dart';
+import 'package:qr_master/widgets/index.dart';
 import 'package:share_plus/share_plus.dart';
 
 class CreateQrResultScreen extends StatefulWidget {

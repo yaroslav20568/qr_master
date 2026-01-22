@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/services/index.dart';
-import 'package:qr_master/widgets/auth_screen/index.dart';
-import 'package:qr_master/widgets/layouts/index.dart';
+import 'package:qr_master/widgets/index.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});

@@ -1,5 +1,10 @@
+export 'auth_screen/index.dart';
 export 'create_qr_screen/index.dart';
 export 'home_screen/index.dart';
+export 'layouts/index.dart';
+export 'main_screen/index.dart';
+export 'onboarding_screen/index.dart';
 export 'scan_result_screen/index.dart';
 export 'scan_screen/index.dart';
+export 'splash_screen/index.dart';
 export 'ui/index.dart';

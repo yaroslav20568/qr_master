@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_master/screens/index.dart';
 import 'package:qr_master/services/index.dart';
-import 'package:qr_master/widgets/main_screen/index.dart';
+import 'package:qr_master/widgets/index.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

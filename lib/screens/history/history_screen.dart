@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
-import 'package:qr_master/widgets/layouts/index.dart';
+import 'package:qr_master/widgets/index.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});

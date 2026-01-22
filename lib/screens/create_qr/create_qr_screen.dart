@@ -3,9 +3,7 @@ import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/services/index.dart';
 import 'package:qr_master/utils/index.dart';
-import 'package:qr_master/widgets/create_qr_screen/index.dart';
-import 'package:qr_master/widgets/layouts/index.dart';
-import 'package:qr_master/widgets/ui/index.dart';
+import 'package:qr_master/widgets/index.dart';
 
 class CreateQrScreen extends StatefulWidget {
   const CreateQrScreen({super.key});
