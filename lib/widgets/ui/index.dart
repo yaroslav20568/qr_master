@@ -6,4 +6,5 @@ export 'empty_data.dart';
 export 'info_indicator.dart';
 export 'loader/index.dart';
 export 'qr_card.dart';
+export 'qr_code_action.dart';
 export 'scanning_line.dart';

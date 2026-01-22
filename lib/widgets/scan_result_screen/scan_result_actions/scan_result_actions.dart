@@ -5,8 +5,8 @@ import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/services/index.dart';
 import 'package:qr_master/utils/index.dart';
-import 'package:qr_master/widgets/scan_result_screen/scan_result_actions/scan_result_action_button.dart';
 import 'package:qr_master/widgets/scan_result_screen/scan_result_actions/scan_result_primary_action.dart';
+import 'package:qr_master/widgets/ui/qr_code_action.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -332,7 +332,7 @@ class ScanResultActions extends StatelessWidget {
           builder: (context) => Row(
             children: [
               Expanded(
-                child: ScanResultActionButton(
+                child: QrCodeAction(
                   icon: SvgPicture.asset(
                     'assets/icons/result_actions/copy_icon.svg',
                   ),
@@ -342,7 +342,7 @@ class ScanResultActions extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: ScanResultActionButton(
+                child: QrCodeAction(
                   icon: SvgPicture.asset(
                     'assets/icons/result_actions/share_icon.svg',
                   ),
@@ -352,7 +352,7 @@ class ScanResultActions extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: ScanResultActionButton(
+                child: QrCodeAction(
                   icon: SvgPicture.asset(
                     'assets/icons/result_actions/save_icon.svg',
                   ),

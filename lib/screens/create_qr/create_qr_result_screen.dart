@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/services/firestore_service.dart';
@@ -174,20 +175,22 @@ class _CreateQrResultScreenState extends State<CreateQrResultScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildActionButton(
-                          icon: Icons.share,
+                        child: QrCodeAction(
+                          icon: SvgPicture.asset(
+                            'assets/icons/result_actions/share_icon.svg',
+                          ),
                           label: 'Share',
                           onTap: _shareQrCode,
-                          isLoading: _isSharing,
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: _buildActionButton(
-                          icon: Icons.bookmark,
+                        child: QrCodeAction(
+                          icon: SvgPicture.asset(
+                            'assets/icons/result_actions/save_icon.svg',
+                          ),
                           label: 'Save',
                           onTap: _saveToLibrary,
-                          isLoading: _isSaving,
                         ),
                       ),
                     ],
@@ -205,60 +208,6 @@ class _CreateQrResultScreenState extends State<CreateQrResultScreen> {
           Navigator.of(context).popUntil((route) => route.isFirst);
           MainTabsService().switchToCreate();
         },
-      ),
-    );
-  }
-
-  Widget _buildActionButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-    bool isLoading = false,
-  }) {
-    return GestureDetector(
-      onTap: isLoading ? null : onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: AppColors.primaryBg,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              offset: const Offset(0, 4),
-              blurRadius: 16,
-              spreadRadius: 0,
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (isLoading)
-              const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    AppColors.textPrimary,
-                  ),
-                ),
-              )
-            else
-              Icon(icon, size: 24, color: AppColors.textPrimary),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: AppFonts.interMedium.copyWith(
-                fontSize: 12,
-                height: 1.5,
-                letterSpacing: -0.5,
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

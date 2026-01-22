@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
 
-class ScanResultActionButton extends StatelessWidget {
+class QrCodeAction extends StatelessWidget {
   final Widget icon;
   final String label;
   final VoidCallback onTap;
 
-  const ScanResultActionButton({
+  const QrCodeAction({
     super.key,
     required this.icon,
     required this.label,
