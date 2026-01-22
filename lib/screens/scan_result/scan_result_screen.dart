@@ -24,19 +24,21 @@ class ScanResultScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ScreenLayout(
-        child: SingleChildScrollView(
-          child: PaddingLayout(
-            child: Column(
-              children: [
-                const InfoIndicator(
-                  title: 'Scan Successful',
-                  text: 'QR code decoded successfully',
-                ),
-                const SizedBox(height: 21),
-                ScanResultCard(scanItem: scanItem!),
-                const SizedBox(height: 21),
-                ScanResultActions(scanItem: scanItem!),
-              ],
+        child: Center(
+          child: SingleChildScrollView(
+            child: PaddingLayout(
+              child: Column(
+                children: [
+                  const InfoIndicator(
+                    title: 'Scan Successful',
+                    text: 'QR code decoded successfully',
+                  ),
+                  const SizedBox(height: 21),
+                  ScanResultCard(scanItem: scanItem!),
+                  const SizedBox(height: 21),
+                  ScanResultActions(scanItem: scanItem!),
+                ],
+              ),
             ),
           ),
         ),
