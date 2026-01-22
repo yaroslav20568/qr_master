@@ -25,6 +25,7 @@ Map<String, WidgetBuilder> get appRoutes => {
       content: args['content'] as String,
       type: args['type'] as QrCodeType,
       color: args['color'] as Color,
+      qrCodeName: args['qrCodeName'] as String,
     );
   },
   AppRoutes.subscription: (context) =>

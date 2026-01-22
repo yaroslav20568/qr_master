@@ -17,6 +17,7 @@ class CreateQrResultScreen extends StatefulWidget {
   final String content;
   final QrCodeType type;
   final Color color;
+  final String qrCodeName;
 
   const CreateQrResultScreen({
     super.key,
@@ -24,6 +25,7 @@ class CreateQrResultScreen extends StatefulWidget {
     required this.content,
     required this.type,
     required this.color,
+    required this.qrCodeName,
   });
 
   @override
@@ -151,11 +153,11 @@ class _CreateQrResultScreenState extends State<CreateQrResultScreen> {
             child: PaddingLayout(
               child: Column(
                 children: [
-                  const InfoIndicator(
+                  InfoIndicator(
                     title: 'The QR code is ready',
-                    type: InfoIndicatorType.success,
+                    text: 'QR code name: ${widget.qrCodeName}',
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 27),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(24),
@@ -166,12 +168,12 @@ class _CreateQrResultScreenState extends State<CreateQrResultScreen> {
                     ),
                     child: Image.memory(
                       widget.qrImage,
-                      width: 300,
-                      height: 300,
+                      width: 250,
+                      height: 250,
                       fit: BoxFit.contain,
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 37),
                   Row(
                     children: [
                       Expanded(

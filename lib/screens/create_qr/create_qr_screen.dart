@@ -36,6 +36,7 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
     _controllers['wifiSsid'] = TextEditingController();
     _controllers['wifiPassword'] = TextEditingController();
     _controllers['wifiEncryptionType'] = TextEditingController(text: 'WPA');
+    _controllers['qrCodeName'] = TextEditingController();
   }
 
   @override
@@ -86,18 +87,30 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
 
     switch (_selectedType) {
       case QrCodeType.url:
-        return _controllers['url']?.text.trim().isNotEmpty ?? false;
+        if (_controllers['url']?.text.trim().isEmpty ?? true) return false;
+        break;
       case QrCodeType.text:
-        return _controllers['text']?.text.trim().isNotEmpty ?? false;
+        if (_controllers['text']?.text.trim().isEmpty ?? true) return false;
+        break;
       case QrCodeType.phone:
-        return _controllers['phone']?.text.trim().isNotEmpty ?? false;
+        if (_controllers['phone']?.text.trim().isEmpty ?? true) return false;
+        break;
       case QrCodeType.email:
-        return _controllers['email']?.text.trim().isNotEmpty ?? false;
+        if (_controllers['email']?.text.trim().isEmpty ?? true) return false;
+        break;
       case QrCodeType.contact:
-        return _controllers['contactName']?.text.trim().isNotEmpty ?? false;
+        if (_controllers['contactName']?.text.trim().isEmpty ?? true) {
+          return false;
+        }
+        break;
       case QrCodeType.wifi:
-        return _controllers['wifiSsid']?.text.trim().isNotEmpty ?? false;
+        if (_controllers['wifiSsid']?.text.trim().isEmpty ?? true) return false;
+        break;
     }
+
+    if (_controllers['qrCodeName']?.text.trim().isEmpty ?? true) return false;
+
+    return true;
   }
 
   Future<void> _generateQrCode() async {
@@ -131,6 +144,7 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
             'content': content,
             'type': _selectedType,
             'color': _selectedColor,
+            'qrCodeName': _controllers['qrCodeName']?.text ?? '',
           },
         );
       } else {
@@ -174,6 +188,7 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(height: 16),
                 CreateQrContentTypeSelector(
                   selectedType: _selectedType,
                   onTypeSelected: (type) {
@@ -186,6 +201,7 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
                 CreateQrFormInputs(
                   type: _selectedType,
                   controllers: _controllers,
+                  showQrCodeNameField: true,
                 ),
                 const SizedBox(height: 18),
                 SectionLayout(

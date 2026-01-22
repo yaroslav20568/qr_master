@@ -9,12 +9,14 @@ class CreateQrFormInputs extends StatefulWidget {
   final QrCodeType type;
   final Map<String, TextEditingController> controllers;
   final ValueChanged<String>? onContentChanged;
+  final bool showQrCodeNameField; // новый параметр
 
   const CreateQrFormInputs({
     super.key,
     required this.type,
     required this.controllers,
     this.onContentChanged,
+    this.showQrCodeNameField = false, // по умолчанию false
   });
 
   @override
@@ -23,26 +25,44 @@ class CreateQrFormInputs extends StatefulWidget {
 
 class _CreateQrFormInputsState extends State<CreateQrFormInputs> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    List<Widget> children = [];
+    if (widget.showQrCodeNameField) {
+      children.addAll([
+        CustomTextField(
+          label: 'QR Code Name',
+          hintText: 'Enter name for your QR code',
+          controller: widget.controllers['qrCodeName'],
+          keyboardType: TextInputType.text,
+        ),
+        const SizedBox(height: 16),
+      ]);
+    }
+
     switch (widget.type) {
       case QrCodeType.url:
-        return _buildUrlInput();
+        children.add(_buildUrlInput());
+        break;
       case QrCodeType.text:
-        return _buildTextInput();
+        children.add(_buildTextInput());
+        break;
       case QrCodeType.phone:
-        return _buildPhoneInput();
+        children.add(_buildPhoneInput());
+        break;
       case QrCodeType.email:
-        return _buildEmailInput();
+        children.add(_buildEmailInput());
+        break;
       case QrCodeType.contact:
-        return _buildContactInputs();
+        children.add(_buildContactInputs());
+        break;
       case QrCodeType.wifi:
-        return _buildWifiInputs();
+        children.add(_buildWifiInputs());
+        break;
     }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
   }
 
   Widget _buildUrlInput() {
