@@ -3,6 +3,7 @@ export 'app_initialization_service.dart';
 export 'auth_service.dart';
 export 'firebase_service.dart';
 export 'firestore_service.dart';
+export 'image_service.dart';
 export 'logger_service.dart';
 export 'main_tabs_service.dart';
 export 'navigation_service.dart';

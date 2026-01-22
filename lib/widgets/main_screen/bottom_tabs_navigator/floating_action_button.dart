@@ -28,7 +28,7 @@ class BottomTabsFloatingActionButton extends StatelessWidget {
               spreadRadius: 0,
             ),
             BoxShadow(
-              color: AppColors.success.withValues(alpha: 0.3),
+              color: AppColors.success,
               offset: const Offset(0, 0),
               blurRadius: 24,
               spreadRadius: 0,

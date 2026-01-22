@@ -62,7 +62,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               color: AppColors.textPrimary,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 11),
         ],
         Container(
           height: 52,

@@ -80,6 +80,7 @@ flutter:
     - assets/icons/actions/
     - assets/icons/result_actions/
     - assets/icons/bottom_tabs/
+    - assets/icons/content_type/
     - assets/icons/bottom_tabs/home/
     - assets/icons/bottom_tabs/scan/
     - assets/icons/bottom_tabs/history/
