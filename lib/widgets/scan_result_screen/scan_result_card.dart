@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
+import 'package:qr_master/services/index.dart';
 import 'package:qr_master/utils/index.dart';
 import 'package:qr_master/widgets/ui/index.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ScanResultCard extends StatelessWidget {
   final ScanHistoryItem scanItem;
@@ -15,6 +17,10 @@ class ScanResultCard extends StatelessWidget {
       case QrCodeType.url:
         return AppColors.primary;
       case QrCodeType.phone:
+        return AppColors.warning;
+      case QrCodeType.email:
+        return AppColors.primary;
+      case QrCodeType.contact:
         return AppColors.warning;
       case QrCodeType.wifi:
         return AppColors.success;
@@ -37,6 +43,10 @@ class ScanResultCard extends StatelessWidget {
         );
       case QrCodeType.phone:
         return const Icon(Icons.phone, size: 20, color: AppColors.primaryBg);
+      case QrCodeType.email:
+        return const Icon(Icons.email, size: 20, color: AppColors.primaryBg);
+      case QrCodeType.contact:
+        return const Icon(Icons.person, size: 20, color: AppColors.primaryBg);
       case QrCodeType.wifi:
         return const Icon(Icons.wifi, size: 20, color: AppColors.primaryBg);
       case QrCodeType.text:
@@ -142,17 +152,45 @@ class ScanResultCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  scanItem.type == QrCodeType.wifi
-                      ? QrContentParser.formatWifiContent(scanItem.content)
-                      : scanItem.content.trim(),
-                  style: AppFonts.interBold.copyWith(
-                    fontSize: 15,
-                    height: 1.53,
-                    letterSpacing: -0.5,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
+                scanItem.type == QrCodeType.url
+                    ? GestureDetector(
+                        onTap: () async {
+                          try {
+                            final uri = UrlUtils.normalizeUrl(scanItem.content);
+                            if (await canLaunchUrl(uri)) {
+                              await launchUrl(
+                                uri,
+                                mode: LaunchMode.externalApplication,
+                              );
+                            }
+                          } catch (e) {
+                            LoggerService.error('Error opening URL', error: e);
+                          }
+                        },
+                        child: Text(
+                          scanItem.content.trim(),
+                          style: AppFonts.interBold.copyWith(
+                            fontSize: 15,
+                            height: 1.53,
+                            letterSpacing: -0.5,
+                            color: AppColors.primary,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      )
+                    : Text(
+                        scanItem.type == QrCodeType.wifi
+                            ? QrContentParser.formatWifiContent(
+                                scanItem.content,
+                              )
+                            : scanItem.content.trim(),
+                        style: AppFonts.interBold.copyWith(
+                          fontSize: 15,
+                          height: 1.53,
+                          letterSpacing: -0.5,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
               ],
             ),
           ),

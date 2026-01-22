@@ -53,6 +53,10 @@ class QrService {
       return QrCodeType.wifi;
     } else if (content.startsWith('tel:')) {
       return QrCodeType.phone;
+    } else if (content.startsWith('mailto:')) {
+      return QrCodeType.email;
+    } else if (content.startsWith('BEGIN:VCARD')) {
+      return QrCodeType.contact;
     } else {
       return QrCodeType.text;
     }

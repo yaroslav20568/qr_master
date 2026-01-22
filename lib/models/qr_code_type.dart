@@ -1,4 +1,4 @@
-enum QrCodeType { url, text, phone, wifi }
+enum QrCodeType { url, text, phone, email, contact, wifi }
 
 extension QrCodeTypeExtension on QrCodeType {
   String get displayName {
@@ -9,8 +9,12 @@ extension QrCodeTypeExtension on QrCodeType {
         return 'Text';
       case QrCodeType.phone:
         return 'Phone';
+      case QrCodeType.email:
+        return 'Email';
+      case QrCodeType.contact:
+        return 'Contact';
       case QrCodeType.wifi:
-        return 'WiFi';
+        return 'Wi-Fi';
     }
   }
 }

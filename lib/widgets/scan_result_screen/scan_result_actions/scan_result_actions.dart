@@ -15,6 +15,24 @@ class ScanResultActions extends StatelessWidget {
 
   const ScanResultActions({super.key, required this.scanItem});
 
+  Future<void> _open(BuildContext context) async {
+    switch (scanItem.type) {
+      case QrCodeType.url:
+        await _openLink(context);
+        break;
+      case QrCodeType.phone:
+        await _callPhone(context);
+        break;
+      case QrCodeType.email:
+        await _sendEmail(context);
+        break;
+      case QrCodeType.contact:
+      case QrCodeType.wifi:
+      case QrCodeType.text:
+        break;
+    }
+  }
+
   Future<void> _openLink(BuildContext context) async {
     try {
       final uri = UrlUtils.normalizeUrl(scanItem.content);
@@ -110,6 +128,82 @@ class ScanResultActions extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to make call: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _sendEmail(BuildContext context) async {
+    try {
+      String emailUri = scanItem.content;
+      if (!emailUri.startsWith('mailto:')) {
+        emailUri = 'mailto:$emailUri';
+      }
+      final uri = Uri.parse(emailUri);
+      LoggerService.info('Attempting to send email: $uri');
+
+      final canLaunch = await canLaunchUrl(uri);
+      if (canLaunch) {
+        final launched = await launchUrl(uri);
+        if (launched) {
+          LoggerService.info('Successfully opened email: ${scanItem.content}');
+        } else {
+          LoggerService.warning('Failed to open email: ${scanItem.content}');
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Failed to open email'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
+        }
+      } else {
+        LoggerService.warning('Cannot open email: ${scanItem.content}');
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Cannot open email. No email app found.'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      LoggerService.error('Error sending email', error: e);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to send email: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _addContact(BuildContext context) async {
+    try {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Contact import feature is not available on this device',
+            ),
+            backgroundColor: Colors.orange,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+      LoggerService.info('Contact import requested for: ${scanItem.content}');
+    } catch (e) {
+      LoggerService.error('Error adding contact', error: e);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to add contact'),
             backgroundColor: Colors.red,
           ),
         );
@@ -222,16 +316,18 @@ class ScanResultActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasPrimaryAction = scanItem.type != QrCodeType.text;
+
     return Column(
       children: [
-        if (scanItem.type != QrCodeType.text)
+        if (hasPrimaryAction)
           ScanResultPrimaryAction(
             scanItem: scanItem,
-            onOpenLink: () => _openLink(context),
-            onCallPhone: () => _callPhone(context),
+            onOpen: () => _open(context),
+            onAddContact: () => _addContact(context),
             onConnectToWifi: () => _connectToWifi(context),
           ),
-        if (scanItem.type != QrCodeType.text) const SizedBox(height: 16),
+        if (hasPrimaryAction) const SizedBox(height: 16),
         Builder(
           builder: (context) => Row(
             children: [

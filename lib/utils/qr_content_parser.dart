@@ -7,6 +7,10 @@ class QrContentParser {
         return _parseUrl(content);
       case QrCodeType.phone:
         return _parsePhone(content);
+      case QrCodeType.email:
+        return _parseEmail(content);
+      case QrCodeType.contact:
+        return _parseContact(content);
       case QrCodeType.wifi:
         return _parseWifiNetworkName(content);
       case QrCodeType.text:
@@ -20,8 +24,12 @@ class QrContentParser {
         return 'Website URL';
       case QrCodeType.phone:
         return 'Phone Number';
+      case QrCodeType.email:
+        return 'Email Address';
+      case QrCodeType.contact:
+        return 'Contact';
       case QrCodeType.wifi:
-        return 'WiFi Network';
+        return 'Wi-Fi Network';
       case QrCodeType.text:
         return 'Text Content';
     }
@@ -40,6 +48,37 @@ class QrContentParser {
   static String _parsePhone(String content) {
     if (content.startsWith('tel:')) {
       return content.substring(4);
+    }
+    return content;
+  }
+
+  static String _parseEmail(String content) {
+    if (content.startsWith('mailto:')) {
+      final emailPart = content.substring(7);
+      final queryIndex = emailPart.indexOf('?');
+      if (queryIndex != -1) {
+        return emailPart.substring(0, queryIndex);
+      }
+      return emailPart;
+    }
+    return content;
+  }
+
+  static String _parseContact(String content) {
+    if (content.startsWith('BEGIN:VCARD')) {
+      final lines = content.split('\n');
+      for (final line in lines) {
+        if (line.startsWith('FN:')) {
+          return line.substring(3).trim();
+        } else if (line.startsWith('N:')) {
+          final nameParts = line.substring(2).split(';');
+          final name = nameParts.where((part) => part.isNotEmpty).join(' ');
+          if (name.isNotEmpty) {
+            return name.trim();
+          }
+        }
+      }
+      return 'Contact';
     }
     return content;
   }
