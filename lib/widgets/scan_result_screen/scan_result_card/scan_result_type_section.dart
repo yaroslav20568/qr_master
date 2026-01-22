@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/utils/index.dart';
-import 'package:qr_master/widgets/ui/index.dart';
 
 class ScanResultTypeSection extends StatelessWidget {
   final ScanHistoryItem scanItem;
@@ -32,25 +31,23 @@ class ScanResultTypeSection extends StatelessWidget {
       case QrCodeType.url:
         return SvgPicture.asset(
           'assets/icons/link_icon.svg',
-          width: 20,
-          height: 20,
           colorFilter: const ColorFilter.mode(
             AppColors.primaryBg,
             BlendMode.srcIn,
           ),
         );
       case QrCodeType.phone:
-        return const Icon(Icons.phone, size: 20, color: AppColors.primaryBg);
+        return const Icon(Icons.phone, size: 17, color: AppColors.primaryBg);
       case QrCodeType.email:
-        return const Icon(Icons.email, size: 20, color: AppColors.primaryBg);
+        return const Icon(Icons.email, size: 17, color: AppColors.primaryBg);
       case QrCodeType.contact:
-        return const Icon(Icons.person, size: 20, color: AppColors.primaryBg);
+        return const Icon(Icons.person, size: 17, color: AppColors.primaryBg);
       case QrCodeType.wifi:
-        return const Icon(Icons.wifi, size: 20, color: AppColors.primaryBg);
+        return const Icon(Icons.wifi, size: 17, color: AppColors.primaryBg);
       case QrCodeType.text:
         return const Icon(
           Icons.text_fields,
-          size: 20,
+          size: 17,
           color: AppColors.primaryBg,
         );
     }
@@ -63,12 +60,16 @@ class ScanResultTypeSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            BackgroundCircleIcon(
-              size: 40,
-              backgroundColor: _getIconColor(),
-              child: _getIcon(),
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: _getIconColor(),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Center(child: _getIcon()),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +77,7 @@ class ScanResultTypeSection extends StatelessWidget {
                   Text(
                     QrContentParser.getSectionTitle(scanItem.type),
                     style: AppFonts.interRegular.copyWith(
-                      fontSize: 13,
+                      fontSize: 15,
                       height: 1.53,
                       letterSpacing: -0.5,
                       color: AppColors.textSecondary,
@@ -88,9 +89,9 @@ class ScanResultTypeSection extends StatelessWidget {
                       scanItem.content,
                       scanItem.type,
                     ),
-                    style: AppFonts.interBold.copyWith(
-                      fontSize: 16,
-                      height: 1.5,
+                    style: AppFonts.interSemiBold.copyWith(
+                      fontSize: 17,
+                      height: 1.53,
                       letterSpacing: -0.5,
                       color: AppColors.textPrimary,
                     ),
@@ -102,9 +103,6 @@ class ScanResultTypeSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16),
-        const Divider(height: 1, thickness: 1, color: AppColors.border),
-        const SizedBox(height: 16),
       ],
     );
   }

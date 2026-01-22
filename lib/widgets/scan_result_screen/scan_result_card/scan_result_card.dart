@@ -13,7 +13,7 @@ class ScanResultCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppColors.primaryBg,
         borderRadius: BorderRadius.circular(16),
@@ -31,6 +31,9 @@ class ScanResultCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ScanResultTypeSection(scanItem: scanItem),
+          const SizedBox(height: 16),
+          const Divider(height: 1, thickness: 1, color: AppColors.border),
+          const SizedBox(height: 16),
           ScanResultFullContent(scanItem: scanItem),
           const SizedBox(height: 16),
           const Divider(height: 1, thickness: 1, color: AppColors.border),

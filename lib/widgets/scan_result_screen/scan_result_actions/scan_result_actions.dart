@@ -327,7 +327,7 @@ class ScanResultActions extends StatelessWidget {
             onAddContact: () => _addContact(context),
             onConnectToWifi: () => _connectToWifi(context),
           ),
-        if (hasPrimaryAction) const SizedBox(height: 16),
+        if (hasPrimaryAction) const SizedBox(height: 13),
         Builder(
           builder: (context) => Row(
             children: [
@@ -335,12 +335,6 @@ class ScanResultActions extends StatelessWidget {
                 child: ScanResultActionButton(
                   icon: SvgPicture.asset(
                     'assets/icons/result_actions/copy_icon.svg',
-                    width: 24,
-                    height: 24,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.textPrimary,
-                      BlendMode.srcIn,
-                    ),
                   ),
                   label: 'Copy',
                   onTap: () => _copyToClipboard(context),
@@ -351,12 +345,6 @@ class ScanResultActions extends StatelessWidget {
                 child: ScanResultActionButton(
                   icon: SvgPicture.asset(
                     'assets/icons/result_actions/share_icon.svg',
-                    width: 24,
-                    height: 24,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.textPrimary,
-                      BlendMode.srcIn,
-                    ),
                   ),
                   label: 'Share',
                   onTap: () => _share(context),
@@ -367,12 +355,6 @@ class ScanResultActions extends StatelessWidget {
                 child: ScanResultActionButton(
                   icon: SvgPicture.asset(
                     'assets/icons/result_actions/save_icon.svg',
-                    width: 24,
-                    height: 24,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.textPrimary,
-                      BlendMode.srcIn,
-                    ),
                   ),
                   label: 'Save',
                   onTap: () => _save(context),

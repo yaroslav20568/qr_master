@@ -14,7 +14,7 @@ class ScanResultFullContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.secondaryBg,
         borderRadius: BorderRadius.circular(12),
@@ -26,13 +26,12 @@ class ScanResultFullContent extends StatelessWidget {
           Text(
             'Full Content',
             style: AppFonts.interRegular.copyWith(
-              fontSize: 13,
-              height: 1.53,
+              fontSize: 15,
               letterSpacing: -0.5,
               color: AppColors.textSecondary,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 11),
           scanItem.type == QrCodeType.url
               ? GestureDetector(
                   onTap: () async {
@@ -50,11 +49,10 @@ class ScanResultFullContent extends StatelessWidget {
                   },
                   child: Text(
                     scanItem.content.trim(),
-                    style: AppFonts.interBold.copyWith(
-                      fontSize: 15,
-                      height: 1.53,
+                    style: AppFonts.interRegular.copyWith(
+                      fontSize: 17,
                       letterSpacing: -0.5,
-                      color: AppColors.primary,
+                      color: AppColors.textPrimary,
                       decoration: TextDecoration.underline,
                     ),
                   ),

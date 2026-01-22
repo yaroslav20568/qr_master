@@ -24,10 +24,9 @@ class ScanResultMetadata extends StatelessWidget {
                 color: AppColors.textSecondary,
               ),
             ),
-            const SizedBox(height: 4),
             Text(
               scanItem.timeAgo,
-              style: AppFonts.interBold.copyWith(
+              style: AppFonts.interMedium.copyWith(
                 fontSize: 15,
                 height: 1.53,
                 letterSpacing: -0.5,
@@ -48,10 +47,9 @@ class ScanResultMetadata extends StatelessWidget {
                 color: AppColors.textSecondary,
               ),
             ),
-            const SizedBox(height: 4),
             Text(
               scanItem.type.displayName,
-              style: AppFonts.interBold.copyWith(
+              style: AppFonts.interMedium.copyWith(
                 fontSize: 15,
                 height: 1.53,
                 letterSpacing: -0.5,

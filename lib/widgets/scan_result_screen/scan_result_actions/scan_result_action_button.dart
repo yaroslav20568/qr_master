@@ -19,7 +19,7 @@ class ScanResultActionButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.primaryBg,
           borderRadius: BorderRadius.circular(12),
@@ -36,14 +36,13 @@ class ScanResultActionButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             icon,
-            const SizedBox(height: 4),
+            const SizedBox(height: 9),
             Text(
               label,
               style: AppFonts.interMedium.copyWith(
-                fontSize: 12,
-                height: 1.5,
+                fontSize: 15,
                 letterSpacing: -0.5,
-                color: AppColors.textPrimary,
+                color: AppColors.textSecondary,
               ),
             ),
           ],
