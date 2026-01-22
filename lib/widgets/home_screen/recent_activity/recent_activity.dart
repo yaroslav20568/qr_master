@@ -26,8 +26,8 @@ class RecentActivity extends StatelessWidget {
     ),
     ScanHistoryItem(
       id: '3',
-      content: 'BEGIN:VCARD\nFN:John Doe\nEND:VCARD',
-      type: QrCodeType.contact,
+      content: 'tel:+1234567890',
+      type: QrCodeType.phone,
       action: ScanHistoryAction.shared,
       timestamp: DateTime.now().subtract(const Duration(hours: 3)),
     ),

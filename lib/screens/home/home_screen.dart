@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/services/index.dart';
 import 'package:qr_master/utils/index.dart';
@@ -23,7 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return ScreenLayout(
-      backgroundColor: AppColors.secondaryBg,
       child: SingleChildScrollView(
         child: PaddingLayout(
           child: Column(

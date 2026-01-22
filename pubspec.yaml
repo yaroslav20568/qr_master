@@ -51,6 +51,7 @@ dependencies:
   google_fonts: ^6.2.1
   package_info_plus: ^9.0.0
   flutter_svg: ^2.0.10+1
+  share_plus: ^10.1.2
 
 dev_dependencies:
   flutter_test:
@@ -77,6 +78,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/icons/actions/
+    - assets/icons/result_actions/
     - assets/icons/bottom_tabs/
     - assets/icons/bottom_tabs/home/
     - assets/icons/bottom_tabs/scan/

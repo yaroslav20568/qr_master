@@ -13,6 +13,7 @@ class Button extends StatelessWidget {
   final double? width;
   final double? height;
   final bool loading;
+  final Widget? icon;
 
   const Button({
     super.key,
@@ -23,6 +24,7 @@ class Button extends StatelessWidget {
     this.width,
     this.height,
     this.loading = false,
+    this.icon,
   });
 
   @override
@@ -77,14 +79,21 @@ class Button extends StatelessWidget {
                       ),
                     ),
                   )
-                : Text(
-                    text,
-                    style: AppFonts.interSemiBold.copyWith(
-                      fontSize: fontSize,
-                      height: 1.53,
-                      letterSpacing: -0.5,
-                      color: AppColors.primaryBg,
-                    ),
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (icon != null) ...[icon!, const SizedBox(width: 14)],
+                      Text(
+                        text,
+                        style: AppFonts.interSemiBold.copyWith(
+                          fontSize: fontSize,
+                          height: 1.53,
+                          letterSpacing: -0.5,
+                          color: AppColors.primaryBg,
+                        ),
+                      ),
+                    ],
                   ),
           ),
         ),

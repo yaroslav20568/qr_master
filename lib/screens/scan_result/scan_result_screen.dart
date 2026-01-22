@@ -1,64 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
+import 'package:qr_master/services/index.dart';
 import 'package:qr_master/widgets/layouts/index.dart';
+import 'package:qr_master/widgets/main_screen/index.dart';
+import 'package:qr_master/widgets/scan_result_screen/index.dart';
+import 'package:qr_master/widgets/ui/index.dart';
 
 class ScanResultScreen extends StatelessWidget {
   final ScanHistoryItem? scanItem;
 
   const ScanResultScreen({super.key, this.scanItem});
 
+  void _handleTabSelected(BuildContext context, BottomNavItem item) {
+    if (item == BottomNavItem.scan) {
+      Navigator.of(context).pop();
+    } else {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      MainTabsService().switchToTabItem(item);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (scanItem == null) {
-      return ScreenLayout(
-        child: Center(
-          child: Text(
-            'No scan result',
-            style: AppFonts.interBold.copyWith(
-              fontSize: 34,
-              height: 1.5,
-              letterSpacing: -0.5,
-              color: AppColors.textPrimary,
+    return Scaffold(
+      body: ScreenLayout(
+        child: SingleChildScrollView(
+          child: PaddingLayout(
+            child: Column(
+              children: [
+                const InfoIndicator(
+                  title: 'Scan Successful',
+                  text: 'QR code decoded successfully',
+                ),
+                const SizedBox(height: 21),
+                ScanResultCard(scanItem: scanItem!),
+                const SizedBox(height: 21),
+                ScanResultActions(scanItem: scanItem!),
+              ],
             ),
           ),
         ),
-      );
-    }
-
-    return ScreenLayout(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Scan Result',
-              style: AppFonts.interBold.copyWith(
-                fontSize: 34,
-                height: 1.5,
-                letterSpacing: -0.5,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              scanItem!.content,
-              style: AppFonts.interRegular.copyWith(
-                fontSize: 16,
-                color: AppColors.textSecondary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Type: ${scanItem!.type.displayName}',
-              style: AppFonts.interRegular.copyWith(
-                fontSize: 14,
-                color: AppColors.textDisabled,
-              ),
-            ),
-          ],
-        ),
+      ),
+      bottomNavigationBar: BottomTabsNavigator(
+        currentItem: BottomNavItem.scan,
+        onItemSelected: (item) => _handleTabSelected(context, item),
+        onFabTap: () {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+          MainTabsService().switchToCreate();
+        },
       ),
     );
   }

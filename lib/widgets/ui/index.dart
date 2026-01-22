@@ -3,6 +3,7 @@ export 'button.dart';
 export 'custom_text_field.dart';
 export 'dot.dart';
 export 'empty_data.dart';
+export 'info_indicator.dart';
 export 'loader/index.dart';
 export 'qr_card.dart';
 export 'scanning_line.dart';

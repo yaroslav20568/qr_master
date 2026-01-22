@@ -20,7 +20,7 @@ class RecentActivityItem extends StatelessWidget {
         return AppColors.primary;
       case QrCodeType.wifi:
         return AppColors.success;
-      case QrCodeType.contact:
+      case QrCodeType.phone:
         return AppColors.warning;
       case QrCodeType.text:
         return AppColors.primary;
@@ -44,8 +44,8 @@ class RecentActivityItem extends StatelessWidget {
         return 'website link';
       case QrCodeType.wifi:
         return 'WiFi QR';
-      case QrCodeType.contact:
-        return 'contact QR';
+      case QrCodeType.phone:
+        return 'phone QR';
       case QrCodeType.text:
         return 'text message';
     }

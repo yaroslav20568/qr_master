@@ -72,7 +72,10 @@ class _ScanScreenState extends State<ScanScreen> {
       );
 
       if (image != null && mounted) {
-        _processImage(image.path);
+        LoggerService.info('Image picked from gallery: ${image.path}');
+        await _processImage(image.path);
+      } else {
+        LoggerService.info('No image selected from gallery');
       }
     } catch (e) {
       LoggerService.error('Error picking image from gallery', error: e);
@@ -88,34 +91,68 @@ class _ScanScreenState extends State<ScanScreen> {
   }
 
   Future<void> _processImage(String imagePath) async {
-    if (_isProcessing) return;
+    if (_isProcessing) {
+      LoggerService.warning('Already processing an image');
+      return;
+    }
+
+    LoggerService.info('Processing image: $imagePath');
 
     setState(() {
       _isProcessing = true;
     });
 
     try {
+      LoggerService.info('Starting image analysis...');
       final result = await _controller.analyzeImage(imagePath);
+
+      LoggerService.info(
+        'Image analysis completed. Result: ${result != null ? 'found' : 'null'}',
+      );
+
       if (result != null && result.barcodes.isNotEmpty) {
+        LoggerService.info('Found ${result.barcodes.length} barcode(s)');
         final barcode = result.barcodes.first;
-        if (barcode.rawValue != null) {
-          await _handleScanResult(barcode.rawValue!);
-        }
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No QR code found in image'),
-            backgroundColor: Colors.orange,
-          ),
+        LoggerService.info(
+          'Barcode type: ${barcode.type}, value: ${barcode.rawValue}',
         );
+
+        if (barcode.rawValue != null) {
+          setState(() {
+            _isProcessing = false;
+          });
+          await _handleScanResult(barcode.rawValue!);
+        } else {
+          LoggerService.warning('Barcode found but rawValue is null');
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('QR code found but content is empty'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
+        }
+      } else {
+        LoggerService.warning('No QR code found in image');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('No QR code found in image'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       LoggerService.error('Error processing image', error: e);
+      LoggerService.error('Stack trace: $stackTrace');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to process image'),
+          SnackBar(
+            content: Text('Failed to process image: ${e.toString()}'),
             backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
           ),
         );
       }
@@ -129,15 +166,12 @@ class _ScanScreenState extends State<ScanScreen> {
   }
 
   Future<void> _handleScanResult(String content) async {
-    if (_isProcessing) return;
-
-    setState(() {
-      _isProcessing = true;
-    });
+    LoggerService.info('Handling scan result: $content');
 
     try {
       final qrService = QrService();
       final type = qrService.detectQrCodeType(content);
+      LoggerService.info('Detected QR type: ${type.displayName}');
 
       final scanItem = ScanHistoryItem(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -147,21 +181,27 @@ class _ScanScreenState extends State<ScanScreen> {
         timestamp: DateTime.now(),
       );
 
-      final firestoreService = FirestoreService();
-      await firestoreService.addScanHistoryItem(scanItem);
+      LoggerService.info('Created scan item, navigating to result screen...');
 
-      if (!mounted) return;
+      if (!mounted) {
+        LoggerService.warning('Widget not mounted, cannot navigate');
+        return;
+      }
 
-      Navigator.of(
+      LoggerService.info('Navigating to Scan Result Screen');
+      await Navigator.of(
         context,
       ).pushNamed(AppRoutes.scanResult, arguments: scanItem);
-    } catch (e) {
+      LoggerService.info('Navigation completed');
+    } catch (e, stackTrace) {
       LoggerService.error('Error handling scan result', error: e);
+      LoggerService.error('Stack trace: $stackTrace');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to process scan result'),
+          SnackBar(
+            content: Text('Failed to process scan result: ${e.toString()}'),
             backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
           ),
         );
       }
@@ -177,7 +217,6 @@ class _ScanScreenState extends State<ScanScreen> {
   @override
   Widget build(BuildContext context) {
     return ScreenLayout(
-      backgroundColor: AppColors.secondaryBg,
       child: Center(
         child: SingleChildScrollView(
           child: PaddingLayout(

@@ -142,21 +142,21 @@ class FirestoreService {
           .limit(limit)
           .snapshots()
           .map((snapshot) {
-        return snapshot.docs
-            .map((doc) {
-              try {
-                return ScanHistoryItem.fromJson(doc.data());
-              } catch (e) {
-                LoggerService.error(
-                  'Error parsing scan history item',
-                  error: e,
-                );
-                return null;
-              }
-            })
-            .whereType<ScanHistoryItem>()
-            .toList();
-      });
+            return snapshot.docs
+                .map((doc) {
+                  try {
+                    return ScanHistoryItem.fromJson(doc.data());
+                  } catch (e) {
+                    LoggerService.error(
+                      'Error parsing scan history item',
+                      error: e,
+                    );
+                    return null;
+                  }
+                })
+                .whereType<ScanHistoryItem>()
+                .toList();
+          });
     } catch (e) {
       LoggerService.error('Error getting scan history stream', error: e);
       return Stream.value([]);
@@ -189,10 +189,7 @@ class FirestoreService {
             try {
               return ScanHistoryItem.fromJson(doc.data());
             } catch (e) {
-              LoggerService.error(
-                'Error parsing scan history item',
-                error: e,
-              );
+              LoggerService.error('Error parsing scan history item', error: e);
               return null;
             }
           })

@@ -51,8 +51,8 @@ class QrService {
       return QrCodeType.url;
     } else if (content.startsWith('WIFI:')) {
       return QrCodeType.wifi;
-    } else if (content.startsWith('BEGIN:VCARD')) {
-      return QrCodeType.contact;
+    } else if (content.startsWith('tel:')) {
+      return QrCodeType.phone;
     } else {
       return QrCodeType.text;
     }
