@@ -158,19 +158,16 @@ class _CreateQrResultScreenState extends State<CreateQrResultScreen> {
                     text: 'QR code name: ${widget.qrCodeName}',
                   ),
                   const SizedBox(height: 27),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryBg,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppColors.primary, width: 1),
-                    ),
-                    child: Image.memory(
-                      widget.qrImage,
-                      width: 250,
-                      height: 250,
-                      fit: BoxFit.contain,
+                  QrCodeLayout(
+                    child: Center(
+                      child: SizedBox(
+                        width: 220,
+                        height: 220,
+                        child: Image.memory(
+                          widget.qrImage,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 37),
