@@ -1,5 +1,6 @@
 export 'auth_screen/index.dart';
 export 'create_qr_screen/index.dart';
+export 'history_screen/index.dart';
 export 'home_screen/index.dart';
 export 'layouts/index.dart';
 export 'main_screen/index.dart';

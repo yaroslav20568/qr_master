@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
+import 'package:qr_master/services/index.dart';
 import 'package:qr_master/widgets/home_screen/recent_activity/recent_activity_item.dart';
 import 'package:qr_master/widgets/ui/index.dart';
 
@@ -9,40 +10,9 @@ class RecentActivity extends StatelessWidget {
 
   const RecentActivity({super.key, this.onItemTap});
 
-  static List<ScanHistoryItem> get _mockItems => [
-    ScanHistoryItem(
-      id: '1',
-      content: 'https://example.com',
-      type: QrCodeType.url,
-      action: ScanHistoryAction.scanned,
-      timestamp: DateTime.now().subtract(const Duration(minutes: 2)),
-    ),
-    ScanHistoryItem(
-      id: '2',
-      content: 'WIFI:T:WPA;S:MyNetwork;P:password123;;',
-      type: QrCodeType.wifi,
-      action: ScanHistoryAction.created,
-      timestamp: DateTime.now().subtract(const Duration(hours: 1)),
-    ),
-    ScanHistoryItem(
-      id: '3',
-      content: 'tel:+1234567890',
-      type: QrCodeType.phone,
-      action: ScanHistoryAction.shared,
-      timestamp: DateTime.now().subtract(const Duration(hours: 3)),
-    ),
-    ScanHistoryItem(
-      id: '4',
-      content: 'Hello, this is a text message',
-      type: QrCodeType.text,
-      action: ScanHistoryAction.scanned,
-      timestamp: DateTime.now().subtract(const Duration(days: 1)),
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final items = _mockItems;
+    final firestoreService = FirestoreService();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,25 +27,42 @@ class RecentActivity extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        items.isEmpty
-            ? const EmptyData()
-            : Column(
-                children: items
-                    .asMap()
-                    .entries
-                    .map(
-                      (entry) => Padding(
-                        padding: EdgeInsets.only(
-                          bottom: entry.key < items.length - 1 ? 12 : 0,
-                        ),
-                        child: RecentActivityItem(
-                          item: entry.value,
-                          onTap: () => onItemTap?.call(entry.value),
-                        ),
+        StreamBuilder<List<ScanHistoryItem>>(
+          stream: firestoreService.getScanHistoryStream(limit: 10),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.hasError) {
+              return const EmptyData(title: 'Error loading activity');
+            }
+
+            final items = snapshot.data ?? [];
+
+            if (items.isEmpty) {
+              return const EmptyData();
+            }
+
+            return Column(
+              children: items
+                  .asMap()
+                  .entries
+                  .map(
+                    (entry) => Padding(
+                      padding: EdgeInsets.only(
+                        bottom: entry.key < items.length - 1 ? 12 : 0,
                       ),
-                    )
-                    .toList(),
-              ),
+                      child: RecentActivityItem(
+                        item: entry.value,
+                        onTap: () => onItemTap?.call(entry.value),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            );
+          },
+        ),
       ],
     );
   }

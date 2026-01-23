@@ -274,6 +274,22 @@ class ScanResultActions extends StatelessWidget {
 
       await Share.share(contentToShare);
       LoggerService.info('Shared content: $contentToShare');
+
+      final historyItem = ScanHistoryItem(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        content: scanItem.content,
+        type: scanItem.type,
+        action: ScanHistoryAction.shared,
+        timestamp: DateTime.now(),
+        title: HistoryTitleFormatter.formatTitle(
+          ScanHistoryAction.shared,
+          scanItem.type,
+        ),
+      );
+
+      final firestoreService = FirestoreService();
+      await firestoreService.addScanHistoryItem(historyItem);
+      LoggerService.info('Added shared action to history');
     } catch (e) {
       LoggerService.error('Error sharing content', error: e);
       if (context.mounted) {
@@ -290,7 +306,12 @@ class ScanResultActions extends StatelessWidget {
   Future<void> _save(BuildContext context) async {
     try {
       final firestoreService = FirestoreService();
-      await firestoreService.addScanHistoryItem(scanItem);
+      final itemToSave = scanItem.copyWith(
+        title:
+            scanItem.title ??
+            HistoryTitleFormatter.formatTitle(scanItem.action, scanItem.type),
+      );
+      await firestoreService.addScanHistoryItem(itemToSave);
       LoggerService.info('Saved scan result to history');
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

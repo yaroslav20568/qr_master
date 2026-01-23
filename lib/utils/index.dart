@@ -1,3 +1,4 @@
+export 'history_title_formatter.dart';
 export 'qr_content_formatter.dart';
 export 'qr_content_parser.dart';
 export 'responsive_utils.dart';

@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/services/index.dart';
+import 'package:qr_master/utils/index.dart';
 import 'package:qr_master/widgets/index.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -100,6 +101,19 @@ class _CreateQrResultScreenState extends State<CreateQrResultScreen> {
 
       final firestoreService = FirestoreService();
       await firestoreService.addCreatedQrCode(qrCode);
+
+      final historyItem = ScanHistoryItem(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        content: widget.content,
+        type: widget.type,
+        action: ScanHistoryAction.created,
+        timestamp: DateTime.now(),
+        title: HistoryTitleFormatter.formatTitle(
+          ScanHistoryAction.created,
+          widget.type,
+        ),
+      );
+      await firestoreService.addScanHistoryItem(historyItem);
 
       LoggerService.info('QR code saved to library successfully');
 

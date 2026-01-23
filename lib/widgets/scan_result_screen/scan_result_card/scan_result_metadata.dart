@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
+import 'package:qr_master/widgets/ui/index.dart';
 
 class ScanResultMetadata extends StatelessWidget {
   final ScanHistoryItem scanItem;
@@ -24,8 +25,8 @@ class ScanResultMetadata extends StatelessWidget {
                 color: AppColors.textSecondary,
               ),
             ),
-            Text(
-              scanItem.timeAgo,
+            TimeAgoText(
+              timestamp: scanItem.timestamp,
               style: AppFonts.interMedium.copyWith(
                 fontSize: 15,
                 height: 1.53,

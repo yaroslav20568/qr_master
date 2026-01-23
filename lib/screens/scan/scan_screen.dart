@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/services/index.dart';
+import 'package:qr_master/utils/index.dart';
 import 'package:qr_master/widgets/index.dart';
 
 class ScanScreen extends StatefulWidget {
@@ -14,15 +15,21 @@ class ScanScreen extends StatefulWidget {
   State<ScanScreen> createState() => _ScanScreenState();
 }
 
-class _ScanScreenState extends State<ScanScreen> {
+class _ScanScreenState extends State<ScanScreen>
+    with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
   late MobileScannerController _controller;
   bool _isFlashOn = false;
   bool _isPermissionGranted = false;
   bool _isProcessing = false;
+  bool _isScreenVisible = true;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _controller = MobileScannerController(
       detectionSpeed: DetectionSpeed.noDuplicates,
       facing: CameraFacing.back,
@@ -33,8 +40,64 @@ class _ScanScreenState extends State<ScanScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) return;
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      _pauseCamera();
+    } else if (state == AppLifecycleState.resumed && _isScreenVisible) {
+      _resumeCamera();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final route = ModalRoute.of(context);
+      if (route != null) {
+        final isCurrent = route.isCurrent;
+        if (isCurrent != _isScreenVisible) {
+          setState(() {
+            _isScreenVisible = isCurrent;
+          });
+          if (_isScreenVisible) {
+            _resumeCamera();
+          } else {
+            _pauseCamera();
+          }
+        }
+      }
+    });
+  }
+
+  void _pauseCamera() {
+    if (_isPermissionGranted) {
+      try {
+        _controller.stop();
+        LoggerService.info('Camera paused');
+      } catch (e) {
+        LoggerService.warning('Error stopping camera: $e');
+      }
+    }
+  }
+
+  void _resumeCamera() {
+    if (_isPermissionGranted) {
+      try {
+        _controller.start();
+        LoggerService.info('Camera resumed');
+      } catch (e) {
+        LoggerService.warning('Error starting camera: $e');
+      }
+    }
   }
 
   Future<void> _checkCameraPermission() async {
@@ -178,6 +241,10 @@ class _ScanScreenState extends State<ScanScreen> {
         type: type,
         action: ScanHistoryAction.scanned,
         timestamp: DateTime.now(),
+        title: HistoryTitleFormatter.formatTitle(
+          ScanHistoryAction.scanned,
+          type,
+        ),
       );
 
       LoggerService.info('Created scan item, navigating to result screen...');
@@ -215,6 +282,7 @@ class _ScanScreenState extends State<ScanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ScreenLayout(
       child: Center(
         child: SingleChildScrollView(

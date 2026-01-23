@@ -115,7 +115,7 @@ class FirestoreService {
       await _firestore
           .collection('users')
           .doc(user.uid)
-          .collection('scan_history')
+          .collection('history')
           .doc(item.id)
           .set(item.toJson());
       LoggerService.info('Scan history item added successfully');
@@ -137,7 +137,7 @@ class FirestoreService {
       return _firestore
           .collection('users')
           .doc(user.uid)
-          .collection('scan_history')
+          .collection('history')
           .orderBy('timestamp', descending: true)
           .limit(limit)
           .snapshots()
@@ -180,7 +180,7 @@ class FirestoreService {
       final snapshot = await _firestore
           .collection('users')
           .doc(user.uid)
-          .collection('scan_history')
+          .collection('history')
           .orderBy('timestamp', descending: true)
           .limit(limit)
           .get();
@@ -200,6 +200,67 @@ class FirestoreService {
     } catch (e) {
       LoggerService.error('Error getting scan history', error: e);
       return [];
+    }
+  }
+
+  Future<void> deleteScanHistoryItem(String itemId) async {
+    if (!FirebaseService.isInitialized) {
+      LoggerService.warning(
+        'Firebase not initialized. Cannot delete scan history item.',
+      );
+      return;
+    }
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        LoggerService.warning(
+          'No authenticated user to delete scan history item',
+        );
+        return;
+      }
+      LoggerService.info('Deleting scan history item: $itemId');
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('history')
+          .doc(itemId)
+          .delete();
+      LoggerService.info('Scan history item deleted successfully');
+    } catch (e) {
+      LoggerService.error('Error deleting scan history item', error: e);
+      rethrow;
+    }
+  }
+
+  Future<void> deleteAllHistory() async {
+    if (!FirebaseService.isInitialized) {
+      LoggerService.warning(
+        'Firebase not initialized. Cannot delete all history.',
+      );
+      return;
+    }
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        LoggerService.warning('No authenticated user to delete all history');
+        return;
+      }
+      LoggerService.info('Deleting all history items');
+      final snapshot = await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('history')
+          .get();
+
+      final batch = _firestore.batch();
+      for (final doc in snapshot.docs) {
+        batch.delete(doc.reference);
+      }
+      await batch.commit();
+      LoggerService.info('All history items deleted successfully');
+    } catch (e) {
+      LoggerService.error('Error deleting all history', error: e);
+      rethrow;
     }
   }
 

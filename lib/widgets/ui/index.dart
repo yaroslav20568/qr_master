@@ -1,5 +1,6 @@
 export 'background_circle_icon.dart';
 export 'button.dart';
+export 'confirm_modal.dart';
 export 'custom_text_field.dart';
 export 'dot.dart';
 export 'empty_data.dart';
@@ -8,3 +9,4 @@ export 'loader/index.dart';
 export 'qr_card.dart';
 export 'qr_code_action.dart';
 export 'scanning_line.dart';
+export 'time_ago_text.dart';

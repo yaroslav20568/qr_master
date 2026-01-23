@@ -60,17 +60,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        transitionBuilder: (Widget child, Animation<double> animation) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-        child: IndexedStack(
-          key: ValueKey<int>(_selectedIndex),
-          index: _selectedIndex,
-          children: _screens,
-        ),
-      ),
+      body: IndexedStack(index: _selectedIndex, children: _screens),
       bottomNavigationBar: BottomTabsNavigator(
         currentItem: _getBottomNavItem(_selectedIndex),
         onItemSelected: (item) {

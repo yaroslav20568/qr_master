@@ -14,23 +14,6 @@ class RecentActivityItem extends StatelessWidget {
     required this.onTap,
   });
 
-  Color _getIconColor() {
-    switch (item.type) {
-      case QrCodeType.url:
-        return AppColors.primary;
-      case QrCodeType.wifi:
-        return AppColors.success;
-      case QrCodeType.phone:
-        return AppColors.warning;
-      case QrCodeType.email:
-        return AppColors.primary;
-      case QrCodeType.contact:
-        return AppColors.warning;
-      case QrCodeType.text:
-        return AppColors.primary;
-    }
-  }
-
   String _getActionText() {
     switch (item.action) {
       case ScanHistoryAction.scanned:
@@ -86,16 +69,10 @@ class RecentActivityItem extends StatelessWidget {
           children: [
             BackgroundCircleIcon(
               size: 40,
-              backgroundColor: _getIconColor(),
-              child: SvgPicture.asset(
-                'assets/icons/qr_code_icon.svg',
-                width: 20,
-                height: 20,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.primaryBg,
-                  BlendMode.srcIn,
-                ),
+              backgroundColor: HistoryActionStyles.getBackgroundColor(
+                item.action,
               ),
+              child: HistoryActionStyles.getIcon(item.action),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -112,8 +89,8 @@ class RecentActivityItem extends StatelessWidget {
                       color: AppColors.textPrimary,
                     ),
                   ),
-                  Text(
-                    item.timeAgo,
+                  TimeAgoText(
+                    timestamp: item.timestamp,
                     style: AppFonts.interRegular.copyWith(
                       fontSize: 15,
                       height: 23 / 15,
