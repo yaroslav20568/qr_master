@@ -24,7 +24,7 @@ class ActionCards extends StatelessWidget {
         'title': 'Scan QR',
         'subtitle': 'Quick scan',
         'iconBackgroundColor': AppColors.primary,
-        'onTap': onCreateTap,
+        'onTap': onScanTap,
       },
       {
         'iconPath': 'assets/icons/actions/add_icon.svg',
@@ -38,14 +38,14 @@ class ActionCards extends StatelessWidget {
         'title': 'My QR Codes',
         'subtitle': 'Saved codes',
         'iconBackgroundColor': AppColors.warning,
-        'onTap': onCreateTap,
+        'onTap': onMyQrCodesTap,
       },
       {
         'iconPath': 'assets/icons/actions/history_icon.svg',
         'title': 'History',
         'subtitle': 'Recent scans',
         'iconBackgroundColor': AppColors.textDisabled,
-        'onTap': onCreateTap,
+        'onTap': onHistoryTap,
       },
     ];
 

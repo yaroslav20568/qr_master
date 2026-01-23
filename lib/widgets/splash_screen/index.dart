@@ -1,2 +1,2 @@
 export 'circles_layout.dart';
-export 'splash_screen_content.dart';
+export 'splash_content.dart';

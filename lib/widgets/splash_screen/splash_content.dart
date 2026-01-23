@@ -3,10 +3,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/widgets/ui/index.dart';
 
-class SplashScreenContent extends StatelessWidget {
+class SplashContent extends StatelessWidget {
   final Future<String> versionFuture;
 
-  const SplashScreenContent({super.key, required this.versionFuture});
+  const SplashContent({super.key, required this.versionFuture});
 
   @override
   Widget build(BuildContext context) {

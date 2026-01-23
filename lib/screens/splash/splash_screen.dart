@@ -116,7 +116,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 screenWidth: screenWidth,
                 screenHeight: screenHeight,
               ),
-              SplashScreenContent(versionFuture: _versionFuture),
+              SplashContent(versionFuture: _versionFuture),
             ],
           );
         },
