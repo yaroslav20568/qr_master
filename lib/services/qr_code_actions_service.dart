@@ -198,28 +198,13 @@ class QrCodeActionsService {
       }
       final uri = Uri.parse(emailUri);
       LoggerService.info('Attempting to send email: $uri');
-
-      final canLaunch = await canLaunchUrl(uri);
-      if (canLaunch) {
-        final launched = await launchUrl(uri);
-        if (launched) {
-          LoggerService.info('Successfully opened email: $content');
-        } else {
-          LoggerService.warning('Failed to open email: $content');
-          if (context.mounted) {
-            SnackbarService.showWarning(
-              context,
-              message: 'Failed to open email',
-            );
-          }
-        }
+      final launched = await launchUrl(uri);
+      if (launched) {
+        LoggerService.info('Successfully opened email: $content');
       } else {
-        LoggerService.warning('Cannot open email: $content');
+        LoggerService.warning('Failed to open email: $content');
         if (context.mounted) {
-          SnackbarService.showWarning(
-            context,
-            message: 'Cannot open email. No email app found.',
-          );
+          SnackbarService.showWarning(context, message: 'Failed to open email');
         }
       }
     } catch (e) {
