@@ -71,7 +71,19 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   String _getProductPrice(dynamic product) {
     if (product == null) return '\$0.00';
-    return (product as dynamic).skProduct?.priceString ?? '\$0.00';
+    final skProduct = (product as dynamic).skProduct;
+    if (skProduct == null) return '\$0.00';
+
+    final price = skProduct.price;
+    final priceLocale = skProduct.priceLocale;
+    // final currencyCode = priceLocale?.currencyCode ?? 'USD';
+    final priceString = priceLocale?.currencySymbol ?? '\$';
+
+    if (price != null) {
+      return '$priceString${price.toStringAsFixed(2)}';
+    }
+
+    return skProduct.priceString ?? '\$0.00';
   }
 
   String _getProductPeriod(String productId) {

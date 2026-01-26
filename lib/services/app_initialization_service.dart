@@ -1,4 +1,7 @@
+import 'package:qr_master/services/ads_service.dart';
 import 'package:qr_master/services/apphud_service.dart';
+import 'package:qr_master/services/appsflyer_service.dart';
+import 'package:qr_master/services/att_service.dart';
 import 'package:qr_master/services/firebase/firebase_service.dart';
 import 'package:qr_master/services/logger_service.dart';
 
@@ -9,9 +12,27 @@ class AppInitializationService {
 
       await FirebaseService.initialize();
 
+      await AdsService().initialize().catchError((error) {
+        LoggerService.warning(
+          'AdsService initialization failed, continuing: $error',
+        );
+      });
+
+      AppsFlyerService().initialize().catchError((error) {
+        LoggerService.warning(
+          'AppsFlyer initialization failed, continuing: $error',
+        );
+      });
+
       AppHudService().initialize().catchError((error) {
         LoggerService.warning(
           'AppHud initialization failed, continuing: $error',
+        );
+      });
+
+      ATTService().requestTrackingPermission().catchError((error) {
+        LoggerService.warning(
+          'ATT permission request failed, continuing: $error',
         );
       });
 

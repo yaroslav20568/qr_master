@@ -1,7 +1,76 @@
 import 'dart:async';
 import 'package:apphud/apphud.dart';
+import 'package:apphud/models/apphud_models/apphud_attribution_data.dart';
+import 'package:apphud/models/apphud_models/apphud_attribution_provider.dart';
+import 'package:apphud/models/apphud_models/apphud_non_renewing_purchase.dart';
+import 'package:apphud/models/apphud_models/apphud_paywalls.dart';
+import 'package:apphud/models/apphud_models/apphud_subscription.dart';
+import 'package:apphud/models/apphud_models/apphud_user.dart';
+import 'package:apphud/models/apphud_models/composite/apphud_product_composite.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:qr_master/services/logger_service.dart';
+
+class _AppHudListenerImpl extends ApphudListener {
+  final Function(bool) onSubscriptionStatusChanged;
+
+  _AppHudListenerImpl(this.onSubscriptionStatusChanged);
+
+  @override
+  Future<void> apphudSubscriptionsUpdated(
+    List<ApphudSubscriptionWrapper> subscriptions,
+  ) async {
+    LoggerService.info(
+      'Subscriptions updated: ${subscriptions.length} subscriptions',
+    );
+    final hasActive = subscriptions.any((sub) => sub.isActive);
+    onSubscriptionStatusChanged(hasActive);
+  }
+
+  @override
+  Future<void> paywallsDidFullyLoad(ApphudPaywalls paywalls) async {
+    LoggerService.info(
+      'Paywalls fully loaded: ${paywalls.paywalls.length} paywalls',
+    );
+  }
+
+  @override
+  Future<void> apphudNonRenewingPurchasesUpdated(
+    List<ApphudNonRenewingPurchase> purchases,
+  ) async {
+    LoggerService.info(
+      'Non-renewing purchases updated: ${purchases.length} purchases',
+    );
+  }
+
+  @override
+  Future<void> apphudDidChangeUserID(String userId) async {
+    LoggerService.info('AppHud user ID changed: $userId');
+  }
+
+  @override
+  Future<void> apphudDidFecthProducts(
+    List<ApphudProductComposite> products,
+  ) async {
+    LoggerService.info('AppHud products fetched: ${products.length} products');
+  }
+
+  @override
+  Future<void> userDidLoad(ApphudUser user) async {
+    LoggerService.info('AppHud user loaded');
+  }
+
+  @override
+  Future<void> placementsDidFullyLoad(List<dynamic> placements) async {
+    LoggerService.info(
+      'Placements fully loaded: ${placements.length} placements',
+    );
+  }
+
+  @override
+  Future<void> apphudDidReceivePurchase(dynamic purchase) async {
+    LoggerService.info('AppHud received purchase');
+  }
+}
 
 class AppHudService {
   static final AppHudService _instance = AppHudService._internal();
@@ -10,6 +79,7 @@ class AppHudService {
 
   bool _isInitialized = false;
   bool _hasActiveSubscription = false;
+  _AppHudListenerImpl? _listener;
 
   String get apiKey => dotenv.env['APPHUD_API_KEY'] ?? '';
   String get bundleId => dotenv.env['APPHUD_BUNDLE_ID'] ?? '';
@@ -41,14 +111,12 @@ class AppHudService {
       _isInitialized = true;
       LoggerService.info('AppHud initialized successfully');
 
+      _setupListener();
+
       try {
-        await checkSubscriptionStatus().timeout(
-          const Duration(seconds: 5),
-          onTimeout: () {
-            LoggerService.warning('AppHud subscription check timeout');
-            return false;
-          },
-        );
+        await checkSubscriptionStatus().timeout(const Duration(seconds: 5));
+      } on TimeoutException {
+        LoggerService.warning('AppHud subscription check timeout');
       } catch (e) {
         LoggerService.warning('Error checking subscription status: $e');
       }
@@ -131,5 +199,65 @@ class AppHudService {
       LoggerService.error('Error restoring purchases', error: e);
       return false;
     }
+  }
+
+  void _setupListener() {
+    _listener = _AppHudListenerImpl((hasActive) {
+      if (hasActive != _hasActiveSubscription) {
+        _hasActiveSubscription = hasActive;
+        LoggerService.info(
+          'Subscription status changed: ${_hasActiveSubscription ? "Active" : "Inactive"}',
+        );
+      }
+    });
+    Apphud.setListener(listener: _listener);
+    LoggerService.info('AppHud listener set up successfully');
+  }
+
+  Future<void> updateAttribution(Map<String, String> attributionData) async {
+    if (!_isInitialized) {
+      LoggerService.warning(
+        'AppHud not initialized, cannot update attribution',
+      );
+      return;
+    }
+
+    try {
+      final mediaSource = attributionData['media_source'];
+      final campaign = attributionData['campaign'];
+      final afStatus = attributionData['af_status'];
+
+      if (mediaSource != null) {
+        final rawData = <String, dynamic>{
+          'media_source': mediaSource,
+          if (campaign != null) 'campaign': campaign,
+          if (afStatus != null) 'af_status': afStatus,
+        };
+
+        final apphudAttributionData = ApphudAttributionData(
+          rawData: rawData,
+          channel: mediaSource,
+          campaign: campaign,
+        );
+
+        final success = await Apphud.setAttribution(
+          provider: ApphudAttributionProvider.appsFlyer,
+          data: apphudAttributionData,
+        );
+
+        if (success) {
+          LoggerService.info('AppHud attribution updated: $attributionData');
+        } else {
+          LoggerService.warning('Failed to update AppHud attribution');
+        }
+      }
+    } catch (e) {
+      LoggerService.error('Error updating AppHud attribution', error: e);
+    }
+  }
+
+  void dispose() {
+    Apphud.setListener(listener: null);
+    _listener = null;
   }
 }
