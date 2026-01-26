@@ -51,7 +51,7 @@ class Button extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: AppColors.black.withValues(alpha: 0.06),
             offset: const Offset(0, 4),
             blurRadius: 16,
           ),
@@ -63,7 +63,7 @@ class Button extends StatelessWidget {
         ],
       ),
       child: Material(
-        color: Colors.transparent,
+        color: AppColors.transparent,
         child: InkWell(
           onTap: loading ? null : onPressed,
           borderRadius: BorderRadius.circular(borderRadius),

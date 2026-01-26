@@ -22,7 +22,7 @@ class OnboardingStep1 extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 37),
-        SvgPicture.asset('assets/icons/welcome_icon.svg'),
+        SvgPicture.asset('${AppAssets.iconsPath}welcome_icon.svg'),
         const SizedBox(height: 38),
         Text(
           'Scan, Create & Manage QR Codes Easily',

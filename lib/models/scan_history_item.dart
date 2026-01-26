@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:qr_master/models/qr_code_type.dart';
 
 enum ScanHistoryAction { scanned, created, shared }
@@ -9,6 +10,7 @@ class ScanHistoryItem {
   final ScanHistoryAction action;
   final DateTime timestamp;
   final String? title;
+  final Color? color;
 
   ScanHistoryItem({
     required this.id,
@@ -17,6 +19,7 @@ class ScanHistoryItem {
     required this.action,
     required this.timestamp,
     this.title,
+    this.color,
   });
 
   ScanHistoryItem copyWith({
@@ -26,6 +29,7 @@ class ScanHistoryItem {
     ScanHistoryAction? action,
     DateTime? timestamp,
     String? title,
+    Color? color,
   }) {
     return ScanHistoryItem(
       id: id ?? this.id,
@@ -34,6 +38,7 @@ class ScanHistoryItem {
       action: action ?? this.action,
       timestamp: timestamp ?? this.timestamp,
       title: title ?? this.title,
+      color: color ?? this.color,
     );
   }
 
@@ -45,6 +50,7 @@ class ScanHistoryItem {
       'action': action.name,
       'timestamp': timestamp.toIso8601String(),
       'title': title,
+      if (color != null) 'color': color!.toARGB32(),
     };
   }
 
@@ -62,6 +68,7 @@ class ScanHistoryItem {
       ),
       timestamp: DateTime.parse(json['timestamp'] as String),
       title: json['title'] as String?,
+      color: json['color'] != null ? Color(json['color'] as int) : null,
     );
   }
 

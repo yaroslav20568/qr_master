@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:qr_master/constants/app_assets.dart';
 import 'package:qr_master/constants/app_colors.dart';
 import 'package:qr_master/models/index.dart';
 
@@ -19,34 +20,18 @@ class HistoryActionStyles {
     switch (action) {
       case ScanHistoryAction.scanned:
         return SvgPicture.asset(
-          'assets/icons/qr_code_icon.svg',
-          width: 20,
-          height: 20,
-          colorFilter: const ColorFilter.mode(
-            AppColors.primaryBg,
-            BlendMode.srcIn,
-          ),
+          '${AppAssets.iconsPath}qr_code_icon.svg',
+          width: 13,
+          height: 13,
         );
       case ScanHistoryAction.created:
         return SvgPicture.asset(
-          'assets/icons/add.svg',
+          '${AppAssets.iconsPath}add_icon.svg',
           width: 20,
           height: 20,
-          colorFilter: const ColorFilter.mode(
-            AppColors.primaryBg,
-            BlendMode.srcIn,
-          ),
         );
       case ScanHistoryAction.shared:
-        return SvgPicture.asset(
-          'assets/icons/result_actions/share_icon.svg',
-          width: 20,
-          height: 20,
-          colorFilter: const ColorFilter.mode(
-            AppColors.primaryBg,
-            BlendMode.srcIn,
-          ),
-        );
+        return SvgPicture.asset('${AppAssets.iconsPath}share_icon.svg');
     }
   }
 }

@@ -20,28 +20,28 @@ class ActionCards extends StatelessWidget {
   Widget build(BuildContext context) {
     final actionCards = [
       {
-        'iconPath': 'assets/icons/actions/scan_icon.svg',
+        'iconPath': '${AppAssets.iconsPath}actions/scan_icon.svg',
         'title': 'Scan QR',
         'subtitle': 'Quick scan',
         'iconBackgroundColor': AppColors.primary,
         'onTap': onScanTap,
       },
       {
-        'iconPath': 'assets/icons/actions/add_icon.svg',
+        'iconPath': '${AppAssets.iconsPath}actions/add_icon.svg',
         'title': 'Create QR',
         'subtitle': 'Generate new',
         'iconBackgroundColor': AppColors.success,
         'onTap': onCreateTap,
       },
       {
-        'iconPath': 'assets/icons/actions/folder_icon.svg',
+        'iconPath': '${AppAssets.iconsPath}actions/folder_icon.svg',
         'title': 'My QR Codes',
         'subtitle': 'Saved codes',
         'iconBackgroundColor': AppColors.warning,
         'onTap': onMyQrCodesTap,
       },
       {
-        'iconPath': 'assets/icons/actions/history_icon.svg',
+        'iconPath': '${AppAssets.iconsPath}actions/history_icon.svg',
         'title': 'History',
         'subtitle': 'Recent scans',
         'iconBackgroundColor': AppColors.textDisabled,

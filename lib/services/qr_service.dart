@@ -10,9 +10,8 @@ class QrService {
   Future<Uint8List?> generateQrCodeImage({
     required String data,
     required int size,
-    Color? foregroundColor,
-    Color? backgroundColor,
-    String? embeddedImagePath,
+    Color foregroundColor = AppColors.dark,
+    Color backgroundColor = AppColors.primaryBg,
   }) async {
     try {
       final painter = QrPainter(
@@ -20,18 +19,29 @@ class QrService {
         version: QrVersions.auto,
         eyeStyle: QrEyeStyle(
           eyeShape: QrEyeShape.square,
-          color: foregroundColor ?? AppColors.dark,
+          color: foregroundColor,
         ),
         dataModuleStyle: QrDataModuleStyle(
           dataModuleShape: QrDataModuleShape.square,
-          color: foregroundColor ?? AppColors.dark,
+          color: foregroundColor,
         ),
       );
 
       final picRecorder = ui.PictureRecorder();
       final canvas = Canvas(picRecorder);
       final canvasSize = Size(size.toDouble(), size.toDouble());
-      painter.paint(canvas, canvasSize);
+
+      canvas.drawRect(
+        Rect.fromLTWH(0, 0, canvasSize.width, canvasSize.height),
+        Paint()..color = backgroundColor,
+      );
+
+      final padding = size * 0.1;
+      final qrSize = size - (padding * 2);
+      canvas.save();
+      canvas.translate(padding, padding);
+      painter.paint(canvas, Size(qrSize, qrSize));
+      canvas.restore();
 
       final picture = picRecorder.endRecording();
       final image = await picture.toImage(

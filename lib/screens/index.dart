@@ -8,3 +8,4 @@ export 'onboarding/index.dart';
 export 'scan/index.dart';
 export 'scan_result/index.dart';
 export 'splash/index.dart';
+export 'subscription/index.dart';

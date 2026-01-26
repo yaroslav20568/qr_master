@@ -13,8 +13,9 @@ class CreateQrScreen extends StatefulWidget {
 }
 
 class _CreateQrScreenState extends State<CreateQrScreen> {
+  final MainTabsService _tabsService = MainTabsService();
   QrCodeType _selectedType = QrCodeType.url;
-  Color _selectedColor = AppColors.dark;
+  Color _selectedColor = AppColors.black;
   final Map<String, TextEditingController> _controllers = {};
 
   @override
@@ -113,28 +114,57 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
 
   Future<void> _generateQrCode() async {
     if (!_isContentValid()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill in all required fields'),
-          backgroundColor: Colors.orange,
-        ),
+      SnackbarService.showWarning(
+        context,
+        message: 'Please fill in all required fields',
       );
       return;
     }
 
     final content = _getContent();
+    final qrCodeName = _controllers['qrCodeName']?.text ?? '';
     LoggerService.info('Generating QR code for type: ${_selectedType.name}');
 
     try {
       final qrService = QrService();
       final qrImage = await qrService.generateQrCodeImage(
         data: content,
-        size: 300,
+        size: 512,
         foregroundColor: _selectedColor,
-        backgroundColor: AppColors.primaryBg,
       );
 
       if (qrImage != null && mounted) {
+        final qrCodeId = DateTime.now().millisecondsSinceEpoch.toString();
+
+        final qrCode = QrCode(
+          id: qrCodeId,
+          content: content,
+          type: _selectedType,
+          createdAt: DateTime.now(),
+          title: qrCodeName.isNotEmpty ? qrCodeName : null,
+          scanView: 0,
+          color: _selectedColor,
+        );
+
+        final qrCodeService = QrCodeService();
+        final scanHistoryService = ScanHistoryService();
+        await qrCodeService.addCreatedQrCode(qrCode);
+
+        final historyItem = ScanHistoryItem(
+          id: qrCodeId,
+          content: content,
+          type: _selectedType,
+          action: ScanHistoryAction.created,
+          timestamp: DateTime.now(),
+          title: HistoryTitleFormatter.formatTitle(
+            ScanHistoryAction.created,
+            _selectedType,
+          ),
+          color: _selectedColor,
+        );
+        await scanHistoryService.addScanHistoryItem(historyItem);
+
+        if (!mounted) return;
         Navigator.of(context).pushNamed(
           AppRoutes.createQrResult,
           arguments: {
@@ -142,51 +172,50 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
             'content': content,
             'type': _selectedType,
             'color': _selectedColor,
-            'qrCodeName': _controllers['qrCodeName']?.text ?? '',
+            'qrCodeName': qrCodeName,
           },
         );
+        _resetFields();
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Failed to generate QR code'),
-              backgroundColor: Colors.red,
-            ),
+          SnackbarService.showError(
+            context,
+            message: 'Failed to generate QR code',
           );
         }
       }
     } catch (e) {
       LoggerService.error('Error generating QR code', error: e);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackbarService.showError(context, message: 'Error: ${e.toString()}');
       }
     }
   }
 
-  void _handleAddLogo() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Pro Feature - Coming soon'),
-        backgroundColor: AppColors.warning,
-      ),
-    );
+  void _resetFields() {
+    setState(() {
+      _selectedType = QrCodeType.url;
+      _selectedColor = AppColors.black;
+      for (final controller in _controllers.values) {
+        controller.clear();
+      }
+      _controllers['wifiEncryptionType']?.text = 'WPA';
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return ScreenLayout(
+      title: 'Create QR Code',
+      rightIcon: Icons.close,
+      iconColor: AppColors.dark,
+      onRightIconTap: () => _tabsService.switchToHome(),
       child: Center(
         child: SingleChildScrollView(
           child: PaddingLayout(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 16),
                 CreateQrContentTypeSelector(
                   selectedType: _selectedType,
                   onTypeSelected: (type) {
@@ -211,7 +240,6 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
                         _selectedColor = color;
                       });
                     },
-                    onAddLogo: _handleAddLogo,
                   ),
                 ),
                 const SizedBox(height: 18),

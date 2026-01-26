@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qr_master/utils/responsive_utils.dart';
+import 'package:qr_master/utils/index.dart';
 import 'package:qr_master/widgets/ui/index.dart';
 
 class OnboardingStepsActions extends StatelessWidget {

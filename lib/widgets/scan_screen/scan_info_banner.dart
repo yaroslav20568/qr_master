@@ -16,7 +16,7 @@ class ScanInfoBanner extends StatelessWidget {
         border: Border.all(color: AppColors.grayLight, width: 0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: AppColors.black.withValues(alpha: 0.06),
             offset: const Offset(0, 4),
             blurRadius: 16,
             spreadRadius: 0,
@@ -28,7 +28,7 @@ class ScanInfoBanner extends StatelessWidget {
           BackgroundCircleIcon(
             size: 40,
             backgroundColor: AppColors.primary,
-            child: SvgPicture.asset('assets/icons/info_icon.svg'),
+            child: SvgPicture.asset('${AppAssets.iconsPath}info_icon.svg'),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -40,7 +40,7 @@ class ScanInfoBanner extends StatelessWidget {
                   'Align QR code within frame',
                   style: AppFonts.interRegular.copyWith(
                     fontSize: 15,
-                    height: 23 / 15,
+                    height: 1.53,
                     letterSpacing: -0.5,
                     color: AppColors.textSecondary,
                   ),
@@ -50,9 +50,9 @@ class ScanInfoBanner extends StatelessWidget {
                   'Keep your device steady',
                   style: AppFonts.interRegular.copyWith(
                     fontSize: 13,
-                    height: 20 / 13,
+                    height: 1.54,
                     letterSpacing: -0.5,
-                    color: const Color(0xFFB0B0B0),
+                    color: AppColors.grayMiddle,
                   ),
                 ),
               ],

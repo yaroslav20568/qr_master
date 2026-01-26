@@ -21,7 +21,7 @@ class InfoIndicator extends StatelessWidget {
       case InfoIndicatorType.success:
         return AppColors.success;
       case InfoIndicatorType.error:
-        return Colors.red;
+        return AppColors.negative;
     }
   }
 

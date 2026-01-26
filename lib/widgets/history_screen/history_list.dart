@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/widgets/history_screen/history_item.dart';
+import 'package:qr_master/widgets/layouts/section_layout.dart';
 import 'package:qr_master/widgets/ui/index.dart';
 
 class HistoryList extends StatelessWidget {
   final List<ScanHistoryItem> items;
   final Function(ScanHistoryItem) onItemTap;
   final Function(ScanHistoryItem)? onItemDelete;
-  final VoidCallback? onItemRescan;
   final Function(ScanHistoryItem)? onItemCopy;
   final Function(ScanHistoryItem)? onItemShare;
 
@@ -17,7 +16,6 @@ class HistoryList extends StatelessWidget {
     required this.items,
     required this.onItemTap,
     this.onItemDelete,
-    this.onItemRescan,
     this.onItemCopy,
     this.onItemShare,
   });
@@ -98,42 +96,36 @@ class HistoryList extends StatelessWidget {
         final dateItems = grouped[dateKey]!;
 
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Text(
-                dateKey,
-                style: AppFonts.interSemiBold.copyWith(
-                  fontSize: 17,
-                  height: 1.53,
-                  letterSpacing: -0.5,
-                  color: AppColors.textPrimary,
-                ),
+            SectionLayout(
+              title: dateKey,
+              child: Column(
+                children: [
+                  ...dateItems.asMap().entries.map((entry) {
+                    final isLast = entry.key == dateItems.length - 1;
+                    final isLastInAll =
+                        dateIndex == dateKeys.length - 1 && isLast;
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: isLastInAll ? 0 : 12),
+                      child: HistoryItem(
+                        item: entry.value,
+                        onTap: () => onItemTap(entry.value),
+                        onDelete: onItemDelete != null
+                            ? () => onItemDelete!(entry.value)
+                            : null,
+                        onCopy: onItemCopy != null
+                            ? () => onItemCopy!(entry.value)
+                            : null,
+                        onShare: onItemShare != null
+                            ? () => onItemShare!(entry.value)
+                            : null,
+                      ),
+                    );
+                  }),
+                ],
               ),
             ),
-            ...dateItems.asMap().entries.map((entry) {
-              final isLast = entry.key == dateItems.length - 1;
-              final isLastInAll = dateIndex == dateKeys.length - 1 && isLast;
-              return Padding(
-                padding: EdgeInsets.only(bottom: isLastInAll ? 0 : 12),
-                child: HistoryItem(
-                  item: entry.value,
-                  onTap: () => onItemTap(entry.value),
-                  onDelete: onItemDelete != null
-                      ? () => onItemDelete!(entry.value)
-                      : null,
-                  onRescan: onItemRescan,
-                  onCopy: onItemCopy != null
-                      ? () => onItemCopy!(entry.value)
-                      : null,
-                  onShare: onItemShare != null
-                      ? () => onItemShare!(entry.value)
-                      : null,
-                ),
-              );
-            }),
-            if (dateIndex < dateKeys.length - 1) const SizedBox(height: 24),
+            if (dateIndex < dateKeys.length - 1) const SizedBox(height: 18),
           ],
         );
       },

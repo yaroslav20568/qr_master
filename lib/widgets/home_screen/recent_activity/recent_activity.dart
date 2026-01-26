@@ -12,7 +12,7 @@ class RecentActivity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firestoreService = FirestoreService();
+    final scanHistoryService = ScanHistoryService();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,7 +28,7 @@ class RecentActivity extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         StreamBuilder<List<ScanHistoryItem>>(
-          stream: firestoreService.getScanHistoryStream(limit: 10),
+          stream: scanHistoryService.getScanHistoryStream(limit: 10),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -41,7 +41,7 @@ class RecentActivity extends StatelessWidget {
             final items = snapshot.data ?? [];
 
             if (items.isEmpty) {
-              return const EmptyData();
+              return const EmptyData(title: 'No activity items found');
             }
 
             return Column(

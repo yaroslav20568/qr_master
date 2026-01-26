@@ -5,7 +5,6 @@ import 'package:qr_master/models/index.dart';
 import 'package:qr_master/services/index.dart';
 import 'package:qr_master/utils/index.dart';
 import 'package:qr_master/widgets/index.dart';
-import 'package:share_plus/share_plus.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -15,77 +14,56 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-  final FirestoreService _firestoreService = FirestoreService();
+  final ScanHistoryService _scanHistoryService = ScanHistoryService();
   final TextEditingController _searchController = TextEditingController();
+  final Debouncer _debouncer = Debouncer();
   ScanHistoryAction? _selectedAction;
   String _searchQuery = '';
-  List<ScanHistoryItem> _allItems = [];
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadHistory();
-    _searchController.addListener(() {
-      setState(() {
-        _searchQuery = _searchController.text.toLowerCase();
-      });
-    });
-  }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _debouncer.dispose();
     super.dispose();
   }
 
-  Future<void> _loadHistory() async {
-    setState(() {
-      _isLoading = true;
+  void _onSearchChanged(String value) {
+    _debouncer.run(() {
+      setState(() {
+        _searchQuery = value.trim();
+      });
     });
-
-    try {
-      final items = await _firestoreService.getScanHistory(limit: 200);
-      setState(() {
-        _allItems = items;
-        _isLoading = false;
-      });
-    } catch (e) {
-      LoggerService.error('Error loading history', error: e);
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 
-  List<ScanHistoryItem> get _filteredItems {
-    var items = _allItems;
+  List<ScanHistoryItem> _filteredItems(List<ScanHistoryItem> items) {
+    var filtered = items;
 
     if (_selectedAction != null) {
-      items = items.where((item) => item.action == _selectedAction).toList();
+      filtered = filtered
+          .where((item) => item.action == _selectedAction)
+          .toList();
     }
 
     if (_searchQuery.isNotEmpty) {
-      items = items.where((item) {
+      final query = _searchQuery.toLowerCase().trim();
+      filtered = filtered.where((item) {
         final content = item.content.toLowerCase();
         final displayContent = QrContentParser.getDisplayContent(
           item.content,
           item.type,
         ).toLowerCase();
-        return content.contains(_searchQuery) ||
-            displayContent.contains(_searchQuery);
+        final title = item.title?.toLowerCase() ?? '';
+        return content.contains(query) ||
+            displayContent.contains(query) ||
+            title.contains(query);
       }).toList();
     }
 
-    return items;
+    return filtered;
   }
 
   void _onItemTap(ScanHistoryItem item) {
     Navigator.of(context).pushNamed(AppRoutes.scanResult, arguments: item);
-  }
-
-  void _onRescan() {
-    MainTabsService().switchToScan();
   }
 
   Future<void> _onItemCopy(ScanHistoryItem item) async {
@@ -93,22 +71,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
       await Clipboard.setData(ClipboardData(text: item.content));
       LoggerService.info('Copied to clipboard: ${item.content}');
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Copied to clipboard'),
-          backgroundColor: AppColors.success,
-          duration: Duration(seconds: 2),
-        ),
+      SnackbarService.showSuccess(
+        context,
+        message: 'Copied to clipboard',
+        duration: const Duration(seconds: 2),
       );
     } catch (e) {
       LoggerService.error('Error copying to clipboard', error: e);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to copy'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackbarService.showError(context, message: 'Failed to copy');
     }
   }
 
@@ -118,40 +89,46 @@ class _HistoryScreenState extends State<HistoryScreen> {
       final qrImage = await qrService.generateQrCodeImage(
         data: item.content,
         size: 512,
+        foregroundColor: item.color ?? AppColors.dark,
       );
 
       if (qrImage == null) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to generate QR code'),
-            backgroundColor: Colors.red,
-          ),
+        SnackbarService.showError(
+          context,
+          message: 'Failed to generate QR code',
         );
         return;
       }
 
-      String contentToShare = item.content;
-      if (item.type == QrCodeType.wifi) {
-        contentToShare = QrContentParser.formatWifiContent(item.content);
-      }
-
-      final xFile = XFile.fromData(
-        qrImage,
-        mimeType: 'image/png',
-        name: 'qr_code.png',
+      if (!mounted) return;
+      await QrCodeActionsService.shareQrCode(
+        context,
+        item.content,
+        qrImage: qrImage,
       );
-      await Share.shareXFiles([xFile], text: contentToShare);
-      LoggerService.info('Shared QR code: ${item.content}');
+
+      if (item.action != ScanHistoryAction.shared) {
+        final historyItem = ScanHistoryItem(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          content: item.content,
+          type: item.type,
+          action: ScanHistoryAction.shared,
+          timestamp: DateTime.now(),
+          title: HistoryTitleFormatter.formatTitle(
+            ScanHistoryAction.shared,
+            item.type,
+          ),
+          color: item.color,
+        );
+
+        await _scanHistoryService.addScanHistoryItem(historyItem);
+        LoggerService.info('Added shared action to history');
+      }
     } catch (e) {
       LoggerService.error('Error sharing QR code', error: e);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to share'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      SnackbarService.showError(context, message: 'Failed to share');
     }
   }
 
@@ -162,22 +139,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
       text: 'Are you sure you want to delete this item?',
       confirmText: 'Delete',
       cancelText: 'Cancel',
+      confirmColor: AppColors.negative,
     );
 
     if (confirmed == true) {
       try {
-        await _firestoreService.deleteScanHistoryItem(item.id);
-        await _loadHistory();
+        await _scanHistoryService.deleteScanHistoryItem(item.id);
         if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Item deleted')));
+        SnackbarService.showSuccess(context, message: 'Item deleted');
       } catch (e) {
         LoggerService.error('Error deleting item', error: e);
         if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Failed to delete item')));
+        SnackbarService.showError(context, message: 'Failed to delete item');
       }
     }
   }
@@ -191,49 +164,63 @@ class _HistoryScreenState extends State<HistoryScreen> {
           'Are you sure you want to delete all history items? This action cannot be undone.',
       confirmText: 'Delete All',
       cancelText: 'Cancel',
-      confirmColor: Colors.red,
+      confirmColor: AppColors.negative,
     );
 
     if (confirmed == true) {
       try {
-        await _firestoreService.deleteAllHistory();
-        await _loadHistory();
+        await _scanHistoryService.deleteAllHistory();
         if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('All history deleted')));
+        SnackbarService.showSuccess(context, message: 'All history deleted');
+        Navigator.of(context).pop();
       } catch (e) {
         LoggerService.error('Error deleting all history', error: e);
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to delete all history')),
+        SnackbarService.showError(
+          context,
+          message: 'Failed to delete all history',
         );
       }
     }
   }
 
-  void _showDeleteAllDialog(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.delete_outline, color: Colors.red),
-              title: const Text('Delete All History'),
-              onTap: () {
-                Navigator.of(context).pop();
-                _deleteAllHistory();
-              },
+  void _showSearchModal() {
+    BottomModal.show(
+      context,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppSearchBar(
+            controller: _searchController,
+            onChanged: _onSearchChanged,
+            hintText: 'Search history...',
+          ),
+          ListTile(
+            leading: const Icon(Icons.clear, color: AppColors.textPrimary),
+            title: Text(
+              'Clear',
+              style: AppFonts.interMedium.copyWith(
+                fontSize: 15,
+                letterSpacing: -0.5,
+                color: AppColors.textPrimary,
+              ),
             ),
-            ListTile(
-              leading: const Icon(Icons.cancel),
-              title: const Text('Cancel'),
-              onTap: () => Navigator.of(context).pop(),
+            onTap: () {
+              _searchController.clear();
+              setState(() {
+                _searchQuery = '';
+              });
+            },
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.delete_outline,
+              color: AppColors.negative,
             ),
-          ],
-        ),
+            title: const Text('Delete All History'),
+            onTap: _deleteAllHistory,
+          ),
+        ],
       ),
     );
   }
@@ -241,77 +228,97 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return ScreenLayout(
+      title: 'History',
+      rightIcon: Icons.sort,
+      onRightIconTap: _showSearchModal,
+      headerContent: FilterChips<ScanHistoryAction>(
+        items: const [
+          ScanHistoryAction.scanned,
+          ScanHistoryAction.created,
+          ScanHistoryAction.shared,
+        ],
+        selectedItem: _selectedAction,
+        onItemSelected: (action) {
+          setState(() {
+            _selectedAction = action;
+          });
+        },
+        getLabel: (action) {
+          switch (action) {
+            case ScanHistoryAction.scanned:
+              return 'Scanned';
+            case ScanHistoryAction.created:
+              return 'Created';
+            case ScanHistoryAction.shared:
+              return 'Shared';
+          }
+        },
+      ),
       child: Column(
         children: [
-          PaddingLayout(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16),
-                Text(
-                  'History',
-                  style: AppFonts.interBold.copyWith(
-                    fontSize: 34,
-                    height: 1.5,
-                    letterSpacing: -0.5,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: HistorySearchBar(
-                        controller: _searchController,
-                        onChanged: (value) {
-                          setState(() {
-                            _searchQuery = value.toLowerCase();
-                          });
-                        },
-                      ),
-                    ),
-                    if (_allItems.isNotEmpty) ...[
-                      const SizedBox(width: 12),
-                      IconButton(
-                        icon: const Icon(Icons.more_vert),
-                        onPressed: () => _showDeleteAllDialog(context),
-                        tooltip: 'Delete all',
-                      ),
-                    ],
-                  ],
-                ),
-                const SizedBox(height: 16),
-                HistoryFilterChips(
-                  selectedAction: _selectedAction,
-                  onActionSelected: (action) {
-                    setState(() {
-                      _selectedAction = action;
-                    });
-                  },
-                ),
-                const SizedBox(height: 24),
-              ],
-            ),
-          ),
           Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : RefreshIndicator(
-                    onRefresh: _loadHistory,
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      child: PaddingLayout(
-                        child: HistoryList(
-                          items: _filteredItems,
-                          onItemTap: _onItemTap,
-                          onItemDelete: _onItemDelete,
-                          onItemRescan: _onRescan,
-                          onItemCopy: _onItemCopy,
-                          onItemShare: _onItemShare,
-                        ),
+            child: StreamBuilder<List<ScanHistoryItem>>(
+              stream: _scanHistoryService.getScanHistoryStream(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SingleChildScrollView(
+                    child: PaddingLayout(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [const CircularProgressIndicator()],
+                      ),
+                    ),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return SingleChildScrollView(
+                    child: PaddingLayout(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const EmptyData(title: 'Error loading history'),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                final allItems = snapshot.data ?? [];
+                final filteredItems = _filteredItems(allItems);
+
+                if (filteredItems.isEmpty) {
+                  return SingleChildScrollView(
+                    child: PaddingLayout(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const EmptyData(title: 'No history items found'),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    await Future.delayed(const Duration(milliseconds: 500));
+                  },
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: PaddingLayout(
+                      child: HistoryList(
+                        items: filteredItems,
+                        onItemTap: _onItemTap,
+                        onItemDelete: _onItemDelete,
+                        onItemCopy: _onItemCopy,
+                        onItemShare: _onItemShare,
                       ),
                     ),
                   ),
+                );
+              },
+            ),
           ),
         ],
       ),

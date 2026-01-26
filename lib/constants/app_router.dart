@@ -28,6 +28,5 @@ Map<String, WidgetBuilder> get appRoutes => {
       qrCodeName: args['qrCodeName'] as String,
     );
   },
-  AppRoutes.subscription: (context) =>
-      const Scaffold(body: Center(child: Text('Subscription Screen'))),
+  AppRoutes.subscription: (context) => const SubscriptionScreen(),
 };

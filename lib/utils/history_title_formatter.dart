@@ -2,12 +2,12 @@ import 'package:qr_master/models/index.dart';
 
 class HistoryTitleFormatter {
   static String formatTitle(ScanHistoryAction action, QrCodeType type) {
-    final actionText = _getActionText(action);
-    final typeText = _getTypeText(type);
+    final actionText = getActionText(action);
+    final typeText = getTypeText(type);
     return '$actionText $typeText';
   }
 
-  static String _getActionText(ScanHistoryAction action) {
+  static String getActionText(ScanHistoryAction action) {
     switch (action) {
       case ScanHistoryAction.scanned:
         return 'Scanned';
@@ -18,7 +18,7 @@ class HistoryTitleFormatter {
     }
   }
 
-  static String _getTypeText(QrCodeType type) {
+  static String getTypeText(QrCodeType type) {
     switch (type) {
       case QrCodeType.url:
         return 'website link';

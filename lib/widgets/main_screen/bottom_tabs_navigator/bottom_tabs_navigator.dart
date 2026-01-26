@@ -27,7 +27,7 @@ class BottomTabsNavigator extends StatelessWidget {
               color: AppColors.primaryBg,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
+                  color: AppColors.black.withValues(alpha: 0.05),
                   offset: const Offset(0, -2),
                   blurRadius: 10,
                   spreadRadius: 0,

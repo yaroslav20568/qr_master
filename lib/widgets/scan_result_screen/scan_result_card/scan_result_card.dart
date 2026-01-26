@@ -20,7 +20,7 @@ class ScanResultCard extends StatelessWidget {
         border: Border.all(color: AppColors.grayLight, width: 0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: AppColors.black.withValues(alpha: 0.08),
             offset: const Offset(0, 8),
             blurRadius: 24,
             spreadRadius: 0,

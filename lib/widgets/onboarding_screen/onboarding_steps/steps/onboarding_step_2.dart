@@ -36,13 +36,13 @@ class OnboardingStep2 extends StatelessWidget {
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  SvgPicture.asset('assets/icons/scan_qr_icon.svg'),
+                  SvgPicture.asset('${AppAssets.iconsPath}scan_qr_icon.svg'),
                   Positioned(
                     top: -20,
                     right: -20,
                     child: BackgroundCircleIcon(
                       child: SvgPicture.asset(
-                        'assets/icons/flash_icon.svg',
+                        '${AppAssets.iconsPath}flash_icon.svg',
                         colorFilter: ColorFilter.mode(
                           AppColors.primaryBg,
                           BlendMode.srcIn,
@@ -55,7 +55,7 @@ class OnboardingStep2 extends StatelessWidget {
                     left: -20,
                     child: BackgroundCircleIcon(
                       child: SvgPicture.asset(
-                        'assets/icons/switch_camera_icon.svg',
+                        '${AppAssets.iconsPath}switch_camera_icon.svg',
                         colorFilter: ColorFilter.mode(
                           AppColors.primaryBg,
                           BlendMode.srcIn,

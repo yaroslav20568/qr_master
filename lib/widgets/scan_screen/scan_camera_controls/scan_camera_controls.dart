@@ -25,7 +25,7 @@ class ScanCameraControls extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.black.withValues(alpha: 0.05),
             offset: const Offset(0, 2),
             blurRadius: 10,
             spreadRadius: 0,
@@ -36,19 +36,19 @@ class ScanCameraControls extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           ScanCameraControlButton(
-            iconPath: 'assets/icons/flash_icon.svg',
+            iconPath: '${AppAssets.iconsPath}flash_icon.svg',
             label: 'Flash',
             isActive: isFlashOn,
             onTap: onFlashTap,
           ),
           ScanCameraControlButton(
-            iconPath: 'assets/icons/switch_camera_icon.svg',
+            iconPath: '${AppAssets.iconsPath}switch_camera_icon.svg',
             label: 'Switch',
             isActive: false,
             onTap: onSwitchCameraTap,
           ),
           ScanCameraControlButton(
-            iconPath: 'assets/icons/gallery_icon.svg',
+            iconPath: '${AppAssets.iconsPath}gallery_icon.svg',
             label: 'Gallery',
             isActive: false,
             onTap: onGalleryTap,

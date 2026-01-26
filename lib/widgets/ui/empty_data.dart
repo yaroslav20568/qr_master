@@ -8,15 +8,17 @@ class EmptyData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: AppFonts.interRegular.copyWith(
-        fontSize: 15,
-        height: 1.53,
-        letterSpacing: -0.5,
-        color: AppColors.textSecondary,
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        title,
+        style: AppFonts.interRegular.copyWith(
+          fontSize: 15,
+          height: 1.53,
+          letterSpacing: -0.5,
+          color: AppColors.textSecondary,
+        ),
       ),
-      textAlign: TextAlign.center,
     );
   }
 }

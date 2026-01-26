@@ -23,7 +23,7 @@ class NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final iconFile = isSelected ? 'filled.svg' : 'outline.svg';
-    final iconPath = 'assets/icons/bottom_tabs/$iconName/$iconFile';
+    final iconPath = '${AppAssets.iconsPath}bottom_tabs/$iconName/$iconFile';
 
     return GestureDetector(
       onTap: () => onItemSelected(item),
@@ -37,7 +37,7 @@ class NavItem extends StatelessWidget {
             label,
             style: AppFonts.interMedium.copyWith(
               fontSize: 10,
-              height: 15 / 10,
+              height: 1.5,
               letterSpacing: -0.5,
               color: isSelected ? AppColors.primary : AppColors.textDisabled,
             ),

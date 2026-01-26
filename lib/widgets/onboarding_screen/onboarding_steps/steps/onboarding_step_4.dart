@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/widgets/ui/index.dart';
 
-final cards = [
+List<dynamic> cards = [
   {
     'title': 'My Website',
     'subtitle': 'portfolio.com',
@@ -62,10 +62,10 @@ class OnboardingStep4 extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(right: 5.5),
                           child: QrCard(
-                            title: cards[i]['title'] as String,
-                            subtitle: cards[i]['subtitle'] as String,
-                            date: cards[i]['date'] as String,
-                            views: cards[i]['views'] as String,
+                            title: cards[i]['title'],
+                            subtitle: cards[i]['subtitle'],
+                            date: cards[i]['date'],
+                            views: cards[i]['views'],
                             size: QrCardSize.s,
                           ),
                         ),
@@ -76,10 +76,10 @@ class OnboardingStep4 extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 5.5),
                             child: QrCard(
-                              title: cards[i + 1]['title'] as String,
-                              subtitle: cards[i + 1]['subtitle'] as String,
-                              date: cards[i + 1]['date'] as String,
-                              views: cards[i + 1]['views'] as String,
+                              title: cards[i + 1]['title'],
+                              subtitle: cards[i + 1]['subtitle'],
+                              date: cards[i + 1]['date'],
+                              views: cards[i + 1]['views'],
                               size: QrCardSize.s,
                             ),
                           ),

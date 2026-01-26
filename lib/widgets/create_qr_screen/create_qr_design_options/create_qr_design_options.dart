@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
+import 'package:qr_master/services/index.dart';
 import 'package:qr_master/widgets/create_qr_screen/create_qr_design_options/index.dart';
 
 class CreateQrDesignOptions extends StatelessWidget {
   final Color selectedColor;
   final ValueChanged<Color> onColorSelected;
-  final VoidCallback? onAddLogo;
 
   const CreateQrDesignOptions({
     super.key,
     required this.selectedColor,
     required this.onColorSelected,
-    this.onAddLogo,
   });
 
   @override
@@ -48,35 +47,34 @@ class CreateQrDesignOptions extends StatelessWidget {
               Row(
                 children: [
                   ColorOptionButton(
-                    color: const Color(0xFF000000),
+                    color: AppColors.black,
                     isSelected:
-                        selectedColor.toARGB32() ==
-                        const Color(0xFF000000).toARGB32(),
-                    onTap: () => onColorSelected(const Color(0xFF000000)),
+                        selectedColor.toARGB32() == AppColors.black.toARGB32(),
+                    onTap: () => onColorSelected(AppColors.black),
                   ),
                   const SizedBox(width: 8),
                   ColorOptionButton(
-                    color: const Color(0xFF7ACBFF),
+                    color: AppColors.primary,
                     isSelected:
                         selectedColor.toARGB32() ==
-                        const Color(0xFF7ACBFF).toARGB32(),
-                    onTap: () => onColorSelected(const Color(0xFF7ACBFF)),
+                        AppColors.primary.toARGB32(),
+                    onTap: () => onColorSelected(AppColors.primary),
                   ),
                   const SizedBox(width: 8),
                   ColorOptionButton(
-                    color: const Color(0xFF77C97E),
+                    color: AppColors.success,
                     isSelected:
                         selectedColor.toARGB32() ==
-                        const Color(0xFF77C97E).toARGB32(),
-                    onTap: () => onColorSelected(const Color(0xFF77C97E)),
+                        AppColors.success.toARGB32(),
+                    onTap: () => onColorSelected(AppColors.success),
                   ),
                   const SizedBox(width: 8),
                   ColorOptionButton(
-                    color: const Color(0xFFFFB86C),
+                    color: AppColors.warning,
                     isSelected:
                         selectedColor.toARGB32() ==
-                        const Color(0xFFFFB86C).toARGB32(),
-                    onTap: () => onColorSelected(const Color(0xFFFFB86C)),
+                        AppColors.warning.toARGB32(),
+                    onTap: () => onColorSelected(AppColors.warning),
                   ),
                 ],
               ),
@@ -86,29 +84,38 @@ class CreateQrDesignOptions extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              if (onAddLogo != null)
-                GestureDetector(
-                  onTap: onAddLogo,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.add,
-                        size: 16,
+              GestureDetector(
+                onTap: () {
+                  final appHudService = AppHudService();
+                  if (appHudService.hasActiveSubscription) {
+                    SnackbarService.showInfo(
+                      context,
+                      message: 'Add logo feature coming soon',
+                    );
+                  } else {
+                    Navigator.of(context).pushNamed(AppRoutes.subscription);
+                  }
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.add,
+                      size: 16,
+                      color: AppColors.textPrimary,
+                    ),
+                    const SizedBox(width: 2),
+                    Text(
+                      'Add Logo',
+                      style: AppFonts.interMedium.copyWith(
+                        fontSize: 15,
+                        letterSpacing: -0.5,
                         color: AppColors.textPrimary,
                       ),
-                      const SizedBox(width: 2),
-                      Text(
-                        'Add Logo',
-                        style: AppFonts.interMedium.copyWith(
-                          fontSize: 15,
-                          letterSpacing: -0.5,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+              ),
               Text(
                 'Pro Feature',
                 style: AppFonts.interRegular.copyWith(

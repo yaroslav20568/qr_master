@@ -30,7 +30,7 @@ class ScanResultTypeSection extends StatelessWidget {
     switch (scanItem.type) {
       case QrCodeType.url:
         return SvgPicture.asset(
-          'assets/icons/link_icon.svg',
+          '${AppAssets.iconsPath}link_icon.svg',
           colorFilter: const ColorFilter.mode(
             AppColors.primaryBg,
             BlendMode.srcIn,

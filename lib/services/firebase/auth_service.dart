@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:qr_master/services/firebase_service.dart';
+import 'package:qr_master/services/firebase/firebase_service.dart';
 import 'package:qr_master/services/logger_service.dart';
 
 class AuthService {

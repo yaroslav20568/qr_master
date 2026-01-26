@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/qr_code_type.dart';
 
 class QrCode {
@@ -6,9 +8,8 @@ class QrCode {
   final QrCodeType type;
   final DateTime createdAt;
   final String? title;
-  final String? description;
-  final int scanCount;
-  final String? imagePath;
+  final int scanView;
+  final Color color;
 
   QrCode({
     required this.id,
@@ -16,10 +17,9 @@ class QrCode {
     required this.type,
     required this.createdAt,
     this.title,
-    this.description,
-    this.scanCount = 0,
-    this.imagePath,
-  });
+    this.scanView = 0,
+    Color? color,
+  }) : color = color ?? AppColors.dark;
 
   QrCode copyWith({
     String? id,
@@ -27,9 +27,8 @@ class QrCode {
     QrCodeType? type,
     DateTime? createdAt,
     String? title,
-    String? description,
-    int? scanCount,
-    String? imagePath,
+    int? scanView,
+    Color? color,
   }) {
     return QrCode(
       id: id ?? this.id,
@@ -37,9 +36,8 @@ class QrCode {
       type: type ?? this.type,
       createdAt: createdAt ?? this.createdAt,
       title: title ?? this.title,
-      description: description ?? this.description,
-      scanCount: scanCount ?? this.scanCount,
-      imagePath: imagePath ?? this.imagePath,
+      scanView: scanView ?? this.scanView,
+      color: color ?? this.color,
     );
   }
 
@@ -50,9 +48,8 @@ class QrCode {
       'type': type.name,
       'createdAt': createdAt.toIso8601String(),
       'title': title,
-      'description': description,
-      'scanCount': scanCount,
-      'imagePath': imagePath,
+      'scanView': scanView,
+      'color': color.toARGB32(),
     };
   }
 
@@ -66,9 +63,10 @@ class QrCode {
       ),
       createdAt: DateTime.parse(json['createdAt'] as String),
       title: json['title'] as String?,
-      description: json['description'] as String?,
-      scanCount: json['scanCount'] as int? ?? 0,
-      imagePath: json['imagePath'] as String?,
+      scanView: json['scanView'] as int? ?? 0,
+      color: json['color'] != null
+          ? Color(json['color'] as int)
+          : AppColors.dark,
     );
   }
 }

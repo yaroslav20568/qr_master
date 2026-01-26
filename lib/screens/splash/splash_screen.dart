@@ -13,7 +13,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   late final Future<String> _versionFuture;
   final AuthService _authService = AuthService();
-  final FirestoreService _firestoreService = FirestoreService();
+  final UserProfileService _userProfileService = UserProfileService();
 
   @override
   void initState() {
@@ -81,12 +81,12 @@ class _SplashScreenState extends State<SplashScreen> {
       if (user != null) {
         LoggerService.info('User authenticated: ${user.email}');
 
-        final existingProfile = await _firestoreService.getUserProfile();
+        final existingProfile = await _userProfileService.getUserProfile();
 
         if (existingProfile == null) {
-          await _firestoreService.createUserProfile(user);
+          await _userProfileService.createUserProfile(user);
         } else {
-          await _firestoreService.updateUserProfile({
+          await _userProfileService.updateUserProfile({
             'lastLoginAt': DateTime.now().toIso8601String(),
           });
         }

@@ -8,7 +8,7 @@ class ConfirmModal {
     required String text,
     String confirmText = 'Confirm',
     String cancelText = 'Cancel',
-    Color? confirmColor,
+    Color? confirmColor = AppColors.primary,
   }) {
     return showDialog<bool>(
       context: context,
@@ -43,15 +43,13 @@ class ConfirmModal {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            style: TextButton.styleFrom(
-              foregroundColor: confirmColor ?? AppColors.primary,
-            ),
+            style: TextButton.styleFrom(foregroundColor: confirmColor),
             child: Text(
               confirmText,
               style: AppFonts.interMedium.copyWith(
                 fontSize: 15,
                 letterSpacing: -0.5,
-                color: confirmColor ?? AppColors.primary,
+                color: confirmColor,
               ),
             ),
           ),

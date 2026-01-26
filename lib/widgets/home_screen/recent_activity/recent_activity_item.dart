@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
+import 'package:qr_master/utils/index.dart';
 import 'package:qr_master/widgets/ui/index.dart';
 
 class RecentActivityItem extends StatelessWidget {
@@ -14,40 +15,6 @@ class RecentActivityItem extends StatelessWidget {
     required this.onTap,
   });
 
-  String _getActionText() {
-    switch (item.action) {
-      case ScanHistoryAction.scanned:
-        return 'Scanned';
-      case ScanHistoryAction.created:
-        return 'Created';
-      case ScanHistoryAction.shared:
-        return 'Shared';
-    }
-  }
-
-  String _getTypeText() {
-    switch (item.type) {
-      case QrCodeType.url:
-        return 'website link';
-      case QrCodeType.wifi:
-        return 'Wi-Fi QR';
-      case QrCodeType.phone:
-        return 'phone QR';
-      case QrCodeType.email:
-        return 'email QR';
-      case QrCodeType.contact:
-        return 'contact QR';
-      case QrCodeType.text:
-        return 'text message';
-    }
-  }
-
-  String _getDisplayTitle() {
-    final actionText = _getActionText();
-    final typeText = _getTypeText();
-    return '$actionText $typeText';
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -59,7 +26,7 @@ class RecentActivityItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
+              color: AppColors.black.withValues(alpha: 0.06),
               offset: const Offset(0, 4),
               blurRadius: 16,
             ),
@@ -81,10 +48,10 @@ class RecentActivityItem extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    _getDisplayTitle(),
+                    HistoryTitleFormatter.formatTitle(item.action, item.type),
                     style: AppFonts.interMedium.copyWith(
                       fontSize: 17,
-                      height: 26 / 17,
+                      height: 1.53,
                       letterSpacing: -0.5,
                       color: AppColors.textPrimary,
                     ),
@@ -93,7 +60,7 @@ class RecentActivityItem extends StatelessWidget {
                     timestamp: item.timestamp,
                     style: AppFonts.interRegular.copyWith(
                       fontSize: 15,
-                      height: 23 / 15,
+                      height: 1.53,
                       letterSpacing: -0.5,
                       color: AppColors.textSecondary,
                     ),
@@ -102,7 +69,7 @@ class RecentActivityItem extends StatelessWidget {
               ),
             ),
             SvgPicture.asset(
-              'assets/icons/chevron_right_icon.svg',
+              '${AppAssets.iconsPath}chevron_right_icon.svg',
               width: 7,
               height: 13,
             ),

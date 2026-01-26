@@ -48,12 +48,9 @@ class _ScanScreenState extends State<ScanScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (!mounted) return;
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive) {
-      _pauseCamera();
-    } else if (state == AppLifecycleState.resumed && _isScreenVisible) {
-      _resumeCamera();
-    }
+    final shouldBeVisible =
+        (state == AppLifecycleState.resumed) && _isScreenVisible;
+    _updateCameraState(shouldBeVisible);
   }
 
   @override
@@ -68,35 +65,26 @@ class _ScanScreenState extends State<ScanScreen>
           setState(() {
             _isScreenVisible = isCurrent;
           });
-          if (_isScreenVisible) {
-            _resumeCamera();
-          } else {
-            _pauseCamera();
-          }
+          _updateCameraState(_isScreenVisible);
         }
       }
     });
   }
 
-  void _pauseCamera() {
-    if (_isPermissionGranted) {
-      try {
-        _controller.stop();
-        LoggerService.info('Camera paused');
-      } catch (e) {
-        LoggerService.warning('Error stopping camera: $e');
-      }
-    }
-  }
-
-  void _resumeCamera() {
-    if (_isPermissionGranted) {
-      try {
+  void _updateCameraState(bool shouldBeActive) {
+    if (!_isPermissionGranted) return;
+    try {
+      if (shouldBeActive) {
         _controller.start();
         LoggerService.info('Camera resumed');
-      } catch (e) {
-        LoggerService.warning('Error starting camera: $e');
+      } else {
+        _controller.stop();
+        LoggerService.info('Camera paused');
       }
+    } catch (e) {
+      LoggerService.warning(
+        'Error ${shouldBeActive ? "starting" : "stopping"} camera: $e',
+      );
     }
   }
 
@@ -122,6 +110,9 @@ class _ScanScreenState extends State<ScanScreen>
   }
 
   void _switchCamera() {
+    setState(() {
+      _isFlashOn = false;
+    });
     _controller.switchCamera();
   }
 
@@ -142,11 +133,9 @@ class _ScanScreenState extends State<ScanScreen>
     } catch (e) {
       LoggerService.error('Error picking image from gallery', error: e);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to pick image from gallery'),
-            backgroundColor: Colors.red,
-          ),
+        SnackbarService.showError(
+          context,
+          message: 'Failed to pick image from gallery',
         );
       }
     }
@@ -187,22 +176,18 @@ class _ScanScreenState extends State<ScanScreen>
         } else {
           LoggerService.warning('Barcode found but rawValue is null');
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('QR code found but content is empty'),
-                backgroundColor: Colors.orange,
-              ),
+            SnackbarService.showWarning(
+              context,
+              message: 'QR code found but content is empty',
             );
           }
         }
       } else {
         LoggerService.warning('No QR code found in image');
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('No QR code found in image'),
-              backgroundColor: Colors.orange,
-            ),
+          SnackbarService.showWarning(
+            context,
+            message: 'No QR code found in image',
           );
         }
       }
@@ -210,12 +195,10 @@ class _ScanScreenState extends State<ScanScreen>
       LoggerService.error('Error processing image', error: e);
       LoggerService.error('Stack trace: $stackTrace');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to process image: ${e.toString()}'),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 4),
-          ),
+        SnackbarService.showError(
+          context,
+          message: 'Failed to process image: ${e.toString()}',
+          duration: const Duration(seconds: 4),
         );
       }
     } finally {
@@ -247,6 +230,10 @@ class _ScanScreenState extends State<ScanScreen>
         ),
       );
 
+      final scanHistoryService = ScanHistoryService();
+      await scanHistoryService.addScanHistoryItem(scanItem);
+      LoggerService.info('Saved scanned item to history');
+
       LoggerService.info('Created scan item, navigating to result screen...');
 
       if (!mounted) {
@@ -263,12 +250,10 @@ class _ScanScreenState extends State<ScanScreen>
       LoggerService.error('Error handling scan result', error: e);
       LoggerService.error('Stack trace: $stackTrace');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to process scan result: ${e.toString()}'),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 4),
-          ),
+        SnackbarService.showError(
+          context,
+          message: 'Failed to process scan result: ${e.toString()}',
+          duration: const Duration(seconds: 4),
         );
       }
     } finally {
@@ -284,6 +269,7 @@ class _ScanScreenState extends State<ScanScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return ScreenLayout(
+      title: 'Scan QR Code',
       child: Center(
         child: SingleChildScrollView(
           child: PaddingLayout(

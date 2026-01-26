@@ -8,7 +8,7 @@ class OnboardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenLayout(
-      gradient: AppGradients.onboardingGradient,
+      gradient: AppGradients.screenGradient,
       child: PaddingLayout(child: const OnboardingSteps()),
     );
   }

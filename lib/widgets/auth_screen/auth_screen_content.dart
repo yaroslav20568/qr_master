@@ -43,7 +43,7 @@ class AuthScreenContent extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SvgPicture.asset('assets/icons/qr_code_icon.svg'),
+                    SvgPicture.asset('${AppAssets.iconsPath}qr_code_icon.svg'),
                   ],
                 ),
                 const SizedBox(height: 32),

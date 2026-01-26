@@ -1,32 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:qr_master/constants/app_assets.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/widgets/create_qr_screen/create_qr_content_type_selector/index.dart';
 import 'package:qr_master/widgets/layouts/index.dart';
 
-const List<Map<String, dynamic>> _contentTypes = [
-  {
-    'type': QrCodeType.url,
-    'icon': 'assets/icons/content_type/url_icon.svg',
-    'label': 'URL',
-  },
-  {
-    'type': QrCodeType.text,
-    'icon': 'assets/icons/content_type/text_icon.svg',
-    'label': 'Text',
-  },
-  {
-    'type': QrCodeType.contact,
-    'icon': 'assets/icons/content_type/contact_icon.svg',
-    'label': 'Contact',
-  },
-  {'type': QrCodeType.phone, 'icon': Icons.phone, 'label': 'Phone'},
-  {'type': QrCodeType.email, 'icon': Icons.email, 'label': 'Email'},
-  {
-    'type': QrCodeType.wifi,
-    'icon': 'assets/icons/content_type/wifi_icon.svg',
-    'label': 'Wi-Fi',
-  },
-];
+List<Map<String, dynamic>> _getContentTypes() {
+  return [
+    {
+      'type': QrCodeType.url,
+      'icon': '${AppAssets.iconsPath}content_type/url_icon.svg',
+      'label': 'URL',
+    },
+    {
+      'type': QrCodeType.text,
+      'icon': '${AppAssets.iconsPath}content_type/text_icon.svg',
+      'label': 'Text',
+    },
+    {
+      'type': QrCodeType.contact,
+      'icon': '${AppAssets.iconsPath}content_type/contact_icon.svg',
+      'label': 'Contact',
+    },
+    {'type': QrCodeType.phone, 'icon': Icons.phone, 'label': 'Phone'},
+    {'type': QrCodeType.email, 'icon': Icons.email, 'label': 'Email'},
+    {
+      'type': QrCodeType.wifi,
+      'icon': '${AppAssets.iconsPath}content_type/wifi_icon.svg',
+      'label': 'Wi-Fi',
+    },
+  ];
+}
 
 class CreateQrContentTypeSelector extends StatelessWidget {
   final QrCodeType selectedType;
@@ -39,12 +42,13 @@ class CreateQrContentTypeSelector extends StatelessWidget {
   });
 
   List<Widget> _buildButtonRow(int startIndex, int count) {
+    final contentTypes = _getContentTypes();
     final widgets = <Widget>[];
     for (int i = 0; i < count; i++) {
       final itemIndex = startIndex + i;
-      if (itemIndex >= _contentTypes.length) break;
+      if (itemIndex >= contentTypes.length) break;
 
-      final item = _contentTypes[itemIndex];
+      final item = contentTypes[itemIndex];
       widgets.add(
         ContentTypeButton(
           type: item['type'] as QrCodeType,

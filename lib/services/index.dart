@@ -1,11 +1,12 @@
 export 'app_info_service.dart';
 export 'app_initialization_service.dart';
-export 'auth_service.dart';
-export 'firebase_service.dart';
-export 'firestore_service.dart';
+export 'apphud_service.dart';
+export 'firebase/index.dart';
 export 'image_service.dart';
 export 'logger_service.dart';
 export 'main_tabs_service.dart';
 export 'navigation_service.dart';
+export 'qr_code_actions_service.dart';
 export 'qr_service.dart';
+export 'snackbar_service.dart';
 export 'storage_service.dart';

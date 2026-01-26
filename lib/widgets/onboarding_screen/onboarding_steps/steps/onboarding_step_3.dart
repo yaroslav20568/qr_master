@@ -28,7 +28,7 @@ class OnboardingStep3 extends StatelessWidget {
           child: CustomTextField(
             label: 'Website URL',
             hintText: 'https://example.com',
-            suffixIcon: SvgPicture.asset('assets/icons/link_icon.svg'),
+            suffixIcon: SvgPicture.asset('${AppAssets.iconsPath}link_icon.svg'),
             disabled: true,
           ),
         ),
@@ -53,7 +53,7 @@ class OnboardingStep3 extends StatelessWidget {
                 offset: Offset.zero,
               ),
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.06),
+                color: AppColors.black.withValues(alpha: 0.06),
                 offset: const Offset(0, 4),
                 blurRadius: 16,
               ),

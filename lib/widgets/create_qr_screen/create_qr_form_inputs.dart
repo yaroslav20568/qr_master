@@ -9,14 +9,14 @@ class CreateQrFormInputs extends StatefulWidget {
   final QrCodeType type;
   final Map<String, TextEditingController> controllers;
   final ValueChanged<String>? onContentChanged;
-  final bool showQrCodeNameField; // новый параметр
+  final bool showQrCodeNameField;
 
   const CreateQrFormInputs({
     super.key,
     required this.type,
     required this.controllers,
     this.onContentChanged,
-    this.showQrCodeNameField = false, // по умолчанию false
+    this.showQrCodeNameField = false,
   });
 
   @override
@@ -84,7 +84,7 @@ class _CreateQrFormInputsState extends State<CreateQrFormInputs> {
           }
         },
         child: SvgPicture.asset(
-          'assets/icons/link_icon.svg',
+          '${AppAssets.iconsPath}link_icon.svg',
           colorFilter: const ColorFilter.mode(
             AppColors.grayMiddle,
             BlendMode.srcIn,
@@ -180,60 +180,21 @@ class _CreateQrFormInputsState extends State<CreateQrFormInputs> {
   }
 
   Widget _buildEncryptionTypeDropdown() {
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Encryption Type',
-              style: AppFonts.interMedium.copyWith(
-                fontSize: 13,
-                letterSpacing: -0.44,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Container(
-              height: 52,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: AppColors.primaryBg,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.transparent, width: 1),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value:
-                      widget.controllers['wifiEncryptionType']?.text ?? 'WPA',
-                  isExpanded: true,
-                  style: AppFonts.interRegular.copyWith(
-                    fontSize: 15,
-                    letterSpacing: -0.5,
-                    color: AppColors.textPrimary,
-                  ),
-                  items: const [
-                    DropdownMenuItem(value: 'WPA', child: Text('WPA')),
-                    DropdownMenuItem(value: 'WEP', child: Text('WEP')),
-                    DropdownMenuItem(
-                      value: 'nopass',
-                      child: Text('No encryption'),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value != null &&
-                        widget.controllers['wifiEncryptionType'] != null) {
-                      setState(() {
-                        widget.controllers['wifiEncryptionType']!.text = value;
-                      });
-                      widget.onContentChanged?.call(value);
-                    }
-                  },
-                ),
-              ),
-            ),
-          ],
-        );
+    return AppDropdown<String>(
+      label: 'Encryption Type',
+      value: widget.controllers['wifiEncryptionType']?.text ?? 'WPA',
+      items: const [
+        DropdownMenuItem(value: 'WPA', child: Text('WPA')),
+        DropdownMenuItem(value: 'WEP', child: Text('WEP')),
+        DropdownMenuItem(value: 'nopass', child: Text('No encryption')),
+      ],
+      onChanged: (value) {
+        if (value != null && widget.controllers['wifiEncryptionType'] != null) {
+          setState(() {
+            widget.controllers['wifiEncryptionType']!.text = value;
+          });
+          widget.onContentChanged?.call(value);
+        }
       },
     );
   }

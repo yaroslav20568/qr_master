@@ -22,7 +22,7 @@ class BottomTabsFloatingActionButton extends StatelessWidget {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
+              color: AppColors.black.withValues(alpha: 0.06),
               offset: const Offset(0, 4),
               blurRadius: 16,
               spreadRadius: 0,
@@ -38,7 +38,7 @@ class BottomTabsFloatingActionButton extends StatelessWidget {
         child: BackgroundCircleIcon(
           size: 52,
           backgroundColor: AppColors.success,
-          child: SvgPicture.asset('assets/icons/add.svg'),
+          child: SvgPicture.asset('${AppAssets.iconsPath}add_icon.svg'),
         ),
       ),
     );
