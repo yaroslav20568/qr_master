@@ -170,27 +170,13 @@ class QrCodeActionsService {
       final uri = Uri.parse(phoneNumber);
       LoggerService.info('Attempting to call: $uri');
 
-      final canLaunch = await canLaunchUrl(uri);
-      if (canLaunch) {
-        final launched = await launchUrl(uri);
-        if (launched) {
-          LoggerService.info('Successfully initiated call: $content');
-        } else {
-          LoggerService.warning('Failed to initiate call: $content');
-          if (context.mounted) {
-            SnackbarService.showWarning(
-              context,
-              message: 'Failed to make call',
-            );
-          }
-        }
+      final launched = await launchUrl(uri);
+      if (launched) {
+        LoggerService.info('Successfully initiated call: $content');
       } else {
-        LoggerService.warning('Cannot make call: $content');
+        LoggerService.warning('Failed to initiate call: $content');
         if (context.mounted) {
-          SnackbarService.showWarning(
-            context,
-            message: 'Cannot make call. No phone app found.',
-          );
+          SnackbarService.showWarning(context, message: 'Failed to make call');
         }
       }
     } catch (e) {
