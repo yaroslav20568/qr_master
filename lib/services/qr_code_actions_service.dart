@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_master/constants/index.dart';
@@ -220,18 +222,63 @@ class QrCodeActionsService {
 
   static Future<void> addContact(BuildContext context, String content) async {
     try {
-      if (context.mounted) {
-        SnackbarService.showWarning(
-          context,
-          message: 'Contact import feature is not available on this device',
-          duration: const Duration(seconds: 3),
-        );
+      LoggerService.info('Adding contact from QR code: $content');
+
+      if (!content.startsWith('BEGIN:VCARD')) {
+        if (context.mounted) {
+          SnackbarService.showError(context, message: 'Invalid contact format');
+        }
+        return;
       }
-      LoggerService.info('Contact import requested for: $content');
+
+      if (Platform.isAndroid) {
+        const platform = MethodChannel('qr_master/actions');
+        try {
+          final result = await platform.invokeMethod<bool>('addContact', {
+            'vcardData': content,
+          });
+
+          if (result == true) {
+            LoggerService.info('Contact added successfully');
+            if (context.mounted) {
+              SnackbarService.showSuccess(
+                context,
+                message: 'Contact opened for adding',
+                duration: const Duration(seconds: 2),
+              );
+            }
+          } else {
+            throw Exception('Failed to add contact');
+          }
+        } on PlatformException catch (e) {
+          LoggerService.error('Platform error adding contact', error: e);
+          throw Exception('Failed to add contact: ${e.message}');
+        }
+      } else if (Platform.isIOS) {
+        final uri = Uri.parse('contacts://');
+        final canLaunch = await canLaunchUrl(uri);
+        if (canLaunch) {
+          await launchUrl(uri);
+          if (context.mounted) {
+            SnackbarService.showSuccess(
+              context,
+              message: 'Contacts app opened',
+              duration: const Duration(seconds: 2),
+            );
+          }
+        } else {
+          throw Exception('Cannot open contacts app');
+        }
+      } else {
+        throw Exception('Platform not supported');
+      }
     } catch (e) {
       LoggerService.error('Error adding contact', error: e);
       if (context.mounted) {
-        SnackbarService.showError(context, message: 'Failed to add contact');
+        SnackbarService.showError(
+          context,
+          message: 'Failed to add contact: ${e.toString()}',
+        );
       }
     }
   }
@@ -241,20 +288,84 @@ class QrCodeActionsService {
     String content,
   ) async {
     try {
-      if (context.mounted) {
-        SnackbarService.showWarning(
-          context,
-          message: 'WiFi connection feature is not available on this device',
-          duration: const Duration(seconds: 3),
-        );
+      LoggerService.info('Connecting to WiFi from QR code: $content');
+
+      if (!content.startsWith('WIFI:')) {
+        if (context.mounted) {
+          SnackbarService.showError(context, message: 'Invalid WiFi format');
+        }
+        return;
       }
-      LoggerService.info('WiFi connection requested for: $content');
+
+      final wifiDetails = QrContentParser.parseWifiDetails(content);
+      if (wifiDetails == null || !wifiDetails.containsKey('ssid')) {
+        if (context.mounted) {
+          SnackbarService.showError(
+            context,
+            message: 'Invalid WiFi QR code format',
+          );
+        }
+        return;
+      }
+
+      final ssid = wifiDetails['ssid'] ?? '';
+      final password = wifiDetails['password'] ?? '';
+      final type = wifiDetails['type'] ?? 'WPA';
+
+      if (Platform.isAndroid) {
+        const platform = MethodChannel('qr_master/actions');
+        try {
+          final result = await platform.invokeMethod<bool>('connectToWifi', {
+            'ssid': ssid,
+            'password': password,
+            'type': type,
+          });
+
+          if (result == true) {
+            LoggerService.info('WiFi settings opened successfully');
+            if (context.mounted) {
+              SnackbarService.showSuccess(
+                context,
+                message: 'WiFi settings opened. Network: $ssid',
+                duration: const Duration(seconds: 3),
+              );
+            }
+          } else {
+            throw Exception('Failed to open WiFi settings');
+          }
+        } on PlatformException catch (e) {
+          LoggerService.error('Platform error connecting to WiFi', error: e);
+          throw Exception('Failed to open WiFi settings: ${e.message}');
+        }
+      } else if (Platform.isIOS) {
+        final uri = Uri.parse('App-Prefs:root=WIFI');
+        final canLaunch = await canLaunchUrl(uri);
+        if (canLaunch) {
+          await launchUrl(uri);
+          if (context.mounted) {
+            SnackbarService.showSuccess(
+              context,
+              message: 'WiFi settings opened',
+              duration: const Duration(seconds: 2),
+            );
+          }
+        } else {
+          final settingsUri = Uri.parse('app-settings:');
+          if (await canLaunchUrl(settingsUri)) {
+            await launchUrl(settingsUri);
+          } else {
+            throw Exception('Cannot open WiFi settings');
+          }
+        }
+      } else {
+        throw Exception('Platform not supported');
+      }
     } catch (e) {
       LoggerService.error('Error connecting to WiFi', error: e);
       if (context.mounted) {
         SnackbarService.showError(
           context,
-          message: 'Failed to connect to WiFi',
+          message: 'Failed to open WiFi settings: ${e.toString()}',
         );
       }
     }
