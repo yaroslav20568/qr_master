@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
-import 'package:qr_master/widgets/subscription_screen/subscription_plan_card/subscription_card_badge.dart';
+import 'package:qr_master/widgets/subscription_screen/subscription_plan_list/subscription_plan_card/subscription_card_badge.dart';
 
 enum BadgePosition { topCenter, topRight }
 

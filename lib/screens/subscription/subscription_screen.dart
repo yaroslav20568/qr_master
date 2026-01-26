@@ -96,119 +96,19 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               const SizedBox(height: 32),
               const SubscriptionFeatureList(),
               const SizedBox(height: 32),
-              if (_isLoading)
-                const Center(child: CircularProgressIndicator())
-              else if (_products.isEmpty) ...[
-                SubscriptionPlanCard(
-                  title: 'Weekly Plan',
-                  productId: _appHudService.productWeekly,
-                  price: '\$3.99',
-                  period: '/ week',
-                  badge: 'MOST POPULAR',
-                  badgeColor: AppColors.primary,
-                  badgePosition: BadgePosition.topCenter,
-                  subtitle: '3-day free trial',
-                  isSelected:
-                      _selectedProductId == _appHudService.productWeekly,
-                  onTap: () {
-                    setState(() {
-                      _selectedProductId = _appHudService.productWeekly;
-                    });
-                  },
-                ),
-                const SizedBox(height: 16),
-                SubscriptionPlanCard(
-                  title: 'Monthly Plan',
-                  productId: _appHudService.productMonthly,
-                  price: '\$7.99',
-                  period: '/ month',
-                  subtitle: 'Cancel anytime',
-                  isSelected:
-                      _selectedProductId == _appHudService.productMonthly,
-                  onTap: () {
-                    setState(() {
-                      _selectedProductId = _appHudService.productMonthly;
-                    });
-                  },
-                ),
-                const SizedBox(height: 16),
-                SubscriptionPlanCard(
-                  title: 'Yearly Plan',
-                  productId: _appHudService.productYearly.isNotEmpty
-                      ? _appHudService.productYearly
-                      : 'yearly',
-                  price: '\$29.99',
-                  period: '/ year',
-                  badge: 'SAVE 70%',
-                  badgeColor: AppColors.success,
-                  badgePosition: BadgePosition.topRight,
-                  oldPrice: '\$99.99',
-                  savings: 'Save \$70',
-                  subtitle: 'Best value option',
-                  isSelected: _appHudService.productYearly.isNotEmpty
-                      ? _selectedProductId == _appHudService.productYearly
-                      : _selectedProductId == 'yearly',
-                  onTap: () {
-                    setState(() {
-                      _selectedProductId =
-                          _appHudService.productYearly.isNotEmpty
-                          ? _appHudService.productYearly
-                          : 'yearly';
-                    });
-                  },
-                ),
-              ] else ...[
-                ..._products.map((product) {
-                  final productId = (product as dynamic).productId ?? '';
-                  final price = _getProductPrice(product);
-                  final period = _getProductPeriod(productId);
-                  final isWeekly = productId.contains('weekly');
-                  final isMonthly = productId.contains('monthly');
-                  final isYearly = productId.contains('yearly');
-
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: SubscriptionPlanCard(
-                      title: isWeekly
-                          ? 'Weekly Plan'
-                          : isMonthly
-                          ? 'Monthly Plan'
-                          : 'Yearly Plan',
-                      productId: productId,
-                      price: price,
-                      period: period,
-                      badge: isWeekly
-                          ? 'MOST POPULAR'
-                          : isYearly
-                          ? 'SAVE 70%'
-                          : null,
-                      badgeColor: isWeekly
-                          ? AppColors.primary
-                          : isYearly
-                          ? AppColors.success
-                          : null,
-                      badgePosition: isWeekly
-                          ? BadgePosition.topCenter
-                          : isYearly
-                          ? BadgePosition.topRight
-                          : null,
-                      oldPrice: isYearly ? '\$99.99' : null,
-                      savings: isYearly ? 'Save \$70' : null,
-                      subtitle: isWeekly
-                          ? '3-day free trial'
-                          : isMonthly
-                          ? 'Cancel anytime'
-                          : 'Best value option',
-                      isSelected: _selectedProductId == productId,
-                      onTap: () {
-                        setState(() {
-                          _selectedProductId = productId;
-                        });
-                      },
-                    ),
-                  );
-                }),
-              ],
+              SubscriptionPlanList(
+                isLoading: _isLoading,
+                products: _products,
+                selectedProductId: _selectedProductId,
+                appHudService: _appHudService,
+                onProductSelected: (productId) {
+                  setState(() {
+                    _selectedProductId = productId;
+                  });
+                },
+                getProductPrice: _getProductPrice,
+                getProductPeriod: _getProductPeriod,
+              ),
               const SizedBox(height: 32),
               Button(
                 text: 'Continue',
