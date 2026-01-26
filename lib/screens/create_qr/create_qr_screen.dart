@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/services/index.dart';
@@ -17,11 +18,28 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
   QrCodeType _selectedType = QrCodeType.url;
   Color _selectedColor = AppColors.black;
   final Map<String, TextEditingController> _controllers = {};
+  RewardedInterstitialAd? _rewardedInterstitialAd;
 
   @override
   void initState() {
     super.initState();
     _initializeControllers();
+    _loadRewardedInterstitialAd();
+    AnalyticsService().logEvent(name: 'create_qr_screen_viewed');
+  }
+
+  void _loadRewardedInterstitialAd() {
+    AdsService().loadRewardedInterstitialAd(
+      onAdLoaded: (ad) {
+        _rewardedInterstitialAd = ad;
+        AnalyticsService().logEvent(name: 'rewarded_interstitial_ad_loaded');
+      },
+      onAdFailedToLoad: (error) {
+        LoggerService.warning(
+          'Rewarded interstitial ad failed to load: $error',
+        );
+      },
+    );
   }
 
   void _initializeControllers() {
@@ -43,6 +61,7 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
     for (final controller in _controllers.values) {
       controller.dispose();
     }
+    _rewardedInterstitialAd?.dispose();
     super.dispose();
   }
 
@@ -165,6 +184,14 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
         await scanHistoryService.addScanHistoryItem(historyItem);
 
         if (!mounted) return;
+
+        AnalyticsService().logEvent(
+          name: 'qr_code_created',
+          parameters: {'type': _selectedType.name},
+        );
+
+        _showRewardedInterstitialAd();
+
         Navigator.of(context).pushNamed(
           AppRoutes.createQrResult,
           arguments: {
@@ -190,6 +217,45 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
         SnackbarService.showError(context, message: 'Error: ${e.toString()}');
       }
     }
+  }
+
+  void _showRewardedInterstitialAd() {
+    if (_rewardedInterstitialAd == null) {
+      _loadRewardedInterstitialAd();
+      return;
+    }
+
+    _rewardedInterstitialAd
+        ?.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (ad) {
+        ad.dispose();
+        _rewardedInterstitialAd = null;
+        _loadRewardedInterstitialAd();
+        AnalyticsService().logEvent(name: 'rewarded_interstitial_ad_closed');
+      },
+      onAdFailedToShowFullScreenContent: (ad, error) {
+        ad.dispose();
+        _rewardedInterstitialAd = null;
+        _loadRewardedInterstitialAd();
+        LoggerService.error(
+          'Rewarded interstitial ad failed to show',
+          error: error,
+        );
+      },
+    );
+
+    _rewardedInterstitialAd?.show(
+      onUserEarnedReward: (ad, reward) {
+        AnalyticsService().logEvent(
+          name: 'rewarded_interstitial_ad_reward_earned',
+          parameters: {
+            'reward_type': reward.type,
+            'reward_amount': reward.amount,
+          },
+        );
+      },
+    );
+    AnalyticsService().logEvent(name: 'rewarded_interstitial_ad_shown');
   }
 
   void _resetFields() {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/utils/index.dart';
+import 'package:qr_master/widgets/ads/index.dart';
 import 'package:qr_master/widgets/ui/index.dart';
 
 class MyQrCodesList extends StatelessWidget {
@@ -63,6 +64,8 @@ class MyQrCodesList extends StatelessWidget {
 
     return Column(
       children: [
+        if (qrCodes.isNotEmpty) const NativeAdWidget(),
+        if (qrCodes.isNotEmpty) const SizedBox(height: 16),
         for (int i = 0; i < qrCodes.length; i += 2) ...[
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,

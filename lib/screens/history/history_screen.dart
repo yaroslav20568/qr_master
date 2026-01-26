@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/services/index.dart';
@@ -19,11 +20,74 @@ class _HistoryScreenState extends State<HistoryScreen> {
   final Debouncer _debouncer = Debouncer();
   ScanHistoryAction? _selectedAction;
   String _searchQuery = '';
+  RewardedAd? _rewardedAd;
+  bool _isRewardedAdLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRewardedAd();
+    AnalyticsService().logEvent(name: 'history_screen_viewed');
+  }
+
+  void _loadRewardedAd() {
+    AdsService().loadRewardedAd(
+      onAdLoaded: (ad) {
+        setState(() {
+          _rewardedAd = ad;
+          _isRewardedAdLoaded = true;
+        });
+        AnalyticsService().logEvent(name: 'rewarded_ad_loaded');
+      },
+      onAdFailedToLoad: (error) {
+        LoggerService.warning('Rewarded ad failed to load: $error');
+      },
+    );
+  }
+
+  Future<void> _showRewardedAd() async {
+    if (_rewardedAd == null || !_isRewardedAdLoaded) {
+      SnackbarService.showWarning(context, message: 'Ad is not ready yet');
+      return;
+    }
+
+    _rewardedAd?.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (ad) {
+        ad.dispose();
+        _rewardedAd = null;
+        _isRewardedAdLoaded = false;
+        _loadRewardedAd();
+        AnalyticsService().logEvent(name: 'rewarded_ad_closed');
+      },
+      onAdFailedToShowFullScreenContent: (ad, error) {
+        ad.dispose();
+        _rewardedAd = null;
+        _isRewardedAdLoaded = false;
+        _loadRewardedAd();
+        LoggerService.error('Rewarded ad failed to show', error: error);
+      },
+    );
+
+    await _rewardedAd?.show(
+      onUserEarnedReward: (ad, reward) {
+        AnalyticsService().logEvent(
+          name: 'rewarded_ad_reward_earned',
+          parameters: {
+            'reward_type': reward.type,
+            'reward_amount': reward.amount,
+          },
+        );
+        SnackbarService.showSuccess(context, message: 'Reward earned!');
+      },
+    );
+    AnalyticsService().logEvent(name: 'rewarded_ad_shown');
+  }
 
   @override
   void dispose() {
     _searchController.dispose();
     _debouncer.dispose();
+    _rewardedAd?.dispose();
     super.dispose();
   }
 
@@ -219,6 +283,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
             title: const Text('Delete All History'),
             onTap: _deleteAllHistory,
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.play_circle_outline,
+              color: AppColors.primary,
+            ),
+            title: const Text('Watch Ad for Rewards'),
+            onTap: () {
+              Navigator.of(context).pop();
+              _showRewardedAd();
+            },
           ),
         ],
       ),

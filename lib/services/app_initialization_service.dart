@@ -1,5 +1,6 @@
 import 'package:qr_master/services/ads_service.dart';
 import 'package:qr_master/services/apphud_service.dart';
+import 'package:qr_master/services/appmetrica_service.dart';
 import 'package:qr_master/services/appsflyer_service.dart';
 import 'package:qr_master/services/att_service.dart';
 import 'package:qr_master/services/firebase/firebase_service.dart';
@@ -15,6 +16,12 @@ class AppInitializationService {
       await AdsService().initialize().catchError((error) {
         LoggerService.warning(
           'AdsService initialization failed, continuing: $error',
+        );
+      });
+
+      AppMetricaService().initialize().catchError((error) {
+        LoggerService.warning(
+          'AppMetrica initialization failed, continuing: $error',
         );
       });
 

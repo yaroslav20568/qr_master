@@ -14,6 +14,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final MainTabsService _tabsService = MainTabsService();
 
+  @override
+  void initState() {
+    super.initState();
+    AnalyticsService().logEvent(name: 'home_screen_viewed');
+  }
+
   void _onActivityItemTap(ScanHistoryItem item) {
     _tabsService.switchToHistory();
   }
@@ -36,6 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 32),
               RecentActivity(onItemTap: _onActivityItemTap),
+              const SizedBox(height: 16),
+              const BannerAdWidget(),
             ],
           ),
         ),

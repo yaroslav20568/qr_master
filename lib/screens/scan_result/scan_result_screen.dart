@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/services/index.dart';
@@ -15,11 +16,39 @@ class ScanResultScreen extends StatefulWidget {
 
 class _ScanResultScreenState extends State<ScanResultScreen> {
   final QrCodeService _qrCodeService = QrCodeService();
+  InterstitialAd? _interstitialAd;
 
   @override
   void initState() {
     super.initState();
     _incrementScanViewIfNeeded();
+    _loadInterstitialAd();
+    AnalyticsService().logEvent(name: 'scan_result_viewed');
+  }
+
+  void _loadInterstitialAd() {
+    AdsService().loadInterstitialAd(
+      onAdLoaded: (ad) {
+        _interstitialAd = ad;
+        _interstitialAd?.fullScreenContentCallback = FullScreenContentCallback(
+          onAdDismissedFullScreenContent: (ad) {
+            ad.dispose();
+            _interstitialAd = null;
+            AnalyticsService().logEvent(name: 'interstitial_ad_closed');
+          },
+          onAdFailedToShowFullScreenContent: (ad, error) {
+            ad.dispose();
+            _interstitialAd = null;
+            LoggerService.error('Interstitial ad failed to show', error: error);
+          },
+        );
+        _interstitialAd?.show();
+        AnalyticsService().logEvent(name: 'interstitial_ad_shown');
+      },
+      onAdFailedToLoad: (error) {
+        LoggerService.warning('Interstitial ad failed to load: $error');
+      },
+    );
   }
 
   Future<void> _incrementScanViewIfNeeded() async {
@@ -40,6 +69,12 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
   void _handleTabSelected(BuildContext context, BottomNavItem item) {
     Navigator.of(context).popUntil((route) => route.isFirst);
     MainTabsService().switchToTabItem(item);
+  }
+
+  @override
+  void dispose() {
+    _interstitialAd?.dispose();
+    super.dispose();
   }
 
   @override

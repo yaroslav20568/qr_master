@@ -1,3 +1,4 @@
+export 'ads/index.dart';
 export 'auth_screen/index.dart';
 export 'create_qr_screen/index.dart';
 export 'history_screen/index.dart';

@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:apphud/apphud.dart';
 import 'package:apphud/models/apphud_models/apphud_attribution_data.dart';
 import 'package:apphud/models/apphud_models/apphud_attribution_provider.dart';
@@ -101,6 +102,7 @@ class AppHudService {
 
     try {
       LoggerService.info('Initializing AppHud...');
+      await Apphud.enableDebugLogs();
       await Apphud.start(apiKey: apiKey).timeout(
         const Duration(seconds: 10),
         onTimeout: () {

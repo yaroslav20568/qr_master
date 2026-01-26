@@ -39,9 +39,22 @@ class AdsService {
     try {
       LoggerService.info('Initializing Google Mobile Ads...');
       LoggerService.info('AdMob App ID: $appId');
-      await MobileAds.instance.initialize();
+      LoggerService.info('Banner Ad Unit ID: $bannerAdUnitId');
+
+      final initStatus = await MobileAds.instance.initialize();
       _isInitialized = true;
+
       LoggerService.info('Google Mobile Ads initialized successfully');
+      LoggerService.info(
+        'Initialization status: ${initStatus.adapterStatuses}',
+      );
+
+      for (final entry in initStatus.adapterStatuses.entries) {
+        LoggerService.info(
+          'Adapter: ${entry.key}, Status: ${entry.value.state}, '
+          'Description: ${entry.value.description}',
+        );
+      }
     } catch (e) {
       LoggerService.error('Error initializing Google Mobile Ads', error: e);
       LoggerService.warning('Continuing without ads functionality');
@@ -63,8 +76,21 @@ class AdsService {
       size: adSize,
       request: const AdRequest(),
       listener: BannerAdListener(
-        onAdLoaded: onAdLoaded,
-        onAdFailedToLoad: onAdFailedToLoad,
+        onAdLoaded: (ad) {
+          LoggerService.info('Banner ad loaded successfully');
+          onAdLoaded(ad);
+        },
+        onAdFailedToLoad: (ad, error) {
+          LoggerService.error(
+            'Banner ad failed to load: ${error.code} - ${error.message}',
+            error: error,
+          );
+          LoggerService.info('Banner Ad Unit ID: $bannerAdUnitId');
+          LoggerService.info(
+            'Domain: ${error.domain}, ResponseInfo: ${error.responseInfo}',
+          );
+          onAdFailedToLoad(ad, error);
+        },
         onAdOpened: (Ad ad) {
           LoggerService.info('Banner ad opened');
         },
@@ -96,9 +122,19 @@ class AdsService {
         onAdLoaded: (ad) {
           interstitialAd = ad;
           onAdLoaded(ad);
-          LoggerService.info('Interstitial ad loaded');
+          LoggerService.info('Interstitial ad loaded successfully');
         },
-        onAdFailedToLoad: onAdFailedToLoad,
+        onAdFailedToLoad: (error) {
+          LoggerService.error(
+            'Interstitial ad failed to load: ${error.code} - ${error.message}',
+            error: error,
+          );
+          LoggerService.info('Interstitial Ad Unit ID: $interstitialAdUnitId');
+          LoggerService.info(
+            'Domain: ${error.domain}, ResponseInfo: ${error.responseInfo}',
+          );
+          onAdFailedToLoad(error);
+        },
       ),
     );
 
@@ -123,9 +159,19 @@ class AdsService {
         onAdLoaded: (ad) {
           rewardedAd = ad;
           onAdLoaded(ad);
-          LoggerService.info('Rewarded ad loaded');
+          LoggerService.info('Rewarded ad loaded successfully');
         },
-        onAdFailedToLoad: onAdFailedToLoad,
+        onAdFailedToLoad: (error) {
+          LoggerService.error(
+            'Rewarded ad failed to load: ${error.code} - ${error.message}',
+            error: error,
+          );
+          LoggerService.info('Rewarded Ad Unit ID: $rewardedAdUnitId');
+          LoggerService.info(
+            'Domain: ${error.domain}, ResponseInfo: ${error.responseInfo}',
+          );
+          onAdFailedToLoad(error);
+        },
       ),
     );
 
@@ -150,9 +196,21 @@ class AdsService {
         onAdLoaded: (ad) {
           rewardedInterstitialAd = ad;
           onAdLoaded(ad);
-          LoggerService.info('Rewarded interstitial ad loaded');
+          LoggerService.info('Rewarded interstitial ad loaded successfully');
         },
-        onAdFailedToLoad: onAdFailedToLoad,
+        onAdFailedToLoad: (error) {
+          LoggerService.error(
+            'Rewarded interstitial ad failed to load: ${error.code} - ${error.message}',
+            error: error,
+          );
+          LoggerService.info(
+            'Rewarded Interstitial Ad Unit ID: $rewardedInterstitialAdUnitId',
+          );
+          LoggerService.info(
+            'Domain: ${error.domain}, ResponseInfo: ${error.responseInfo}',
+          );
+          onAdFailedToLoad(error);
+        },
       ),
     );
 
@@ -177,10 +235,18 @@ class AdsService {
         onAdLoaded: (ad) {
           if (ad is NativeAd) {
             onAdLoaded(ad);
-            LoggerService.info('Native ad loaded');
+            LoggerService.info('Native ad loaded successfully');
           }
         },
         onAdFailedToLoad: (ad, error) {
+          LoggerService.error(
+            'Native ad failed to load: ${error.code} - ${error.message}',
+            error: error,
+          );
+          LoggerService.info('Native Ad Unit ID: $nativeAdUnitId');
+          LoggerService.info(
+            'Domain: ${error.domain}, ResponseInfo: ${error.responseInfo}',
+          );
           ad.dispose();
           onAdFailedToLoad(error);
         },
@@ -209,9 +275,17 @@ class AdsService {
         onAdLoaded: (ad) {
           appOpenAd = ad;
           onAdLoaded(ad);
-          LoggerService.info('App open ad loaded');
+          LoggerService.info('App open ad loaded successfully');
         },
         onAdFailedToLoad: (error) {
+          LoggerService.error(
+            'App open ad failed to load: ${error.code} - ${error.message}',
+            error: error,
+          );
+          LoggerService.info('App Open Ad Unit ID: $appOpenAdUnitId');
+          LoggerService.info(
+            'Domain: ${error.domain}, ResponseInfo: ${error.responseInfo}',
+          );
           onAdFailedToLoad(error);
         },
       ),

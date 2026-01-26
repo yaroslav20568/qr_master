@@ -22,6 +22,12 @@ class _MyQrCodesScreenState extends State<MyQrCodesScreen> {
   String _searchQuery = '';
   QrCodeType? _selectedType;
 
+  @override
+  void initState() {
+    super.initState();
+    AnalyticsService().logEvent(name: 'my_qr_codes_screen_viewed');
+  }
+
   List<QrCode> _filteredQrCodes(List<QrCode> qrCodes) {
     var filtered = qrCodes;
 
