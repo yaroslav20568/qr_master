@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
+import 'package:qr_master/widgets/subscription_screen/subscription_plan_card/subscription_card_badge.dart';
 
 enum BadgePosition { topCenter, topRight }
 
@@ -38,56 +39,46 @@ class SubscriptionPlanCard extends StatelessWidget {
     final isTopCenterBadge = badgePosition == BadgePosition.topCenter;
     final isTopRightBadge = badgePosition == BadgePosition.topRight;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppColors.primaryBg,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.border,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Center(
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: AppColors.primaryBg,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: isSelected ? AppColors.primary : AppColors.border,
+                width: 1,
+              ),
+              boxShadow: [
+                if (isSelected)
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.45),
+                    offset: Offset(0, 2),
+                    blurRadius: 4,
+                  ),
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.06),
+                  offset: Offset(0, 4),
+                  blurRadius: 16,
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+            child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if (isTopCenterBadge && badge != null) ...[
-                    Center(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: badgeColor ?? AppColors.primary,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          badge!,
-                          style: AppFonts.interMedium.copyWith(
-                            fontSize: 12,
-                            color: AppColors.primaryBg,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                  ] else if (!isTopRightBadge) ...[
-                    const SizedBox(height: 0),
-                  ],
                   Text(
                     title,
                     textAlign: TextAlign.center,
                     style: AppFonts.interSemiBold.copyWith(
-                      fontSize: 20,
-                      height: 1.3,
+                      fontSize: 22,
+                      height: 1.5,
                       letterSpacing: -0.5,
                       color: AppColors.textPrimary,
                     ),
@@ -103,20 +94,21 @@ class SubscriptionPlanCard extends StatelessWidget {
                           Text(
                             price,
                             style: AppFonts.interBold.copyWith(
-                              fontSize: 32,
-                              height: 1.2,
+                              fontSize: 28,
+                              height: 1.5,
                               letterSpacing: -0.5,
                               color: AppColors.textPrimary,
                             ),
                           ),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: 5),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 6),
                             child: Text(
                               period,
                               style: AppFonts.interRegular.copyWith(
-                                fontSize: 16,
-                                height: 1.5,
+                                fontSize: 17,
+                                height: 1.53,
+                                letterSpacing: -0.5,
                                 color: AppColors.textSecondary,
                               ),
                             ),
@@ -131,19 +123,20 @@ class SubscriptionPlanCard extends StatelessWidget {
                             Text(
                               oldPrice!,
                               style: AppFonts.interRegular.copyWith(
-                                fontSize: 16,
-                                height: 1.5,
-                                color: AppColors.textSecondary,
+                                fontSize: 15,
+                                height: 1.53,
+                                color: AppColors.grayMiddle,
                                 decoration: TextDecoration.lineThrough,
+                                decorationColor: AppColors.grayMiddle,
                               ),
                             ),
                             if (savings != null) ...[
-                              const SizedBox(width: 8),
+                              const SizedBox(width: 10),
                               Text(
                                 savings!,
-                                style: AppFonts.interMedium.copyWith(
-                                  fontSize: 16,
-                                  height: 1.5,
+                                style: AppFonts.interSemiBold.copyWith(
+                                  fontSize: 15,
+                                  height: 1.53,
                                   color: AppColors.success,
                                 ),
                               ),
@@ -154,13 +147,13 @@ class SubscriptionPlanCard extends StatelessWidget {
                     ],
                   ),
                   if (subtitle != null) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 16),
                     Text(
                       subtitle!,
                       textAlign: TextAlign.center,
                       style: AppFonts.interRegular.copyWith(
-                        fontSize: 14,
-                        height: 1.5,
+                        fontSize: 15,
+                        height: 1.53,
                         color: AppColors.textSecondary,
                       ),
                     ),
@@ -168,31 +161,28 @@ class SubscriptionPlanCard extends StatelessWidget {
                 ],
               ),
             ),
-            if (isTopRightBadge && badge != null)
-              Positioned(
-                top: 0,
-                right: 0,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: badgeColor ?? AppColors.success,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    badge!,
-                    style: AppFonts.interMedium.copyWith(
-                      fontSize: 12,
-                      color: AppColors.primaryBg,
-                    ),
-                  ),
-                ),
-              ),
-          ],
+          ),
         ),
-      ),
+        if (isTopCenterBadge && badge != null) ...[
+          Positioned(
+            top: -8,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: SubscriptionCardBadge(text: badge!, color: badgeColor),
+            ),
+          ),
+        ],
+        if (isTopRightBadge && badge != null)
+          Positioned(
+            top: -8,
+            right: 16,
+            child: SubscriptionCardBadge(
+              text: badge!,
+              color: badgeColor ?? AppColors.success,
+            ),
+          ),
+      ],
     );
   }
 }

@@ -116,7 +116,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     });
                   },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 SubscriptionPlanCard(
                   title: 'Monthly Plan',
                   productId: _appHudService.productMonthly,
@@ -131,7 +131,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     });
                   },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 SubscriptionPlanCard(
                   title: 'Yearly Plan',
                   productId: _appHudService.productYearly.isNotEmpty
@@ -167,7 +167,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   final isYearly = productId.contains('yearly');
 
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.only(bottom: 16),
                     child: SubscriptionPlanCard(
                       title: isWeekly
                           ? 'Weekly Plan'
