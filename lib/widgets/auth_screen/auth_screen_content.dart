@@ -74,7 +74,6 @@ class AuthScreenContent extends StatelessWidget {
             Button(
               text: 'Sign in with Google',
               onPressed: onSignIn,
-              width: double.infinity,
               loading: isLoading,
             ),
             const SizedBox(height: 40),

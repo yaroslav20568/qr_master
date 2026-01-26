@@ -44,7 +44,7 @@ class Button extends StatelessWidget {
     final borderRadius = isSmall ? 14.0 : 18.0;
 
     return Container(
-      width: width ?? double.infinity,
+      width: width,
       height: buttonHeight,
       decoration: BoxDecoration(
         gradient: AppGradients.primaryGradient,
@@ -106,7 +106,7 @@ class Button extends StatelessWidget {
     final fontSize = isSmall ? 13.0 : 15.0;
 
     return SizedBox(
-      width: width ?? double.infinity,
+      width: width,
       child: TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(
