@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qr_master/constants/app_routes.dart';
+import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/services/index.dart';
 import 'package:qr_master/utils/index.dart';
 import 'package:qr_master/widgets/onboarding_screen/onboarding_steps/index.dart';

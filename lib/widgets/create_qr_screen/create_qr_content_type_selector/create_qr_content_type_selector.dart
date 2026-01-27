@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qr_master/constants/app_assets.dart';
+import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/widgets/create_qr_screen/create_qr_content_type_selector/index.dart';
 import 'package:qr_master/widgets/layouts/index.dart';
