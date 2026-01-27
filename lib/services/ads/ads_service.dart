@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:qr_master/services/app/logger_service.dart';
@@ -26,9 +28,18 @@ class AdsService {
   String get nativeAdUnitId =>
       dotenv.env['ADMOB_NATIVE_AD_UNIT_ID'] ??
       'ca-app-pub-3940256099942544/2247696110';
-  String get appOpenAdUnitId =>
-      dotenv.env['ADMOB_APP_OPEN_AD_UNIT_ID'] ??
-      'ca-app-pub-3940256099942544/3419835294';
+
+  String get appOpenAdUnitId {
+    if (Platform.isAndroid) {
+      return dotenv.env['ADMOB_APP_OPEN_AD_UNIT_ID_ANDROID'] ??
+          'ca-app-pub-3940256099942544/9257395921';
+    } else if (Platform.isIOS) {
+      return dotenv.env['ADMOB_APP_OPEN_AD_UNIT_ID_IOS'] ??
+          'ca-app-pub-3940256099942544/5575463023';
+    } else {
+      return '';
+    }
+  }
 
   Future<void> initialize() async {
     if (_isInitialized) {
@@ -50,7 +61,7 @@ class AdsService {
       );
 
       for (final entry in initStatus.adapterStatuses.entries) {
-        LoggerService.info(
+        LoggerService.warning(
           'Adapter: ${entry.key}, Status: ${entry.value.state}, '
           'Description: ${entry.value.description}',
         );

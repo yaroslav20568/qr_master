@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/services/index.dart';
 import 'package:qr_master/widgets/index.dart';
@@ -15,27 +14,12 @@ class _SplashScreenState extends State<SplashScreen> {
   late final Future<String> _versionFuture;
   final AuthService _authService = AuthService();
   final UserProfileService _userProfileService = UserProfileService();
-  AppOpenAd? _appOpenAd;
 
   @override
   void initState() {
     super.initState();
     _versionFuture = _loadVersion();
-    _loadAppOpenAd();
     _initializeApp();
-  }
-
-  void _loadAppOpenAd() {
-    AdsService().loadAppOpenAd(
-      onAdLoaded: (ad) {
-        _appOpenAd = ad;
-        _appOpenAd?.show();
-        AnalyticsService().logEvent(name: 'app_open_ad_loaded');
-      },
-      onAdFailedToLoad: (error) {
-        LoggerService.warning('App open ad failed to load: $error');
-      },
-    );
   }
 
   Future<String> _loadVersion() async {
@@ -118,12 +102,6 @@ class _SplashScreenState extends State<SplashScreen> {
     } catch (e) {
       LoggerService.error('Error checking auth status', error: e);
     }
-  }
-
-  @override
-  void dispose() {
-    _appOpenAd?.dispose();
-    super.dispose();
   }
 
   @override
