@@ -1,10 +1,10 @@
-import 'package:qr_master/services/ads_service.dart';
-import 'package:qr_master/services/apphud_service.dart';
-import 'package:qr_master/services/appmetrica_service.dart';
-import 'package:qr_master/services/appsflyer_service.dart';
-import 'package:qr_master/services/att_service.dart';
+import 'package:qr_master/services/ads/ads_service.dart';
+import 'package:qr_master/services/analytics/appmetrica_service.dart';
+import 'package:qr_master/services/analytics/appsflyer_service.dart';
+import 'package:qr_master/services/app/logger_service.dart';
 import 'package:qr_master/services/firebase/firebase_service.dart';
-import 'package:qr_master/services/logger_service.dart';
+import 'package:qr_master/services/permissions/att_service.dart';
+import 'package:qr_master/services/subscriptions/apphud_service.dart';
 
 class AppInitializationService {
   static Future<void> initialize() async {

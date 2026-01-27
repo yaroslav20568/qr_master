@@ -2,8 +2,8 @@ import 'dart:io' show Platform;
 
 import 'package:appsflyer_sdk/appsflyer_sdk.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:qr_master/services/apphud_service.dart';
-import 'package:qr_master/services/logger_service.dart';
+import 'package:qr_master/services/app/logger_service.dart';
+import 'package:qr_master/services/subscriptions/apphud_service.dart';
 
 class AppsFlyerService {
   static final AppsFlyerService _instance = AppsFlyerService._internal();

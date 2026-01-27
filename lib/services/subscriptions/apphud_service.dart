@@ -9,7 +9,7 @@ import 'package:apphud/models/apphud_models/apphud_subscription.dart';
 import 'package:apphud/models/apphud_models/apphud_user.dart';
 import 'package:apphud/models/apphud_models/composite/apphud_product_composite.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:qr_master/services/logger_service.dart';
+import 'package:qr_master/services/app/logger_service.dart';
 
 class _AppHudListenerImpl extends ApphudListener {
   final Function(bool) onSubscriptionStatusChanged;

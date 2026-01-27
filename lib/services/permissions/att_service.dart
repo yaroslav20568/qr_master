@@ -1,8 +1,8 @@
 import 'dart:io' show Platform;
 
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
-import 'package:qr_master/services/appsflyer_service.dart';
-import 'package:qr_master/services/logger_service.dart';
+import 'package:qr_master/services/analytics/appsflyer_service.dart';
+import 'package:qr_master/services/app/logger_service.dart';
 
 class ATTService {
   static final ATTService _instance = ATTService._internal();

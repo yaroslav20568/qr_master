@@ -1,6 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:qr_master/services/logger_service.dart';
+import 'package:qr_master/services/app/logger_service.dart';
 
 class AdsService {
   static final AdsService _instance = AdsService._internal();

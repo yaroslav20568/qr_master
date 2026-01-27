@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:qr_master/services/logger_service.dart';
+import 'package:qr_master/services/app/logger_service.dart';
 
 class ImageService {
   static const MethodChannel _channel = MethodChannel('qr_master/image_saver');

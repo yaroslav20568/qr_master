@@ -1,4 +1,4 @@
-import 'package:qr_master/services/logger_service.dart';
+import 'package:qr_master/services/app/logger_service.dart';
 
 class UrlUtils {
   static Uri normalizeUrl(String url) {

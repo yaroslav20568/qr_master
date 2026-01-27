@@ -1,7 +1,7 @@
-import 'package:qr_master/services/appmetrica_service.dart';
-import 'package:qr_master/services/appsflyer_service.dart';
+import 'package:qr_master/services/analytics/appmetrica_service.dart';
+import 'package:qr_master/services/analytics/appsflyer_service.dart';
+import 'package:qr_master/services/app/logger_service.dart';
 import 'package:qr_master/services/firebase/firebase_service.dart';
-import 'package:qr_master/services/logger_service.dart';
 
 class AnalyticsService {
   static final AnalyticsService _instance = AnalyticsService._internal();

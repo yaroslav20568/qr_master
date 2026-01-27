@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:qr_master/services/app/logger_service.dart';
 import 'package:qr_master/services/firebase/firebase_service.dart';
-import 'package:qr_master/services/logger_service.dart';
 
 class UserProfileService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
