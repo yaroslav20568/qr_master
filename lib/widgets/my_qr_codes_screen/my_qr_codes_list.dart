@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/utils/index.dart';
-import 'package:qr_master/widgets/ads/index.dart';
 import 'package:qr_master/widgets/ui/index.dart';
 
 class MyQrCodesList extends StatelessWidget {

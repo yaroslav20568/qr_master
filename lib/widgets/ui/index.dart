@@ -1,4 +1,5 @@
 export 'actions_dropdown.dart';
+export 'ads/index.dart';
 export 'app_dropdown.dart';
 export 'background_circle_icon.dart';
 export 'bottom_modal.dart';
