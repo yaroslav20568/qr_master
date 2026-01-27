@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qr_master/constants/index.dart';
-import 'package:qr_master/models/qr_code_type.dart';
+import 'package:qr_master/models/qr_code/qr_code_type.dart';
 
 class QrService {
   Future<Uint8List?> generateQrCodeImage({

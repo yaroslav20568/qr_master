@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_master/constants/index.dart';
-import 'package:qr_master/models/qr_code_type.dart';
+import 'package:qr_master/models/qr_code/qr_code_type.dart';
 
 class QrCode {
   final String id;
