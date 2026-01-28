@@ -118,29 +118,33 @@ jobs:
           sudo gem install cocoapods
           cd ios
           
-          echo "📝 Ensuring Podfile has iOS 14.0 minimum deployment target"
+          echo "📝 Ensuring Podfile has iOS 15.0 minimum deployment target"
           
           if [ -f Podfile ]; then
             echo "📝 Updating existing Podfile"
             if grep -q "^platform :ios" Podfile; then
-              sed -i '' "s|^platform :ios.*|platform :ios, '14.0'|" Podfile
-              echo "✅ Updated platform version to 14.0"
+              sed -i '' "s|^platform :ios.*|platform :ios, '15.0'|" Podfile
+              echo "✅ Updated platform version to 15.0"
             else
-              sed -i '' "1s|^|platform :ios, '14.0'\n|" Podfile
-              echo "✅ Added platform version 14.0"
+              sed -i '' "1s|^|platform :ios, '15.0'\n|" Podfile
+              echo "✅ Added platform version 15.0"
             fi
             
-            if ! grep -q "IPHONEOS_DEPLOYMENT_TARGET.*14.0" Podfile; then
+            if ! grep -q "IPHONEOS_DEPLOYMENT_TARGET.*15.0" Podfile; then
               if grep -q "post_install" Podfile; then
                 if grep -q "IPHONEOS_DEPLOYMENT_TARGET" Podfile; then
-                  sed -i '' "s|IPHONEOS_DEPLOYMENT_TARGET.*|IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'|" Podfile
+                  sed -i '' "s|IPHONEOS_DEPLOYMENT_TARGET.*|IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'|g" Podfile
                 else
-                  awk '/target\.build_configurations\.each do \|config\|/ { print; print "      config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'14.0'"'"'"; next }1' Podfile > Podfile.tmp && mv Podfile.tmp Podfile
+                  awk '/target\.build_configurations\.each do \|config\|/ { print; print "      config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'15.0'"'"'"; next }1' Podfile > Podfile.tmp && mv Podfile.tmp Podfile
                 fi
               else
-                printf '\n\npost_install do |installer|\n  installer.pods_project.targets.each do |target|\n    target.build_configurations.each do |config|\n      config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'14.0'"'"'\n    end\n  end\nend\n' >> Podfile
+                printf '\n\npost_install do |installer|\n  installer.pods_project.targets.each do |target|\n    target.build_configurations.each do |config|\n      config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'15.0'"'"'\n    end\n  end\nend\n' >> Podfile
               fi
               echo "✅ Added IPHONEOS_DEPLOYMENT_TARGET to post_install"
+            fi
+            if grep -q "post_install" Podfile && ! grep -q "installer.pods_project.build_configurations.each" Podfile; then
+              awk '/post_install do \|installer\|/ { print; print "  installer.pods_project.build_configurations.each do |config|"; print "    config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'15.0'"'"'"; print "  end"; next }1' Podfile > Podfile.tmp && mv Podfile.tmp Podfile
+              echo "✅ Added project-level IPHONEOS_DEPLOYMENT_TARGET"
             fi
           else
             echo "⚠️  Podfile not found, Flutter will create it during pod install"
@@ -152,9 +156,9 @@ jobs:
               echo "⚠️  pod install failed, updating Podfile and retrying..."
               if [ -f Podfile ]; then
                 if grep -q "^platform :ios" Podfile; then
-                  sed -i '' "s|^platform :ios.*|platform :ios, '14.0'|" Podfile
+                  sed -i '' "s|^platform :ios.*|platform :ios, '15.0'|" Podfile
                 else
-                  sed -i '' "1s|^|platform :ios, '14.0'\n|" Podfile
+                  sed -i '' "1s|^|platform :ios, '15.0'\n|" Podfile
                 fi
               fi
               pod install --repo-update
@@ -169,11 +173,11 @@ jobs:
                 else
                   sed -i '' "1s|^|platform :ios, '14.0'\n|" Podfile
                 fi
-                if ! grep -q "IPHONEOS_DEPLOYMENT_TARGET.*14.0" Podfile; then
+                if ! grep -q "IPHONEOS_DEPLOYMENT_TARGET.*15.0" Podfile; then
                   if grep -q "post_install" Podfile; then
-                    awk '/target\.build_configurations\.each do \|config\|/ { print; print "      config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'14.0'"'"'"; next }1' Podfile > Podfile.tmp && mv Podfile.tmp Podfile
+                    awk '/target\.build_configurations\.each do \|config\|/ { print; print "      config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'15.0'"'"'"; next }1' Podfile > Podfile.tmp && mv Podfile.tmp Podfile
                   else
-                    printf '\n\npost_install do |installer|\n  installer.pods_project.targets.each do |target|\n    target.build_configurations.each do |config|\n      config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'14.0'"'"'\n    end\n  end\nend\n' >> Podfile
+                    printf '\n\npost_install do |installer|\n  installer.pods_project.targets.each do |target|\n    target.build_configurations.each do |config|\n      config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'15.0'"'"'\n    end\n  end\nend\n' >> Podfile
                   fi
                 fi
               fi
