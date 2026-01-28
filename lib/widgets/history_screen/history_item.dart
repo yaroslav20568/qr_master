@@ -142,11 +142,16 @@ class HistoryItem extends StatelessWidget {
                     );
                   }
 
-                  return ActionsDropdown(
-                    items: actions,
-                    iconBackgroundSize: 20,
-                    iconBackgroundColor: AppColors.transparent,
-                    iconButtonSize: 12,
+                  return Row(
+                    children: [
+                      SizedBox(width: 8),
+                      ActionsDropdown(
+                        items: actions,
+                        iconBackgroundSize: 20,
+                        iconBackgroundColor: AppColors.transparent,
+                        iconButtonSize: 12,
+                      ),
+                    ],
                   );
                 },
               ),
