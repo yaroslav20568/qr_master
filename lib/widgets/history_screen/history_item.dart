@@ -62,15 +62,12 @@ class HistoryItem extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    () {
-                      final displayContent = QrContentParser.getDisplayContent(
+                    StringUtils.cutText(
+                      QrContentParser.getDisplayContent(
                         item.content,
                         item.type,
-                      );
-                      return displayContent.length > 50
-                          ? '${displayContent.substring(0, 50)}...'
-                          : displayContent;
-                    }(),
+                      ),
+                    ),
                     style: AppFonts.interRegular.copyWith(
                       fontSize: 15,
                       height: 1.53,

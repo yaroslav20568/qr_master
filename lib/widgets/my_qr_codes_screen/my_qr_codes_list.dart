@@ -46,6 +46,7 @@ class MyQrCodesList extends StatelessWidget {
     return QrCard(
       title: qrCode.title ?? qrCode.type.displayName,
       subtitle: qrCode.content,
+      type: qrCode.type,
       date: AppDateUtils.formatDate(qrCode.createdAt),
       views: '${qrCode.scanView}',
       size: QrCardSize.l,

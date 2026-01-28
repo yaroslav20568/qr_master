@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
+import 'package:qr_master/utils/index.dart';
 import 'package:qr_master/widgets/ui/actions_dropdown.dart';
 
 enum QrCardSize { s, l }
@@ -9,6 +10,7 @@ enum QrCardSize { s, l }
 class QrCard extends StatelessWidget {
   final String title;
   final String subtitle;
+  final QrCodeType? type;
   final String date;
   final String views;
   final QrCardSize size;
@@ -20,6 +22,7 @@ class QrCard extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
+    this.type,
     required this.date,
     required this.views,
     this.size = QrCardSize.s,
@@ -106,9 +109,13 @@ class QrCard extends StatelessWidget {
                   ),
               ],
             ),
-            // SizedBox(height: isLarge ? 8 : 5),
+            SizedBox(height: isLarge ? 8 : 5),
             Text(
-              subtitle,
+              type != null
+                  ? StringUtils.cutText(
+                      QrContentParser.getDisplayContent(subtitle, type!),
+                    )
+                  : subtitle,
               style: AppFonts.interRegular.copyWith(
                 fontSize: isLarge ? 13 : 8.81,
                 letterSpacing: isLarge ? -0.5 : -0.34,
