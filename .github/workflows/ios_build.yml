@@ -1,0 +1,273 @@
+name: iOS Build app
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.6'
+          channel: 'stable'
+
+      - name: Flutter doctor
+        run: flutter doctor -v
+
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v4
+        id: flutter-pub-cache
+        with:
+          path: |
+            ~/.pub-cache
+          key: ${{ runner.os }}-flutter-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-pub-
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Create .env file from secrets
+        run: |
+          echo "# Environment variables for iOS build" > .env
+          echo "# These are loaded from GitHub Secrets" >> .env
+          echo "" >> .env
+
+          [ -n "$APPHUD_API_KEY" ] && echo "APPHUD_API_KEY=$APPHUD_API_KEY" >> .env || echo "# APPHUD_API_KEY=not_set" >> .env
+          [ -n "$APPHUD_PAYWALL_ID" ] && echo "APPHUD_PAYWALL_ID=$APPHUD_PAYWALL_ID" >> .env || echo "# APPHUD_PAYWALL_ID=not_set" >> .env
+          [ -n "$APPHUD_PRODUCT_WEEKLY" ] && echo "APPHUD_PRODUCT_WEEKLY=$APPHUD_PRODUCT_WEEKLY" >> .env || echo "# APPHUD_PRODUCT_WEEKLY=not_set" >> .env
+          [ -n "$APPHUD_PRODUCT_MONTHLY" ] && echo "APPHUD_PRODUCT_MONTHLY=$APPHUD_PRODUCT_MONTHLY" >> .env || echo "# APPHUD_PRODUCT_MONTHLY=not_set" >> .env
+
+          [ -n "$APPSFLYER_DEV_KEY" ] && echo "APPSFLYER_DEV_KEY=$APPSFLYER_DEV_KEY" >> .env || echo "# APPSFLYER_DEV_KEY=not_set" >> .env
+          [ -n "$APPSFLYER_APP_ID" ] && echo "APPSFLYER_APP_ID=$APPSFLYER_APP_ID" >> .env || echo "# APPSFLYER_APP_ID=not_set" >> .env
+
+          [ -n "$APPMETRICA_API_KEY" ] && echo "APPMETRICA_API_KEY=$APPMETRICA_API_KEY" >> .env || echo "# APPMETRICA_API_KEY=not_set" >> .env
+
+          [ -n "$ADMOB_APP_ID" ] && echo "ADMOB_APP_ID=$ADMOB_APP_ID" >> .env || echo "# ADMOB_APP_ID=not_set" >> .env
+          [ -n "$ADMOB_BANNER_AD_UNIT_ID" ] && echo "ADMOB_BANNER_AD_UNIT_ID=$ADMOB_BANNER_AD_UNIT_ID" >> .env || echo "# ADMOB_BANNER_AD_UNIT_ID=not_set" >> .env
+          [ -n "$ADMOB_INTERSTITIAL_AD_UNIT_ID" ] && echo "ADMOB_INTERSTITIAL_AD_UNIT_ID=$ADMOB_INTERSTITIAL_AD_UNIT_ID" >> .env || echo "# ADMOB_INTERSTITIAL_AD_UNIT_ID=not_set" >> .env
+          [ -n "$ADMOB_REWARDED_AD_UNIT_ID" ] && echo "ADMOB_REWARDED_AD_UNIT_ID=$ADMOB_REWARDED_AD_UNIT_ID" >> .env || echo "# ADMOB_REWARDED_AD_UNIT_ID=not_set" >> .env
+          [ -n "$ADMOB_REWARDED_INTERSTITIAL_AD_UNIT_ID" ] && echo "ADMOB_REWARDED_INTERSTITIAL_AD_UNIT_ID=$ADMOB_REWARDED_INTERSTITIAL_AD_UNIT_ID" >> .env || echo "# ADMOB_REWARDED_INTERSTITIAL_AD_UNIT_ID=not_set" >> .env
+          [ -n "$ADMOB_NATIVE_AD_UNIT_ID" ] && echo "ADMOB_NATIVE_AD_UNIT_ID=$ADMOB_NATIVE_AD_UNIT_ID" >> .env || echo "# ADMOB_NATIVE_AD_UNIT_ID=not_set" >> .env
+          [ -n "$ADMOB_APP_OPEN_AD_UNIT_ID_ANDROID" ] && echo "ADMOB_APP_OPEN_AD_UNIT_ID_ANDROID=$ADMOB_APP_OPEN_AD_UNIT_ID_ANDROID" >> .env || echo "# ADMOB_APP_OPEN_AD_UNIT_ID_ANDROID=not_set" >> .env
+          [ -n "$ADMOB_APP_OPEN_AD_UNIT_ID_IOS" ] && echo "ADMOB_APP_OPEN_AD_UNIT_ID_IOS=$ADMOB_APP_OPEN_AD_UNIT_ID_IOS" >> .env || echo "# ADMOB_APP_OPEN_AD_UNIT_ID_IOS=not_set" >> .env
+
+          echo "✅ .env file created"
+          VARIABLES_SET=$(grep -c '^[A-Z_]*=' .env || echo 0)
+          echo "📋 Environment variables set: $VARIABLES_SET/15"
+          if [ "$VARIABLES_SET" -lt 2 ]; then
+            echo "⚠️  Warning: APPSFLYER_DEV_KEY and APPSFLYER_APP_ID are recommended"
+          fi
+        env:
+          APPHUD_API_KEY: ${{ secrets.APPHUD_API_KEY }}
+          APPHUD_PAYWALL_ID: ${{ secrets.APPHUD_PAYWALL_ID }}
+          APPHUD_PRODUCT_WEEKLY: ${{ secrets.APPHUD_PRODUCT_WEEKLY }}
+          APPHUD_PRODUCT_MONTHLY: ${{ secrets.APPHUD_PRODUCT_MONTHLY }}
+          APPSFLYER_DEV_KEY: ${{ secrets.APPSFLYER_DEV_KEY }}
+          APPSFLYER_APP_ID: ${{ secrets.APPSFLYER_APP_ID }}
+          APPMETRICA_API_KEY: ${{ secrets.APPMETRICA_API_KEY }}
+          ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID }}
+          ADMOB_BANNER_AD_UNIT_ID: ${{ secrets.ADMOB_BANNER_AD_UNIT_ID }}
+          ADMOB_INTERSTITIAL_AD_UNIT_ID: ${{ secrets.ADMOB_INTERSTITIAL_AD_UNIT_ID }}
+          ADMOB_REWARDED_AD_UNIT_ID: ${{ secrets.ADMOB_REWARDED_AD_UNIT_ID }}
+          ADMOB_REWARDED_INTERSTITIAL_AD_UNIT_ID: ${{ secrets.ADMOB_REWARDED_INTERSTITIAL_AD_UNIT_ID }}
+          ADMOB_NATIVE_AD_UNIT_ID: ${{ secrets.ADMOB_NATIVE_AD_UNIT_ID }}
+          ADMOB_APP_OPEN_AD_UNIT_ID_ANDROID: ${{ secrets.ADMOB_APP_OPEN_AD_UNIT_ID_ANDROID }}
+          ADMOB_APP_OPEN_AD_UNIT_ID_IOS: ${{ secrets.ADMOB_APP_OPEN_AD_UNIT_ID_IOS }}
+
+      - name: Create GoogleService-Info.plist from secrets
+        run: |
+          if [ -n "$GOOGLESERVICE_INFO_PLIST" ]; then
+            echo "📝 Creating GoogleService-Info.plist from GitHub Secrets..."
+            echo "$GOOGLESERVICE_INFO_PLIST" > ios/Runner/GoogleService-Info.plist
+            echo "✅ GoogleService-Info.plist created successfully"
+            ls -lh ios/Runner/GoogleService-Info.plist
+          else
+            echo "⚠️  Warning: GOOGLESERVICE_INFO_PLIST secret is not set"
+            echo "⚠️  Firebase features may not work without this file"
+            echo "⚠️  To fix: Add GOOGLESERVICE_INFO_PLIST secret in GitHub repository settings"
+          fi
+        env:
+          GOOGLESERVICE_INFO_PLIST: ${{ secrets.GOOGLESERVICE_INFO_PLIST }}
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        id: cocoapods-cache
+        with:
+          path: |
+            ios/Pods
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: Setup CocoaPods
+        run: |
+          sudo gem install cocoapods
+          cd ios
+          if [ -f Podfile.lock ] && [ -d Pods ]; then
+            echo "✅ Using cached CocoaPods, skipping repo update"
+            pod install
+          else
+            echo "📦 Installing CocoaPods dependencies (first time or cache miss)"
+            pod install --repo-update
+          fi
+          cd ..
+
+      - name: Cache Flutter build artifacts
+        uses: actions/cache@v4
+        id: flutter-build-cache
+        with:
+          path: |
+            build/ios
+            .dart_tool/flutter_build
+          key: ${{ runner.os }}-flutter-build-${{ hashFiles('**/pubspec.lock') }}-${{ hashFiles('lib/**/*.dart') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-build-${{ hashFiles('**/pubspec.lock') }}-
+            ${{ runner.os }}-flutter-build-
+
+      - name: Cache iOS Xcode artifacts
+        uses: actions/cache@v4
+        id: xcode-build-cache
+        with:
+          path: |
+            ios/build
+            ios/.symlinks
+            ios/Flutter/Flutter.framework
+            ios/Flutter/Flutter.podspec
+            ios/Flutter/Generated.xcconfig
+            ios/Flutter/ephemeral
+            ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-xcode-build-${{ hashFiles('ios/Podfile.lock') }}-${{ hashFiles('ios/Runner.xcodeproj/**') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-build-${{ hashFiles('ios/Podfile.lock') }}-
+            ${{ runner.os }}-xcode-build-
+
+      - name: Build iOS for simulator
+        run: |
+          FLUTTER_CACHE_HIT="${{ steps.flutter-build-cache.outputs.cache-hit }}"
+          XCODE_CACHE_HIT="${{ steps.xcode-build-cache.outputs.cache-hit }}"
+
+          if [ "$FLUTTER_CACHE_HIT" == "true" ] && [ "$XCODE_CACHE_HIT" == "true" ]; then
+            echo "✅ Using cached iOS build artifacts - full incremental build"
+            echo "📦 Both Flutter and Xcode caches restored"
+            echo "⏱️ Expected build time: 2-5 minutes (incremental)"
+          elif [ "$FLUTTER_CACHE_HIT" == "true" ] || [ "$XCODE_CACHE_HIT" == "true" ]; then
+            echo "⚠️ Partial cache hit - some artifacts will be rebuilt"
+            echo "⏱️ Expected build time: 10-15 minutes (partial cache)"
+          else
+            echo "📦 Building iOS from scratch (cache miss)"
+            echo "⏱️ This will take ~20-25 minutes on first build"
+          fi
+          flutter build ios --debug --simulator --no-codesign
+
+      - name: Copy GoogleService-Info.plist to app bundle
+        working-directory: ${{ github.workspace }}
+        run: |
+          echo "🔍 Searching for Runner.app..."
+          APP_PATH=$(find build/ios -name "Runner.app" -type d 2>/dev/null | head -1)
+          if [ -z "$APP_PATH" ]; then
+            echo "⚠️ Runner.app not found in build/ios, searching in all directories..."
+            APP_PATH=$(find . -name "Runner.app" -type d -not -path "*/.*" 2>/dev/null | head -1)
+          fi
+
+          if [ -z "$APP_PATH" ]; then
+            echo "❌ Runner.app not found, cannot copy GoogleService-Info.plist"
+            exit 1
+          fi
+
+          echo "✅ Found Runner.app at: $APP_PATH"
+
+          if [ -f ios/Runner/GoogleService-Info.plist ]; then
+            echo "📋 Copying GoogleService-Info.plist to app bundle..."
+            cp ios/Runner/GoogleService-Info.plist "$APP_PATH/GoogleService-Info.plist"
+            
+            if [ -f "$APP_PATH/GoogleService-Info.plist" ]; then
+              echo "✅ GoogleService-Info.plist copied successfully to app bundle"
+              ls -lh "$APP_PATH/GoogleService-Info.plist"
+              echo "📋 Verifying file content..."
+              head -5 "$APP_PATH/GoogleService-Info.plist" | grep -q "<?xml" && echo "✅ File is valid XML" || echo "⚠️  File may be corrupted"
+            else
+              echo "❌ Failed to copy GoogleService-Info.plist to app bundle"
+              exit 1
+            fi
+          else
+            echo "⚠️  Warning: GoogleService-Info.plist not found in ios/Runner/"
+            echo "⚠️  Firebase features may not work without this file"
+          fi
+
+      - name: Find and package .app bundle
+        working-directory: ${{ github.workspace }}
+        run: |
+          echo "🔍 Searching for Runner.app..."
+          APP_PATH=$(find build/ios -name "Runner.app" -type d 2>/dev/null | head -1)
+          if [ -z "$APP_PATH" ]; then
+            echo "⚠️ Runner.app not found in build/ios, searching in all directories..."
+            APP_PATH=$(find . -name "Runner.app" -type d -not -path "*/.*" 2>/dev/null | head -1)
+          fi
+
+          if [ -z "$APP_PATH" ]; then
+            echo "❌ Runner.app not found anywhere"
+            echo "📋 Available .app files:"
+            find . -name "*.app" -type d 2>/dev/null | head -10
+            exit 1
+          fi
+
+          echo "✅ Found Runner.app at: $APP_PATH"
+          echo "📦 Creating ZIP archive..."
+          cd "$(dirname "$APP_PATH")"
+          zip -r "$GITHUB_WORKSPACE/Runner.app.zip" Runner.app
+          cd "$GITHUB_WORKSPACE"
+
+          if [ -f Runner.app.zip ]; then
+            ZIP_SIZE=$(ls -lh Runner.app.zip | awk '{print $5}')
+            echo "✅ Runner.app.zip created successfully: $ZIP_SIZE"
+            ls -lh Runner.app.zip
+          else
+            echo "❌ Failed to create Runner.app.zip"
+            exit 1
+          fi
+
+      - name: Upload iOS app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-app-bundle
+          path: ${{ github.workspace }}/Runner.app.zip
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Build summary
+        if: always()
+        run: |
+          echo "## iOS Build Summary" >> $GITHUB_STEP_SUMMARY
+          if [ -f Runner.app.zip ]; then
+            echo "- ✅ Flutter dependencies installed" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ CocoaPods installed" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ iOS app built for simulator" >> $GITHUB_STEP_SUMMARY
+            echo "- 📦 Artifact: Runner.app.zip" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Cache Status:" >> $GITHUB_STEP_SUMMARY
+            echo "- Flutter pub cache: ${{ steps.flutter-pub-cache.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
+            echo "- CocoaPods cache: ${{ steps.cocoapods-cache.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
+            echo "- Flutter build cache: ${{ steps.flutter-build-cache.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
+            echo "- Xcode build cache: ${{ steps.xcode-build-cache.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+            echo "1. Download the artifact from this workflow run" >> $GITHUB_STEP_SUMMARY
+            echo "2. Extract Runner.app.zip" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ⚠️ Build may have failed or was cancelled" >> $GITHUB_STEP_SUMMARY
+            echo "- Check logs above for details" >> $GITHUB_STEP_SUMMARY
+          fi
