@@ -246,7 +246,9 @@ jobs:
           fi
 
       - name: Inject ADMOB_APP_ID into Android local.properties
-        if: secrets.ADMOB_APP_ID != ''
+        env:
+          ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID }}
+        if: env.ADMOB_APP_ID
         run: |
           echo "📝 Configuring Android local.properties with ADMOB_APP_ID..."
           ANDROID_PROPERTIES_FILE=android/local.properties
@@ -262,7 +264,9 @@ jobs:
           echo "✅ ADMOB_APP_ID injected into Android local.properties"
 
       - name: Inject ADMOB_APP_ID into iOS Release.xcconfig
-        if: secrets.ADMOB_APP_ID != ''
+        env:
+          ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID }}
+        if: env.ADMOB_APP_ID
         run: |
           echo "📝 Configuring iOS Release.xcconfig with ADMOB_APP_ID..."
           XCCONFIG_FILE=ios/Flutter/Release.xcconfig
