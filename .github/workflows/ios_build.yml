@@ -169,9 +169,9 @@ jobs:
               echo "⚠️  pod install failed, updating Podfile and retrying..."
               if [ -f Podfile ]; then
                 if grep -q "^platform :ios" Podfile; then
-                  sed -i '' "s|^platform :ios.*|platform :ios, '14.0'|" Podfile
+                  sed -i '' "s|^platform :ios.*|platform :ios, '16.0'|" Podfile
                 else
-                  sed -i '' "1s|^|platform :ios, '14.0'\n|" Podfile
+                  sed -i '' "1s|^|platform :ios, '16.0'\n|" Podfile
                 fi
                 if ! grep -q "IPHONEOS_DEPLOYMENT_TARGET.*16.0" Podfile; then
                   if grep -q "post_install" Podfile; then
@@ -208,12 +208,34 @@ jobs:
             ios/Flutter/Flutter.framework
             ios/Flutter/Flutter.podspec
             ios/Flutter/Generated.xcconfig
+            ios/Flutter/Debug.xcconfig
+            ios/Flutter/Release.xcconfig
             ios/Flutter/ephemeral
             ~/Library/Developer/Xcode/DerivedData
           key: ${{ runner.os }}-xcode-build-${{ hashFiles('ios/Podfile.lock') }}-${{ hashFiles('ios/Runner.xcodeproj/**') }}
           restore-keys: |
             ${{ runner.os }}-xcode-build-${{ hashFiles('ios/Podfile.lock') }}-
             ${{ runner.os }}-xcode-build-
+
+      - name: Generate Flutter xcconfig files
+        run: |
+          echo "📝 Generating Flutter xcconfig files..."
+          cd ios
+          flutter precache --ios
+          cd ..
+          flutter pub get
+          echo "✅ Flutter xcconfig files should be generated"
+          if [ ! -f ios/Flutter/Debug.xcconfig ]; then
+            echo "⚠️  Debug.xcconfig not found, creating manually..."
+            mkdir -p ios/Flutter
+            flutter build ios --debug --simulator --no-codesign --no-pub || true
+          fi
+          if [ -f ios/Flutter/Debug.xcconfig ]; then
+            echo "✅ Debug.xcconfig exists"
+            ls -lh ios/Flutter/Debug.xcconfig
+          else
+            echo "❌ Debug.xcconfig still not found after generation attempt"
+          fi
 
       - name: Build iOS for simulator
         run: |
@@ -231,6 +253,12 @@ jobs:
             echo "📦 Building iOS from scratch (cache miss)"
             echo "⏱️ This will take ~20-25 minutes on first build"
           fi
+          
+          if [ ! -f ios/Flutter/Debug.xcconfig ]; then
+            echo "❌ Debug.xcconfig is missing, cannot proceed with build"
+            exit 1
+          fi
+          
           flutter build ios --debug --simulator --no-codesign
 
       - name: Copy GoogleService-Info.plist to app bundle
