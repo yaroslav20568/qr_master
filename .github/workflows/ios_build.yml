@@ -218,26 +218,46 @@ jobs:
             ${{ runner.os }}-xcode-build-
 
       - name: Generate Flutter xcconfig files
+        env:
+          ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID }}
         run: |
           echo "📝 Generating Flutter xcconfig files..."
+          mkdir -p ios/Flutter/ephemeral
+          
           cd ios
           flutter precache --ios
           cd ..
           flutter pub get
-          echo "✅ Flutter xcconfig files should be generated"
-          if [ ! -f ios/Flutter/Debug.xcconfig ]; then
-            echo "⚠️  Debug.xcconfig not found, creating manually..."
-            mkdir -p ios/Flutter
-            flutter build ios --debug --simulator --no-codesign --no-pub || true
+          
+          echo "📝 Creating Debug.xcconfig in ios/Flutter..."
+          mkdir -p ios/Flutter
+          printf '#include "Generated.xcconfig"\n' > ios/Flutter/Debug.xcconfig
+          if [ -n "$ADMOB_APP_ID" ]; then
+            echo "ADMOB_APP_ID=$ADMOB_APP_ID" >> ios/Flutter/Debug.xcconfig
+            echo "✅ Added ADMOB_APP_ID to Debug.xcconfig"
           fi
+          
+          echo "📝 Creating Release.xcconfig in ios/Flutter..."
+          printf '#include "Generated.xcconfig"\n' > ios/Flutter/Release.xcconfig
+          if [ -n "$ADMOB_APP_ID" ]; then
+            echo "ADMOB_APP_ID=$ADMOB_APP_ID" >> ios/Flutter/Release.xcconfig
+            echo "✅ Added ADMOB_APP_ID to Release.xcconfig"
+          fi
+          
+          echo "✅ Flutter xcconfig files created"
+          echo "📋 Verifying files in ios/Flutter:"
+          ls -lh ios/Flutter/*.xcconfig 2>/dev/null || echo "⚠️  No xcconfig files found"
           if [ -f ios/Flutter/Debug.xcconfig ]; then
-            echo "✅ Debug.xcconfig exists"
-            ls -lh ios/Flutter/Debug.xcconfig
+            echo "✅ Debug.xcconfig exists in ios/Flutter"
+            echo "📄 Debug.xcconfig contents:"
+            cat ios/Flutter/Debug.xcconfig
           else
-            echo "❌ Debug.xcconfig still not found after generation attempt"
+            echo "❌ Debug.xcconfig NOT found in ios/Flutter"
           fi
 
       - name: Build iOS for simulator
+        env:
+          ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID }}
         run: |
           FLUTTER_CACHE_HIT="${{ steps.flutter-build-cache.outputs.cache-hit }}"
           XCODE_CACHE_HIT="${{ steps.xcode-build-cache.outputs.cache-hit }}"
@@ -255,8 +275,13 @@ jobs:
           fi
           
           if [ ! -f ios/Flutter/Debug.xcconfig ]; then
-            echo "❌ Debug.xcconfig is missing, cannot proceed with build"
-            exit 1
+            echo "⚠️  Debug.xcconfig is missing, creating it in ios/Flutter..."
+            mkdir -p ios/Flutter
+            printf '#include "Generated.xcconfig"\n' > ios/Flutter/Debug.xcconfig
+            if [ -n "$ADMOB_APP_ID" ]; then
+              echo "ADMOB_APP_ID=$ADMOB_APP_ID" >> ios/Flutter/Debug.xcconfig
+            fi
+            echo "✅ Created Debug.xcconfig in ios/Flutter"
           fi
           
           flutter build ios --debug --simulator --no-codesign
@@ -327,24 +352,6 @@ jobs:
             echo "❌ Failed to create Runner.app.zip"
             exit 1
           fi
-
-      - name: Inject ADMOB_APP_ID into Android local.properties
-        env:
-          ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID }}
-        if: env.ADMOB_APP_ID
-        run: |
-          echo "📝 Configuring Android local.properties with ADMOB_APP_ID..."
-          ANDROID_PROPERTIES_FILE=android/local.properties
-          if [ ! -f "$ANDROID_PROPERTIES_FILE" ]; then
-            echo "Creating $ANDROID_PROPERTIES_FILE..."
-            touch "$ANDROID_PROPERTIES_FILE"
-          fi
-          if grep -q "^admob.application_id=" "$ANDROID_PROPERTIES_FILE"; then
-            sed -i '' "s|^admob.application_id=.*|admob.application_id=${{ secrets.ADMOB_APP_ID }}|" "$ANDROID_PROPERTIES_FILE"
-          else
-            echo "admob.application_id=${{ secrets.ADMOB_APP_ID }}" >> "$ANDROID_PROPERTIES_FILE"
-          fi
-          echo "✅ ADMOB_APP_ID injected into Android local.properties"
 
       - name: Inject ADMOB_APP_ID into iOS Release.xcconfig
         env:
