@@ -60,12 +60,11 @@ jobs:
           [ -n "$ADMOB_REWARDED_AD_UNIT_ID" ] && echo "ADMOB_REWARDED_AD_UNIT_ID=$ADMOB_REWARDED_AD_UNIT_ID" >> .env || echo "# ADMOB_REWARDED_AD_UNIT_ID=not_set" >> .env
           [ -n "$ADMOB_REWARDED_INTERSTITIAL_AD_UNIT_ID" ] && echo "ADMOB_REWARDED_INTERSTITIAL_AD_UNIT_ID=$ADMOB_REWARDED_INTERSTITIAL_AD_UNIT_ID" >> .env || echo "# ADMOB_REWARDED_INTERSTITIAL_AD_UNIT_ID=not_set" >> .env
           [ -n "$ADMOB_NATIVE_AD_UNIT_ID" ] && echo "ADMOB_NATIVE_AD_UNIT_ID=$ADMOB_NATIVE_AD_UNIT_ID" >> .env || echo "# ADMOB_NATIVE_AD_UNIT_ID=not_set" >> .env
-          [ -n "$ADMOB_APP_OPEN_AD_UNIT_ID_ANDROID" ] && echo "ADMOB_APP_OPEN_AD_UNIT_ID_ANDROID=$ADMOB_APP_OPEN_AD_UNIT_ID_ANDROID" >> .env || echo "# ADMOB_APP_OPEN_AD_UNIT_ID_ANDROID=not_set" >> .env
           [ -n "$ADMOB_APP_OPEN_AD_UNIT_ID_IOS" ] && echo "ADMOB_APP_OPEN_AD_UNIT_ID_IOS=$ADMOB_APP_OPEN_AD_UNIT_ID_IOS" >> .env || echo "# ADMOB_APP_OPEN_AD_UNIT_ID_IOS=not_set" >> .env
 
           echo "✅ .env file created"
           VARIABLES_SET=$(grep -c '^[A-Z_]*=' .env || echo 0)
-          echo "📋 Environment variables set: $VARIABLES_SET/15"
+          echo "📋 Environment variables set: $VARIABLES_SET/14"
           if [ "$VARIABLES_SET" -lt 2 ]; then
             echo "⚠️  Warning: APPSFLYER_DEV_KEY and APPSFLYER_APP_ID are recommended"
           fi
@@ -83,7 +82,6 @@ jobs:
           ADMOB_REWARDED_AD_UNIT_ID: ${{ secrets.ADMOB_REWARDED_AD_UNIT_ID }}
           ADMOB_REWARDED_INTERSTITIAL_AD_UNIT_ID: ${{ secrets.ADMOB_REWARDED_INTERSTITIAL_AD_UNIT_ID }}
           ADMOB_NATIVE_AD_UNIT_ID: ${{ secrets.ADMOB_NATIVE_AD_UNIT_ID }}
-          ADMOB_APP_OPEN_AD_UNIT_ID_ANDROID: ${{ secrets.ADMOB_APP_OPEN_AD_UNIT_ID_ANDROID }}
           ADMOB_APP_OPEN_AD_UNIT_ID_IOS: ${{ secrets.ADMOB_APP_OPEN_AD_UNIT_ID_IOS }}
 
       - name: Create GoogleService-Info.plist from secrets
@@ -109,7 +107,7 @@ jobs:
             ios/Pods
             ~/Library/Caches/CocoaPods
             ~/.cocoapods
-          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}-${{ hashFiles('ios/Podfile') }}
           restore-keys: |
             ${{ runner.os }}-pods-
 
@@ -138,7 +136,7 @@ jobs:
                   awk '/target\.build_configurations\.each do \|config\|/ { print; print "      config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'16.0'"'"'"; next }1' Podfile > Podfile.tmp && mv Podfile.tmp Podfile
                 fi
               else
-                printf '\n\npost_install do |installer|\n  installer.pods_project.targets.each do |target|\n    target.build_configurations.each do |config|\n      config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'16.0'"'"'\n    end\n  end\nend\n' >> Podfile
+                printf '\n\npost_install do |installer|\n  installer.pods_project.targets.each do |target|\n    target.build_configurations.each do |config|\n      config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'16.0'"'"'\n    end\n  end\n  installer.pods_project.build_configurations.each do |config|\n    config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'16.0'"'"'\n  end\nend\n' >> Podfile
               fi
               echo "✅ Added IPHONEOS_DEPLOYMENT_TARGET to post_install"
             fi
@@ -150,40 +148,8 @@ jobs:
             echo "⚠️  Podfile not found, Flutter will create it during pod install"
           fi
           
-          if [ -f Podfile.lock ] && [ -d Pods ]; then
-            echo "✅ Using cached CocoaPods, skipping repo update"
-            pod install || {
-              echo "⚠️  pod install failed, updating Podfile and retrying..."
-              if [ -f Podfile ]; then
-                if grep -q "^platform :ios" Podfile; then
-                  sed -i '' "s|^platform :ios.*|platform :ios, '16.0'|" Podfile
-                else
-                  sed -i '' "1s|^|platform :ios, '16.0'\n|" Podfile
-                fi
-              fi
-              pod install --repo-update
-            }
-          else
-            echo "📦 Installing CocoaPods dependencies (first time or cache miss)"
-            pod install --repo-update || {
-              echo "⚠️  pod install failed, updating Podfile and retrying..."
-              if [ -f Podfile ]; then
-                if grep -q "^platform :ios" Podfile; then
-                  sed -i '' "s|^platform :ios.*|platform :ios, '16.0'|" Podfile
-                else
-                  sed -i '' "1s|^|platform :ios, '16.0'\n|" Podfile
-                fi
-                if ! grep -q "IPHONEOS_DEPLOYMENT_TARGET.*16.0" Podfile; then
-                  if grep -q "post_install" Podfile; then
-                    awk '/target\.build_configurations\.each do \|config\|/ { print; print "      config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'16.0'"'"'"; next }1' Podfile > Podfile.tmp && mv Podfile.tmp Podfile
-                  else
-                    printf '\n\npost_install do |installer|\n  installer.pods_project.targets.each do |target|\n    target.build_configurations.each do |config|\n      config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'16.0'"'"'\n    end\n  end\nend\n' >> Podfile
-                  fi
-                fi
-              fi
-              pod install --repo-update
-            }
-          fi
+          echo "📦 Installing CocoaPods dependencies"
+          pod install --repo-update
           cd ..
 
       - name: Cache Flutter build artifacts
@@ -216,6 +182,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-xcode-build-${{ hashFiles('ios/Podfile.lock') }}-
             ${{ runner.os }}-xcode-build-
+
+      - name: Clean Flutter build artifacts
+        if: steps.cocoapods-cache.outputs.cache-hit != 'true'
+        run: |
+          echo "🧹 Cleaning Flutter build artifacts (cache miss)..."
+          flutter clean
+          rm -rf .dart_tool/hooks_runner
+          rm -rf build/ios
 
       - name: Generate Flutter xcconfig files
         env:
