@@ -116,7 +116,7 @@ jobs:
       - name: Set iOS platform version in Podfile
         run: |
           # Installing a minimal iOS platform in a Podfile
-          sed -i '' '1s/^/platform :ios, "13.0"\n/' ios/Podfile
+          sed -i '' '1s/^/platform :ios, "14.0"\n/' ios/Podfile
 
       - name: Setup CocoaPods
         run: |
