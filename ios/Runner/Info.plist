@@ -51,6 +51,8 @@
 	<string>This app needs access to photo library to scan QR codes from images</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>This app needs permission to save QR codes to your photo library</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This app uses tracking to provide personalized ads and improve your experience</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>https</string>
