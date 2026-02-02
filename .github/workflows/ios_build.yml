@@ -116,9 +116,6 @@ jobs:
           sudo gem install cocoapods
           cd ios
           
-          echo "🧹 Cleaning CocoaPods cache and artifacts"
-          rm -rf Pods Podfile.lock
-          
           echo "📝 Verifying Podfile exists and has iOS 16.0 minimum deployment target"
           
           if [ -f Podfile ]; then
@@ -165,7 +162,14 @@ jobs:
           cat Podfile | head -20
           
           echo "📦 Installing CocoaPods dependencies"
-          pod install --repo-update
+          COCOAPODS_CACHE_HIT="${{ steps.cocoapods-cache.outputs.cache-hit }}"
+          if [ "$COCOAPODS_CACHE_HIT" != "true" ]; then
+            echo "📥 Cache miss - updating CocoaPods repo and installing pods"
+            pod install --repo-update
+          else
+            echo "✅ Cache hit - installing pods without repo update (faster)"
+            pod install
+          fi
           cd ..
 
       - name: Cache Flutter build artifacts
