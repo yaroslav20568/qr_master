@@ -116,13 +116,22 @@ jobs:
           sudo gem install cocoapods
           cd ios
           
-          echo "📝 Ensuring Podfile has iOS 16.0 minimum deployment target"
+          echo "🧹 Cleaning CocoaPods cache and artifacts"
+          rm -rf Pods Podfile.lock
+          
+          echo "📝 Verifying Podfile exists and has iOS 16.0 minimum deployment target"
           
           if [ -f Podfile ]; then
-            echo "📝 Updating existing Podfile"
+            echo "✅ Podfile found"
             if grep -q "^platform :ios" Podfile; then
-              sed -i '' "s|^platform :ios.*|platform :ios, '16.0'|" Podfile
-              echo "✅ Updated platform version to 16.0"
+              PLATFORM_VERSION=$(grep "^platform :ios" Podfile | sed "s/.*'\(.*\)'.*/\1/")
+              echo "📋 Current platform version: $PLATFORM_VERSION"
+              if [ "$PLATFORM_VERSION" != "16.0" ]; then
+                sed -i '' "s|^platform :ios.*|platform :ios, '16.0'|" Podfile
+                echo "✅ Updated platform version to 16.0"
+              else
+                echo "✅ Platform version already set to 16.0"
+              fi
             else
               sed -i '' "1s|^|platform :ios, '16.0'\n|" Podfile
               echo "✅ Added platform version 16.0"
@@ -139,14 +148,21 @@ jobs:
                 printf '\n\npost_install do |installer|\n  installer.pods_project.targets.each do |target|\n    target.build_configurations.each do |config|\n      config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'16.0'"'"'\n    end\n  end\n  installer.pods_project.build_configurations.each do |config|\n    config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'16.0'"'"'\n  end\nend\n' >> Podfile
               fi
               echo "✅ Added IPHONEOS_DEPLOYMENT_TARGET to post_install"
+            else
+              echo "✅ IPHONEOS_DEPLOYMENT_TARGET already configured in post_install"
             fi
             if grep -q "post_install" Podfile && ! grep -q "installer.pods_project.build_configurations.each" Podfile; then
               awk '/post_install do \|installer\|/ { print; print "  installer.pods_project.build_configurations.each do |config|"; print "    config.build_settings['"'"'IPHONEOS_DEPLOYMENT_TARGET'"'"'] = '"'"'16.0'"'"'"; print "  end"; next }1' Podfile > Podfile.tmp && mv Podfile.tmp Podfile
               echo "✅ Added project-level IPHONEOS_DEPLOYMENT_TARGET"
             fi
           else
-            echo "⚠️  Podfile not found, Flutter will create it during pod install"
+            echo "❌ Podfile not found! This will cause build failures."
+            echo "⚠️  Flutter will create a basic Podfile, but it may not have correct settings"
+            exit 1
           fi
+          
+          echo "📋 Podfile contents:"
+          cat Podfile | head -20
           
           echo "📦 Installing CocoaPods dependencies"
           pod install --repo-update
