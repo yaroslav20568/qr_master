@@ -179,6 +179,7 @@ jobs:
           path: |
             build/ios
             .dart_tool/flutter_build
+            .dart_tool/hooks_runner
           key: ${{ runner.os }}-flutter-build-${{ hashFiles('**/pubspec.lock') }}-${{ hashFiles('lib/**/*.dart') }}
           restore-keys: |
             ${{ runner.os }}-flutter-build-${{ hashFiles('**/pubspec.lock') }}-
@@ -208,7 +209,6 @@ jobs:
         run: |
           echo "🧹 Cleaning Flutter build artifacts (cache miss)..."
           flutter clean
-          rm -rf .dart_tool/hooks_runner
           rm -rf build/ios
 
       - name: Generate Flutter xcconfig files
@@ -218,10 +218,12 @@ jobs:
           echo "📝 Generating Flutter xcconfig files..."
           mkdir -p ios/Flutter/ephemeral
           
+          echo "📦 Running flutter pub get to ensure hooks_runner is generated..."
+          flutter pub get
+          
           cd ios
           flutter precache --ios
           cd ..
-          flutter pub get
           
           echo "📝 Creating Debug.xcconfig in ios/Flutter..."
           mkdir -p ios/Flutter
