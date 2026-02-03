@@ -390,7 +390,8 @@ jobs:
             exit 1
           fi
           
-          flutter build ios --debug --simulator --no-codesign
+          echo "📝 Building iOS with code signing (required for keychain entitlements)..."
+          flutter build ios --debug --simulator
           
           echo "📋 Verifying entitlements after build..."
           APP_PATH=$(find build/ios -name "Runner.app" -type d 2>/dev/null | head -1)
@@ -403,7 +404,7 @@ jobs:
             if [ -f "$APP_PATH/embedded.mobileprovision" ]; then
               echo "✅ Found embedded.mobileprovision"
             else
-              echo "⚠️  No embedded.mobileprovision (expected for simulator with --no-codesign)"
+              echo "⚠️  No embedded.mobileprovision (may be normal for simulator build)"
             fi
             
             echo "📋 Checking for entitlements in app bundle..."
@@ -411,8 +412,17 @@ jobs:
               echo "✅ Found archived-expanded-entitlements.xcent"
               echo "📋 Entitlements from app bundle:"
               cat "$APP_PATH/archived-expanded-entitlements.xcent" 2>/dev/null || echo "⚠️  Could not read entitlements file"
+              if grep -q "com.google.GIDSignIn" "$APP_PATH/archived-expanded-entitlements.xcent" 2>/dev/null; then
+                echo "✅ GIDSignIn found in app bundle entitlements!"
+              else
+                echo "⚠️  GIDSignIn not found in app bundle entitlements"
+              fi
             else
-              echo "⚠️  archived-expanded-entitlements.xcent not found (may be normal for --no-codesign)"
+              echo "⚠️  archived-expanded-entitlements.xcent not found"
+              echo "📋 Trying to extract entitlements using codesign..."
+              if command -v codesign &> /dev/null; then
+                codesign -d --entitlements - "$APP_PATH" 2>/dev/null | grep -q "com.google.GIDSignIn" && echo "✅ GIDSignIn found via codesign" || echo "⚠️  GIDSignIn not found via codesign"
+              fi
             fi
             
             echo "📋 Verifying Info.plist in app bundle..."
