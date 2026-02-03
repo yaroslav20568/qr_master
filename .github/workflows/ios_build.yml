@@ -212,23 +212,29 @@ jobs:
           flutter clean
           rm -rf build/ios
 
-      - name: Inject Google Sign-In URL scheme into Info.plist
+      - name: Setup Google Sign-In for iOS
         run: |
-          if [ -f ios/Runner/GoogleService-Info.plist ]; then
-            echo "📝 Extracting REVERSED_CLIENT_ID from GoogleService-Info.plist..."
-            REVERSED_CLIENT_ID=$(/usr/libexec/PlistBuddy -c "Print :REVERSED_CLIENT_ID" ios/Runner/GoogleService-Info.plist 2>/dev/null || echo "")
-            if [ -n "$REVERSED_CLIENT_ID" ]; then
-              echo "✅ REVERSED_CLIENT_ID extracted: $REVERSED_CLIENT_ID"
-              echo "📝 Injecting REVERSED_CLIENT_ID into Info.plist..."
-              sed -i '' "s|GOOGLE_REVERSED_CLIENT_ID_PLACEHOLDER|$REVERSED_CLIENT_ID|g" ios/Runner/Info.plist
-              echo "✅ REVERSED_CLIENT_ID injected into Info.plist"
-            else
-              echo "⚠️  Warning: Could not extract REVERSED_CLIENT_ID from GoogleService-Info.plist"
-              echo "⚠️  Google Sign-In may not work correctly"
-            fi
+          if [ -f scripts/setup_ios_google_signin.sh ]; then
+            echo "📝 Running setup script for Google Sign-In..."
+            bash scripts/setup_ios_google_signin.sh
           else
-            echo "⚠️  Warning: GoogleService-Info.plist not found"
-            echo "⚠️  Google Sign-In URL scheme will not be configured"
+            echo "📝 Setting up Google Sign-In manually..."
+            if [ -f ios/Runner/GoogleService-Info.plist ]; then
+              echo "📝 Extracting REVERSED_CLIENT_ID from GoogleService-Info.plist..."
+              REVERSED_CLIENT_ID=$(/usr/libexec/PlistBuddy -c "Print :REVERSED_CLIENT_ID" ios/Runner/GoogleService-Info.plist 2>/dev/null || echo "")
+              if [ -n "$REVERSED_CLIENT_ID" ]; then
+                echo "✅ REVERSED_CLIENT_ID extracted: $REVERSED_CLIENT_ID"
+                echo "📝 Injecting REVERSED_CLIENT_ID into Info.plist..."
+                sed -i '' "s|GOOGLE_REVERSED_CLIENT_ID_PLACEHOLDER|$REVERSED_CLIENT_ID|g" ios/Runner/Info.plist
+                echo "✅ REVERSED_CLIENT_ID injected into Info.plist"
+              else
+                echo "⚠️  Warning: Could not extract REVERSED_CLIENT_ID from GoogleService-Info.plist"
+                echo "⚠️  Google Sign-In may not work correctly"
+              fi
+            else
+              echo "⚠️  Warning: GoogleService-Info.plist not found"
+              echo "⚠️  Google Sign-In URL scheme will not be configured"
+            fi
           fi
 
       - name: Generate Flutter xcconfig files
