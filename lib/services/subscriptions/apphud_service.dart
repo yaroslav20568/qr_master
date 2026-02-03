@@ -155,21 +155,42 @@ class AppHudService {
     }
 
     try {
-      LoggerService.info('Getting paywall from placement: $placementId');
-      final placement = await Apphud.placement(placementId);
+      LoggerService.info('Fetching placements...');
+      final placementsResult = await Apphud.fetchPlacements();
+      final placements = (placementsResult as dynamic).placements ?? [];
+
+      LoggerService.info('Fetched ${placements.length} placements');
+
+      final placement = placements.firstWhere(
+        (p) => (p as dynamic).identifier == placementId,
+        orElse: () => null,
+      );
+
       if (placement == null) {
-        LoggerService.warning('No placement found: $placementId');
+        LoggerService.warning('No placement found for ID: $placementId');
+        final availableIds = placements
+            .map((p) => (p as dynamic).identifier ?? 'unknown')
+            .toList();
+        LoggerService.info('Available placement IDs: $availableIds');
         return null;
       }
+
       final paywall = (placement as dynamic).paywall;
       if (paywall == null) {
         LoggerService.warning('No paywall in placement: $placementId');
         return null;
       }
+
+      final paywallId = (paywall as dynamic).identifier ?? 'unknown';
+      final products = (paywall as dynamic).products ?? [];
+      LoggerService.info(
+        'Fetched paywall: identifier=$paywallId, productsCount=${products.length}',
+      );
+
       LoggerService.info('Paywall loaded successfully');
       return paywall as ApphudPaywall?;
     } catch (e) {
-      LoggerService.error('Error getting paywall: $e', error: e);
+      LoggerService.error('Error fetching placements: $e', error: e);
       return null;
     }
   }
