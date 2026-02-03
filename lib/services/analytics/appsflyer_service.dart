@@ -35,7 +35,7 @@ class AppsFlyerService {
       final appsflyerOptions = AppsFlyerOptions(
         afDevKey: devKey,
         appId: Platform.isIOS && appId.isNotEmpty ? appId : '',
-        showDebug: false,
+        showDebug: true,
         timeToWaitForATTUserAuthorization: 60,
       );
 

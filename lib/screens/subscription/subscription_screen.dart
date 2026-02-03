@@ -25,47 +25,98 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   Future<void> _loadProducts() async {
     try {
       final products = await _appHudService.getProducts();
-      setState(() {
-        _products = products;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _products = products;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+      LoggerService.error('Error loading products: $e', error: e);
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        SnackbarService.showError(
+          context,
+          message: 'Failed to load subscription plans',
+        );
+      }
     }
   }
 
   Future<void> _handlePurchase(String productId) async {
+    if (_products.isEmpty) {
+      SnackbarService.showWarning(context, message: 'No products available');
+      return;
+    }
+
     final product = _products.firstWhere(
       (p) => (p as dynamic).productId == productId,
       orElse: () => _products.isNotEmpty ? _products.first : null,
     );
 
-    if (product == null) return;
+    if (product == null) {
+      SnackbarService.showError(context, message: 'Product not found');
+      return;
+    }
 
-    final success = await _appHudService.purchaseProduct(product);
-    if (success && mounted) {
-      Navigator.of(context).pop();
-      SnackbarService.showSuccess(
-        context,
-        message: 'Subscription activated successfully',
-      );
-    } else if (mounted) {
-      SnackbarService.showError(context, message: 'Purchase failed');
+    try {
+      final success = await _appHudService.purchaseProduct(product);
+      if (!mounted) return;
+
+      if (success) {
+        await _appHudService.checkSubscriptionStatus();
+        if (!mounted) return;
+        Navigator.of(context).pop(true);
+        SnackbarService.showSuccess(
+          context,
+          message: 'Subscription activated successfully',
+        );
+      } else {
+        SnackbarService.showError(
+          context,
+          message: 'Purchase failed. Please try again.',
+        );
+      }
+    } catch (e) {
+      LoggerService.error('Error during purchase: $e', error: e);
+      if (mounted) {
+        SnackbarService.showError(
+          context,
+          message: 'Purchase error. Please try again.',
+        );
+      }
     }
   }
 
   Future<void> _handleRestore() async {
-    final success = await _appHudService.restorePurchases();
-    if (success && mounted) {
-      Navigator.of(context).pop();
-      SnackbarService.showSuccess(
-        context,
-        message: 'Purchases restored successfully',
-      );
-    } else if (mounted) {
-      SnackbarService.showWarning(context, message: 'No purchases to restore');
+    try {
+      final success = await _appHudService.restorePurchases();
+      if (!mounted) return;
+
+      if (success) {
+        await _appHudService.checkSubscriptionStatus();
+        if (!mounted) return;
+        Navigator.of(context).pop(true);
+        SnackbarService.showSuccess(
+          context,
+          message: 'Purchases restored successfully',
+        );
+      } else {
+        SnackbarService.showWarning(
+          context,
+          message: 'No purchases to restore',
+        );
+      }
+    } catch (e) {
+      LoggerService.error('Error restoring purchases: $e', error: e);
+      if (mounted) {
+        SnackbarService.showError(
+          context,
+          message: 'Failed to restore purchases',
+        );
+      }
     }
   }
 
@@ -129,7 +180,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 isLoading: _isLoading,
                 products: _products,
                 selectedProductId: _selectedProductId,
-                appHudService: _appHudService,
                 onProductSelected: (productId) {
                   setState(() {
                     _selectedProductId = productId;

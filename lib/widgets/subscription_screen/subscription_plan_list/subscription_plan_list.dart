@@ -7,7 +7,6 @@ class SubscriptionPlanList extends StatelessWidget {
   final bool isLoading;
   final List<dynamic> products;
   final String? selectedProductId;
-  final AppHudService appHudService;
   final Function(String) onProductSelected;
   final String Function(dynamic) getProductPrice;
   final String Function(String) getProductPeriod;
@@ -17,7 +16,6 @@ class SubscriptionPlanList extends StatelessWidget {
     required this.isLoading,
     required this.products,
     required this.selectedProductId,
-    required this.appHudService,
     required this.onProductSelected,
     required this.getProductPrice,
     required this.getProductPeriod,

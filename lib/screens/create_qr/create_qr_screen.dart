@@ -265,11 +265,25 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
 
   Future<void> _selectLogo() async {
     final appHudService = AppHudService();
-    if (!appHudService.hasActiveSubscription) {
-      if (mounted) {
-        Navigator.of(context).pushNamed(AppRoutes.subscription);
+
+    final hasActive = await appHudService.checkSubscriptionStatus();
+    if (!hasActive) {
+      if (!mounted) return;
+
+      final result = await Navigator.of(
+        context,
+      ).pushNamed(AppRoutes.subscription);
+
+      if (!mounted) return;
+
+      if (result == true) {
+        final updatedStatus = await appHudService.checkSubscriptionStatus();
+        if (!updatedStatus) {
+          return;
+        }
+      } else {
+        return;
       }
-      return;
     }
 
     try {
