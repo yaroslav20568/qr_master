@@ -30,54 +30,16 @@ class SubscriptionPlanList extends StatelessWidget {
     }
 
     if (products.isEmpty) {
-      return Column(
-        children: [
-          SubscriptionPlanCard(
-            title: 'Weekly Plan',
-            productId: appHudService.productWeekly,
-            price: '\$3.99',
-            period: '/ week',
-            badge: 'MOST POPULAR',
-            badgeColor: AppColors.primary,
-            badgePosition: BadgePosition.topCenter,
-            subtitle: '3-day free trial',
-            isSelected: selectedProductId == appHudService.productWeekly,
-            onTap: () => onProductSelected(appHudService.productWeekly),
+      LoggerService.warning('No products available, showing empty state');
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(24.0),
+          child: Text(
+            'No subscription plans available.\nPlease check your Apphud configuration.',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.grey),
           ),
-          const SizedBox(height: 16),
-          SubscriptionPlanCard(
-            title: 'Monthly Plan',
-            productId: appHudService.productMonthly,
-            price: '\$7.99',
-            period: '/ month',
-            subtitle: 'Cancel anytime',
-            isSelected: selectedProductId == appHudService.productMonthly,
-            onTap: () => onProductSelected(appHudService.productMonthly),
-          ),
-          const SizedBox(height: 16),
-          SubscriptionPlanCard(
-            title: 'Yearly Plan',
-            productId: appHudService.productYearly.isNotEmpty
-                ? appHudService.productYearly
-                : 'yearly',
-            price: '\$29.99',
-            period: '/ year',
-            badge: 'SAVE 70%',
-            badgeColor: AppColors.success,
-            badgePosition: BadgePosition.topRight,
-            oldPrice: '\$99.99',
-            savings: 'Save \$70',
-            subtitle: 'Best value option',
-            isSelected: appHudService.productYearly.isNotEmpty
-                ? selectedProductId == appHudService.productYearly
-                : selectedProductId == 'yearly',
-            onTap: () => onProductSelected(
-              appHudService.productYearly.isNotEmpty
-                  ? appHudService.productYearly
-                  : 'yearly',
-            ),
-          ),
-        ],
+        ),
       );
     }
 

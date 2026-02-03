@@ -23,6 +23,15 @@ class _AppHudListenerImpl extends ApphudListener {
     LoggerService.info(
       'Subscriptions updated: ${subscriptions.length} subscriptions',
     );
+    for (var i = 0; i < subscriptions.length; i++) {
+      final sub = subscriptions[i];
+      final productId = (sub as dynamic).productId ?? 'unknown';
+      final isActive = sub.isActive;
+      final status = (sub as dynamic).status?.toString() ?? 'unknown';
+      LoggerService.info(
+        'Subscription[$i]: productId=$productId, isActive=$isActive, status=$status',
+      );
+    }
     final hasActive = subscriptions.any((sub) => sub.isActive);
     onSubscriptionStatusChanged(hasActive);
   }
@@ -32,6 +41,14 @@ class _AppHudListenerImpl extends ApphudListener {
     LoggerService.info(
       'Paywalls fully loaded: ${paywalls.paywalls.length} paywalls',
     );
+    for (var i = 0; i < paywalls.paywalls.length; i++) {
+      final paywall = paywalls.paywalls[i];
+      final identifier = paywall.identifier;
+      final productsCount = paywall.products?.length ?? 0;
+      LoggerService.info(
+        'Paywall[$i]: identifier=$identifier, productsCount=$productsCount',
+      );
+    }
   }
 
   @override
@@ -53,6 +70,22 @@ class _AppHudListenerImpl extends ApphudListener {
     List<ApphudProductComposite> products,
   ) async {
     LoggerService.info('AppHud products fetched: ${products.length} products');
+    for (var i = 0; i < products.length; i++) {
+      final product = products[i];
+      final productId = (product as dynamic).productId ?? 'unknown';
+      final skProduct = (product as dynamic).skProduct;
+      if (skProduct != null) {
+        final price = skProduct.price;
+        final currencyCode = skProduct.priceLocale?.currencyCode ?? 'unknown';
+        LoggerService.info(
+          'Fetched Product[$i]: id=$productId, price=$price, currency=$currencyCode',
+        );
+      } else {
+        LoggerService.warning(
+          'Fetched Product[$i]: id=$productId, skProduct is null',
+        );
+      }
+    }
   }
 
   @override
@@ -65,6 +98,17 @@ class _AppHudListenerImpl extends ApphudListener {
     LoggerService.info(
       'Placements fully loaded: ${placements.length} placements',
     );
+    for (var i = 0; i < placements.length; i++) {
+      final placement = placements[i];
+      final identifier = (placement as dynamic).identifier ?? 'unknown';
+      final paywall = (placement as dynamic).paywall;
+      final paywallId = paywall != null
+          ? (paywall as dynamic).identifier ?? 'unknown'
+          : 'null';
+      LoggerService.info(
+        'Placement[$i]: identifier=$identifier, paywallId=$paywallId',
+      );
+    }
   }
 
   @override
@@ -83,7 +127,7 @@ class AppHudService {
   _AppHudListenerImpl? _listener;
 
   String get apiKey => dotenv.env['APPHUD_API_KEY'] ?? '';
-  String get paywallId => dotenv.env['APPHUD_PAYWALL_ID'] ?? '';
+  String get placementId => dotenv.env['APPHUD_PAYWALL_ID'] ?? '';
   String get productWeekly => dotenv.env['APPHUD_PRODUCT_WEEKLY'] ?? '';
   String get productMonthly => dotenv.env['APPHUD_PRODUCT_MONTHLY'] ?? '';
   String get productYearly => dotenv.env['APPHUD_PRODUCT_YEARLY'] ?? '';
@@ -148,26 +192,66 @@ class AppHudService {
   bool get hasActiveSubscription => _hasActiveSubscription;
 
   Future<List<dynamic>> getProducts() async {
+    if (!_isInitialized) {
+      LoggerService.warning('AppHud not initialized, cannot get products');
+      return [];
+    }
+
+    if (placementId.isEmpty) {
+      LoggerService.warning('Placement ID is empty, cannot get products');
+      return [];
+    }
+
     try {
-      LoggerService.info('Getting products from placement: $paywallId');
-      final placement = await Apphud.placement(paywallId);
+      LoggerService.info('Getting products from placement: $placementId');
+      final placement = await Apphud.placement(placementId);
       if (placement == null) {
-        LoggerService.warning('No placement found: $paywallId');
+        LoggerService.warning('No placement found: $placementId');
+        LoggerService.info(
+          'Available placements: ${await _getAvailablePlacements()}',
+        );
         return [];
       }
       final paywall = (placement as dynamic).paywall;
       if (paywall == null) {
-        LoggerService.warning('No paywall in placement: $paywallId');
+        LoggerService.warning('No paywall in placement: $placementId');
         return [];
       }
       final products = (paywall as dynamic).products ?? [];
       LoggerService.info('Products loaded: ${products.length}');
+
+      for (var i = 0; i < products.length; i++) {
+        final product = products[i];
+        final productId = (product as dynamic).productId ?? 'unknown';
+        final skProduct = (product as dynamic).skProduct;
+
+        if (skProduct != null) {
+          final price = skProduct.price;
+          final priceLocale = skProduct.priceLocale;
+          final currencyCode = priceLocale?.currencyCode ?? 'unknown';
+          final currencySymbol = priceLocale?.currencySymbol ?? '\$';
+          final priceString = skProduct.priceString ?? 'unknown';
+
+          LoggerService.info(
+            'Product[$i]: id=$productId, price=$price, currency=$currencyCode, symbol=$currencySymbol, priceString=$priceString',
+          );
+        } else {
+          LoggerService.warning(
+            'Product[$i]: id=$productId, skProduct is null',
+          );
+        }
+      }
+
       return products;
     } catch (e) {
       LoggerService.error('Error getting products: $e', error: e);
       LoggerService.warning('Using fallback: returning empty products list');
       return [];
     }
+  }
+
+  Future<String> _getAvailablePlacements() async {
+    return 'Check Apphud dashboard for placement configuration. Placements are loaded via listener callbacks.';
   }
 
   Future<bool> purchaseProduct(dynamic product) async {

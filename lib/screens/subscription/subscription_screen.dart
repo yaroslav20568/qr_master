@@ -70,20 +70,37 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   }
 
   String _getProductPrice(dynamic product) {
-    if (product == null) return '\$0.00';
+    if (product == null) {
+      LoggerService.warning('Product is null in _getProductPrice');
+      return '\$0.00';
+    }
+
     final skProduct = (product as dynamic).skProduct;
-    if (skProduct == null) return '\$0.00';
+    if (skProduct == null) {
+      LoggerService.warning('skProduct is null in _getProductPrice');
+      return '\$0.00';
+    }
 
     final price = skProduct.price;
     final priceLocale = skProduct.priceLocale;
-    // final currencyCode = priceLocale?.currencyCode ?? 'USD';
-    final priceString = priceLocale?.currencySymbol ?? '\$';
+    final currencyCode = priceLocale?.currencyCode ?? 'USD';
+    final currencySymbol = priceLocale?.currencySymbol ?? '\$';
+    final priceString = skProduct.priceString;
 
-    if (price != null) {
-      return '$priceString${price.toStringAsFixed(2)}';
+    LoggerService.info(
+      'Getting product price: price=$price, currencyCode=$currencyCode, currencySymbol=$currencySymbol, priceString=$priceString',
+    );
+
+    if (priceString != null && priceString.isNotEmpty) {
+      return priceString;
     }
 
-    return skProduct.priceString ?? '\$0.00';
+    if (price != null) {
+      return '$currencySymbol${price.toStringAsFixed(2)}';
+    }
+
+    LoggerService.warning('No price available for product');
+    return '\$0.00';
   }
 
   String _getProductPeriod(String productId) {
