@@ -13,8 +13,12 @@ import 'package:qr_master/services/app/logger_service.dart';
 
 class _AppHudListenerImpl extends ApphudListener {
   final Function(bool) onSubscriptionStatusChanged;
+  final String? expectedPlacementId;
 
-  _AppHudListenerImpl(this.onSubscriptionStatusChanged);
+  _AppHudListenerImpl(
+    this.onSubscriptionStatusChanged, [
+    this.expectedPlacementId,
+  ]);
 
   @override
   Future<void> apphudSubscriptionsUpdated(
@@ -98,16 +102,34 @@ class _AppHudListenerImpl extends ApphudListener {
     LoggerService.info(
       'Placements fully loaded: ${placements.length} placements',
     );
-    for (var i = 0; i < placements.length; i++) {
-      final placement = placements[i];
-      final identifier = (placement as dynamic).identifier ?? 'unknown';
-      final paywall = (placement as dynamic).paywall;
-      final paywallId = paywall != null
-          ? (paywall as dynamic).identifier ?? 'unknown'
-          : 'null';
-      LoggerService.info(
-        'Placement[$i]: identifier=$identifier, paywallId=$paywallId',
+    if (placements.isEmpty) {
+      LoggerService.warning(
+        'No placements loaded. Check Apphud dashboard: ensure placements are created and configured.',
       );
+    } else {
+      final placementIds = <String>[];
+      for (var i = 0; i < placements.length; i++) {
+        final placement = placements[i];
+        final identifier = (placement as dynamic).identifier ?? 'unknown';
+        final paywall = (placement as dynamic).paywall;
+        final paywallId = paywall != null
+            ? (paywall as dynamic).identifier ?? 'unknown'
+            : 'null';
+        final productsCount = paywall != null
+            ? ((paywall as dynamic).products ?? []).length
+            : 0;
+        placementIds.add(identifier);
+        LoggerService.info(
+          'Placement[$i]: identifier=$identifier, paywallId=$paywallId, productsCount=$productsCount',
+        );
+      }
+      LoggerService.info('All loaded placement IDs: $placementIds');
+      if (expectedPlacementId != null &&
+          !placementIds.contains(expectedPlacementId)) {
+        LoggerService.warning(
+          'Requested placement "$expectedPlacementId" not found in loaded placements. Available: $placementIds',
+        );
+      }
     }
   }
 
@@ -204,11 +226,22 @@ class AppHudService {
 
     try {
       LoggerService.info('Getting products from placement: $placementId');
-      final placement = await Apphud.placement(placementId);
+
+      dynamic placement;
+      try {
+        placement = await Apphud.placement(placementId);
+      } catch (e) {
+        LoggerService.warning('Error getting placement via API: $e');
+      }
+
       if (placement == null) {
         LoggerService.warning('No placement found: $placementId');
-        LoggerService.info(
-          'Available placements: ${await _getAvailablePlacements()}',
+        final availablePlacements = await _getAvailablePlacements();
+        LoggerService.info('Available placements: $availablePlacements');
+        LoggerService.warning(
+          'Troubleshooting: 1) Check Apphud dashboard - placement "$placementId" must exist. '
+          '2) Verify APPHUD_PAYWALL_ID in .env matches placement identifier (not paywall identifier). '
+          '3) Ensure placement has paywall assigned with products configured.',
         );
         return [];
       }
@@ -251,7 +284,19 @@ class AppHudService {
   }
 
   Future<String> _getAvailablePlacements() async {
-    return 'Check Apphud dashboard for placement configuration. Placements are loaded via listener callbacks.';
+    try {
+      final placements = await Apphud.placements();
+      if (placements.isEmpty) {
+        return 'No placements available. Check Apphud dashboard: ensure placements are created and products are configured.';
+      }
+      final placementIds = placements
+          .map((p) => (p as dynamic).identifier ?? 'unknown')
+          .toList();
+      return 'Available placements: $placementIds';
+    } catch (e) {
+      LoggerService.warning('Error getting placements: $e');
+      return 'Error getting placements. Check Apphud dashboard configuration.';
+    }
   }
 
   Future<bool> purchaseProduct(dynamic product) async {
@@ -294,7 +339,7 @@ class AppHudService {
           'Subscription status changed: ${_hasActiveSubscription ? "Active" : "Inactive"}',
         );
       }
-    });
+    }, placementId.isNotEmpty ? placementId : null);
     Apphud.setListener(listener: _listener);
     LoggerService.info('AppHud listener set up successfully');
   }

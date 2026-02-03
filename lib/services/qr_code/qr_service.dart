@@ -1,10 +1,11 @@
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
+import 'package:qr_master/services/index.dart';
 
 class QrService {
   Future<Uint8List?> generateQrCodeImage({
@@ -12,6 +13,7 @@ class QrService {
     required int size,
     Color foregroundColor = AppColors.dark,
     Color backgroundColor = AppColors.primaryBg,
+    Uint8List? logo,
   }) async {
     try {
       final painter = QrPainter(
@@ -42,6 +44,36 @@ class QrService {
       canvas.translate(padding, padding);
       painter.paint(canvas, Size(qrSize, qrSize));
       canvas.restore();
+
+      if (logo != null) {
+        try {
+          final codec = await ui.instantiateImageCodec(logo);
+          final frame = await codec.getNextFrame();
+          final logoImage = frame.image;
+
+          final logoSize = qrSize * 0.2;
+          final logoX = (size - logoSize) / 2;
+          final logoY = (size - logoSize) / 2;
+
+          final logoPaint = Paint()..filterQuality = FilterQuality.high;
+
+          canvas.drawImageRect(
+            logoImage,
+            Rect.fromLTWH(
+              0,
+              0,
+              logoImage.width.toDouble(),
+              logoImage.height.toDouble(),
+            ),
+            Rect.fromLTWH(logoX, logoY, logoSize, logoSize),
+            logoPaint,
+          );
+
+          logoImage.dispose();
+        } catch (e) {
+          LoggerService.warning('Failed to add logo to QR code: $e');
+        }
+      }
 
       final picture = picRecorder.endRecording();
       final image = await picture.toImage(

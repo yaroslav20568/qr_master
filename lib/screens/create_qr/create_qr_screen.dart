@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:qr_master/constants/index.dart';
 import 'package:qr_master/models/index.dart';
 import 'package:qr_master/services/index.dart';
@@ -19,6 +22,7 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
   Color _selectedColor = AppColors.black;
   final Map<String, TextEditingController> _controllers = {};
   RewardedInterstitialAd? _rewardedInterstitialAd;
+  Uint8List? _selectedLogo;
 
   @override
   void initState() {
@@ -150,6 +154,7 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
         data: content,
         size: 512,
         foregroundColor: _selectedColor,
+        logo: _selectedLogo,
       );
 
       if (qrImage != null && mounted) {
@@ -258,10 +263,55 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
     AnalyticsService().logEvent(name: 'rewarded_interstitial_ad_shown');
   }
 
+  Future<void> _selectLogo() async {
+    final appHudService = AppHudService();
+    if (!appHudService.hasActiveSubscription) {
+      if (mounted) {
+        Navigator.of(context).pushNamed(AppRoutes.subscription);
+      }
+      return;
+    }
+
+    try {
+      final imagePicker = ImagePicker();
+      final XFile? image = await imagePicker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 100,
+      );
+
+      if (image != null) {
+        final imageBytes = await image.readAsBytes();
+        setState(() {
+          _selectedLogo = imageBytes;
+        });
+        LoggerService.info('Logo selected: ${image.path}');
+        if (mounted) {
+          SnackbarService.showSuccess(
+            context,
+            message: 'Logo added successfully',
+          );
+        }
+      }
+    } catch (e) {
+      LoggerService.error('Error selecting logo', error: e);
+      if (mounted) {
+        SnackbarService.showError(context, message: 'Failed to select logo');
+      }
+    }
+  }
+
+  void _removeLogo() {
+    setState(() {
+      _selectedLogo = null;
+    });
+    LoggerService.info('Logo removed');
+  }
+
   void _resetFields() {
     setState(() {
       _selectedType = QrCodeType.url;
       _selectedColor = AppColors.black;
+      _selectedLogo = null;
       for (final controller in _controllers.values) {
         controller.clear();
       }
@@ -301,11 +351,14 @@ class _CreateQrScreenState extends State<CreateQrScreen> {
                   title: 'Design Options',
                   child: CreateQrDesignOptions(
                     selectedColor: _selectedColor,
+                    selectedLogo: _selectedLogo,
                     onColorSelected: (color) {
                       setState(() {
                         _selectedColor = color;
                       });
                     },
+                    onLogoSelected: _selectLogo,
+                    onLogoRemoved: _removeLogo,
                   ),
                 ),
                 const SizedBox(height: 18),
