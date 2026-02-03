@@ -53,10 +53,23 @@
 	<string>This app needs permission to save QR codes to your photo library</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>This app uses tracking to provide personalized ads and improve your experience</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>GOOGLE_REVERSED_CLIENT_ID_PLACEHOLDER</string>
+			</array>
+		</dict>
+	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>https</string>
 		<string>http</string>
+		<string>googlegmail</string>
+		<string>googlechrome</string>
 	</array>
 	<key>GADApplicationIdentifier</key>
 	<string>$(ADMOB_APP_ID)</string>
