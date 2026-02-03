@@ -396,11 +396,45 @@ jobs:
           APP_PATH=$(find build/ios -name "Runner.app" -type d 2>/dev/null | head -1)
           if [ -n "$APP_PATH" ]; then
             echo "✅ Found Runner.app at: $APP_PATH"
+            
+            echo "📋 Checking app bundle structure..."
+            ls -la "$APP_PATH" | head -10
+            
             if [ -f "$APP_PATH/embedded.mobileprovision" ]; then
               echo "✅ Found embedded.mobileprovision"
             else
               echo "⚠️  No embedded.mobileprovision (expected for simulator with --no-codesign)"
             fi
+            
+            echo "📋 Checking for entitlements in app bundle..."
+            if [ -f "$APP_PATH/archived-expanded-entitlements.xcent" ]; then
+              echo "✅ Found archived-expanded-entitlements.xcent"
+              echo "📋 Entitlements from app bundle:"
+              cat "$APP_PATH/archived-expanded-entitlements.xcent" 2>/dev/null || echo "⚠️  Could not read entitlements file"
+            else
+              echo "⚠️  archived-expanded-entitlements.xcent not found (may be normal for --no-codesign)"
+            fi
+            
+            echo "📋 Verifying Info.plist in app bundle..."
+            if [ -f "$APP_PATH/Info.plist" ]; then
+              echo "✅ Found Info.plist in app bundle"
+              echo "📋 Checking CFBundleURLSchemes in app bundle Info.plist:"
+              if command -v plutil &> /dev/null; then
+                plutil -p "$APP_PATH/Info.plist" | grep -A 5 "CFBundleURLSchemes" || echo "⚠️  CFBundleURLSchemes not found"
+              elif command -v /usr/libexec/PlistBuddy &> /dev/null; then
+                /usr/libexec/PlistBuddy -c "Print :CFBundleURLTypes" "$APP_PATH/Info.plist" 2>/dev/null || echo "⚠️  CFBundleURLTypes not found"
+              else
+                grep -A 5 "CFBundleURLSchemes" "$APP_PATH/Info.plist" || echo "⚠️  CFBundleURLSchemes not found"
+              fi
+            else
+              echo "⚠️  Info.plist not found in app bundle"
+            fi
+            
+            echo "📋 Summary for Appetize.io:"
+            echo "  - App bundle: $APP_PATH"
+            echo "  - Entitlements file exists: $([ -f ios/Runner/Runner.entitlements ] && echo 'YES' || echo 'NO')"
+            echo "  - GIDSignIn in entitlements: $(grep -q 'com.google.GIDSignIn' ios/Runner/Runner.entitlements && echo 'YES' || echo 'NO')"
+            echo "  - REVERSED_CLIENT_ID in Info.plist: $(grep -q 'GOOGLE_REVERSED_CLIENT_ID_PLACEHOLDER' ios/Runner/Info.plist && echo 'NO (placeholder)' || echo 'YES (injected)')"
           else
             echo "⚠️  Runner.app not found immediately after build"
           fi
