@@ -215,21 +215,20 @@ jobs:
       - name: Enable Keychain Sharing for GIDSignIn
         run: |
           ENTITLEMENTS_FILE="ios/Runner/Runner.entitlements"
-          KEYCHAIN_GROUP="$(AppIdentifierPrefix)com.google.GIDSignIn"
           
           if [ ! -f "$ENTITLEMENTS_FILE" ]; then
             echo "📝 Creating entitlements file..."
-            echo '<?xml version="1.0" encoding="UTF-8"?>' > "$ENTITLEMENTS_FILE"
-            echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> "$ENTITLEMENTS_FILE"
-            echo '<plist version="1.0">' >> "$ENTITLEMENTS_FILE"
-            echo '<dict>' >> "$ENTITLEMENTS_FILE"
-            echo '	<key>keychain-access-groups</key>' >> "$ENTITLEMENTS_FILE"
-            echo '	<array>' >> "$ENTITLEMENTS_FILE"
-            echo '		<string>$(AppIdentifierPrefix)com.nicfuno.sonicforgeflow</string>' >> "$ENTITLEMENTS_FILE"
-            echo "		<string>$KEYCHAIN_GROUP</string>" >> "$ENTITLEMENTS_FILE"
-            echo '	</array>' >> "$ENTITLEMENTS_FILE"
-            echo '</dict>' >> "$ENTITLEMENTS_FILE"
-            echo '</plist>' >> "$ENTITLEMENTS_FILE"
+            printf '<?xml version="1.0" encoding="UTF-8"?>\n' > "$ENTITLEMENTS_FILE"
+            printf '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n' >> "$ENTITLEMENTS_FILE"
+            printf '<plist version="1.0">\n' >> "$ENTITLEMENTS_FILE"
+            printf '<dict>\n' >> "$ENTITLEMENTS_FILE"
+            printf '\t<key>keychain-access-groups</key>\n' >> "$ENTITLEMENTS_FILE"
+            printf '\t<array>\n' >> "$ENTITLEMENTS_FILE"
+            printf '\t\t<string>$(AppIdentifierPrefix)com.nicfuno.sonicforgeflow</string>\n' >> "$ENTITLEMENTS_FILE"
+            printf '\t\t<string>$(AppIdentifierPrefix)com.google.GIDSignIn</string>\n' >> "$ENTITLEMENTS_FILE"
+            printf '\t</array>\n' >> "$ENTITLEMENTS_FILE"
+            printf '</dict>\n' >> "$ENTITLEMENTS_FILE"
+            printf '</plist>\n' >> "$ENTITLEMENTS_FILE"
             echo "✅ Entitlements file created with GIDSignIn keychain group"
           else
             echo "✅ Entitlements file found"
@@ -238,23 +237,15 @@ jobs:
               echo "📝 Adding GIDSignIn keychain group..."
               if command -v /usr/libexec/PlistBuddy &> /dev/null; then
                 GROUP_COUNT=$(/usr/libexec/PlistBuddy -c "Print :keychain-access-groups" "$ENTITLEMENTS_FILE" 2>/dev/null | grep -c "string" || echo "0")
-                /usr/libexec/PlistBuddy -c "Add :keychain-access-groups:$GROUP_COUNT string $KEYCHAIN_GROUP" "$ENTITLEMENTS_FILE" 2>/dev/null || {
-                  echo "⚠️  Trying alternative method..."
-                  sed -i '' "/<\/array>/i\\
-		<string>$KEYCHAIN_GROUP</string>
-" "$ENTITLEMENTS_FILE" 2>/dev/null || sed -i "/<\/array>/i\\
-		<string>$KEYCHAIN_GROUP</string>
-" "$ENTITLEMENTS_FILE"
-                }
+                /usr/libexec/PlistBuddy -c "Add :keychain-access-groups:$GROUP_COUNT string \$(AppIdentifierPrefix)com.google.GIDSignIn" "$ENTITLEMENTS_FILE" 2>/dev/null && echo "✅ GIDSignIn keychain group added" || echo "⚠️  Failed to add via PlistBuddy"
+              fi
+              
+              if ! grep -q "com.google.GIDSignIn" "$ENTITLEMENTS_FILE"; then
+                echo "📝 Using alternative method..."
+                TEMP_FILE=$(mktemp)
+                sed 's|</array>|\t\t<string>$(AppIdentifierPrefix)com.google.GIDSignIn</string>\n\t</array>|' "$ENTITLEMENTS_FILE" > "$TEMP_FILE"
+                mv "$TEMP_FILE" "$ENTITLEMENTS_FILE"
                 echo "✅ GIDSignIn keychain group added"
-              else
-                echo "⚠️  PlistBuddy not available, using sed..."
-                sed -i '' "/<\/array>/i\\
-		<string>$KEYCHAIN_GROUP</string>
-" "$ENTITLEMENTS_FILE" 2>/dev/null || sed -i "/<\/array>/i\\
-		<string>$KEYCHAIN_GROUP</string>
-" "$ENTITLEMENTS_FILE"
-                echo "✅ GIDSignIn keychain group added via sed"
               fi
             else
               echo "✅ GIDSignIn keychain group already exists"
