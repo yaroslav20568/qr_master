@@ -116,9 +116,9 @@ jobs:
         run: |
           sudo gem install cocoapods
           cd ios
-          
+
           echo "📝 Verifying Podfile exists and has iOS 16.0 minimum deployment target"
-          
+
           if [ -f Podfile ]; then
             echo "✅ Podfile found"
             if grep -q "^platform :ios" Podfile; then
@@ -158,10 +158,10 @@ jobs:
             echo "⚠️  Flutter will create a basic Podfile, but it may not have correct settings"
             exit 1
           fi
-          
+
           echo "📋 Podfile contents:"
           cat Podfile | head -20
-          
+
           echo "📦 Installing CocoaPods dependencies"
           COCOAPODS_CACHE_HIT="${{ steps.cocoapods-cache.outputs.cache-hit }}"
           if [ "$COCOAPODS_CACHE_HIT" != "true" ]; then
@@ -215,7 +215,7 @@ jobs:
       - name: Enable Keychain Sharing for GIDSignIn
         run: |
           ENTITLEMENTS_FILE="ios/Runner/Runner.entitlements"
-          
+
           if [ ! -f "$ENTITLEMENTS_FILE" ]; then
             echo "📝 Creating entitlements file..."
             printf '<?xml version="1.0" encoding="UTF-8"?>\n' > "$ENTITLEMENTS_FILE"
@@ -224,7 +224,7 @@ jobs:
             printf '<dict>\n' >> "$ENTITLEMENTS_FILE"
             printf '\t<key>keychain-access-groups</key>\n' >> "$ENTITLEMENTS_FILE"
             printf '\t<array>\n' >> "$ENTITLEMENTS_FILE"
-            printf '\t\t<string>$(AppIdentifierPrefix)com.nicfuno.sonicforgeflow</string>\n' >> "$ENTITLEMENTS_FILE"
+            printf '\t\t<string>$(AppIdentifierPrefix)com.bodyaiface.sergeyai</string>\n' >> "$ENTITLEMENTS_FILE"
             printf '\t\t<string>$(AppIdentifierPrefix)com.google.GIDSignIn</string>\n' >> "$ENTITLEMENTS_FILE"
             printf '\t</array>\n' >> "$ENTITLEMENTS_FILE"
             printf '</dict>\n' >> "$ENTITLEMENTS_FILE"
@@ -251,7 +251,7 @@ jobs:
               echo "✅ GIDSignIn keychain group already exists"
             fi
           fi
-          
+
           echo "📋 Verifying entitlements content:"
           cat "$ENTITLEMENTS_FILE"
 
@@ -286,7 +286,7 @@ jobs:
               echo "⚠️  Google Sign-In URL scheme will not be configured"
             fi
           fi
-          
+
           echo "📋 Verifying Info.plist has correct URL scheme..."
           if grep -q "GOOGLE_REVERSED_CLIENT_ID_PLACEHOLDER" ios/Runner/Info.plist; then
             echo "❌ ERROR: Placeholder still exists in Info.plist!"
@@ -305,14 +305,14 @@ jobs:
         run: |
           echo "📝 Generating Flutter xcconfig files..."
           mkdir -p ios/Flutter/ephemeral
-          
+
           echo "📦 Running flutter pub get to ensure hooks_runner is generated..."
           flutter pub get
-          
+
           cd ios
           flutter precache --ios
           cd ..
-          
+
           echo "📝 Creating Debug.xcconfig in ios/Flutter..."
           mkdir -p ios/Flutter
           printf '#include "Generated.xcconfig"\n' > ios/Flutter/Debug.xcconfig
@@ -320,14 +320,14 @@ jobs:
             echo "ADMOB_APP_ID=$ADMOB_APP_ID" >> ios/Flutter/Debug.xcconfig
             echo "✅ Added ADMOB_APP_ID to Debug.xcconfig"
           fi
-          
+
           echo "📝 Creating Release.xcconfig in ios/Flutter..."
           printf '#include "Generated.xcconfig"\n' > ios/Flutter/Release.xcconfig
           if [ -n "$ADMOB_APP_ID" ]; then
             echo "ADMOB_APP_ID=$ADMOB_APP_ID" >> ios/Flutter/Release.xcconfig
             echo "✅ Added ADMOB_APP_ID to Release.xcconfig"
           fi
-          
+
           echo "✅ Flutter xcconfig files created"
           echo "📋 Verifying files in ios/Flutter:"
           ls -lh ios/Flutter/*.xcconfig 2>/dev/null || echo "⚠️  No xcconfig files found"
@@ -357,7 +357,7 @@ jobs:
             echo "📦 Building iOS from scratch (cache miss)"
             echo "⏱️ This will take ~20-25 minutes on first build"
           fi
-          
+
           if [ ! -f ios/Flutter/Debug.xcconfig ]; then
             echo "⚠️  Debug.xcconfig is missing, creating it in ios/Flutter..."
             mkdir -p ios/Flutter
@@ -367,7 +367,7 @@ jobs:
             fi
             echo "✅ Created Debug.xcconfig in ios/Flutter"
           fi
-          
+
           echo "📋 Verifying entitlements before build..."
           if [ -f ios/Runner/Runner.entitlements ]; then
             echo "✅ Runner.entitlements exists"
@@ -381,7 +381,7 @@ jobs:
             echo "❌ ERROR: Runner.entitlements not found!"
             exit 1
           fi
-          
+
           echo "📋 Verifying CODE_SIGN_ENTITLEMENTS in project.pbxproj..."
           if grep -q "CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements" ios/Runner.xcodeproj/project.pbxproj; then
             echo "✅ CODE_SIGN_ENTITLEMENTS is set correctly"
@@ -389,10 +389,10 @@ jobs:
             echo "❌ ERROR: CODE_SIGN_ENTITLEMENTS not found in project.pbxproj!"
             exit 1
           fi
-          
+
           echo "📝 Building iOS with code signing (required for keychain entitlements)..."
           flutter build ios --debug --simulator
-          
+
           echo "📋 Verifying entitlements after build..."
           APP_PATH=$(find build/ios -name "Runner.app" -type d 2>/dev/null | head -1)
           if [ -n "$APP_PATH" ]; then

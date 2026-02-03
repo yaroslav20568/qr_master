@@ -83,7 +83,7 @@ class AppHudService {
   _AppHudListenerImpl? _listener;
 
   String get apiKey => dotenv.env['APPHUD_API_KEY'] ?? '';
-  String get paywallId => dotenv.env['APPHUD_PAYWALL_ID'] ?? 'main_paywall';
+  String get paywallId => dotenv.env['APPHUD_PAYWALL_ID'] ?? '';
   String get productWeekly => dotenv.env['APPHUD_PRODUCT_WEEKLY'] ?? '';
   String get productMonthly => dotenv.env['APPHUD_PRODUCT_MONTHLY'] ?? '';
   String get productYearly => dotenv.env['APPHUD_PRODUCT_YEARLY'] ?? '';

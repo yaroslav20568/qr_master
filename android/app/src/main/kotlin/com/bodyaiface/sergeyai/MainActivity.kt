@@ -1,4 +1,4 @@
-package com.nicfuno.sonicforgeflow
+package com.bodyaiface.sergeyai
 
 import android.content.ContentValues
 import android.content.Context
