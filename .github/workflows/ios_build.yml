@@ -212,6 +212,58 @@ jobs:
           flutter clean
           rm -rf build/ios
 
+      - name: Enable Keychain Sharing for GIDSignIn
+        run: |
+          ENTITLEMENTS_FILE="ios/Runner/Runner.entitlements"
+          KEYCHAIN_GROUP="$(AppIdentifierPrefix)com.google.GIDSignIn"
+          
+          if [ ! -f "$ENTITLEMENTS_FILE" ]; then
+            echo "📝 Creating entitlements file..."
+            echo '<?xml version="1.0" encoding="UTF-8"?>' > "$ENTITLEMENTS_FILE"
+            echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> "$ENTITLEMENTS_FILE"
+            echo '<plist version="1.0">' >> "$ENTITLEMENTS_FILE"
+            echo '<dict>' >> "$ENTITLEMENTS_FILE"
+            echo '	<key>keychain-access-groups</key>' >> "$ENTITLEMENTS_FILE"
+            echo '	<array>' >> "$ENTITLEMENTS_FILE"
+            echo '		<string>$(AppIdentifierPrefix)com.nicfuno.sonicforgeflow</string>' >> "$ENTITLEMENTS_FILE"
+            echo "		<string>$KEYCHAIN_GROUP</string>" >> "$ENTITLEMENTS_FILE"
+            echo '	</array>' >> "$ENTITLEMENTS_FILE"
+            echo '</dict>' >> "$ENTITLEMENTS_FILE"
+            echo '</plist>' >> "$ENTITLEMENTS_FILE"
+            echo "✅ Entitlements file created with GIDSignIn keychain group"
+          else
+            echo "✅ Entitlements file found"
+            
+            if ! grep -q "com.google.GIDSignIn" "$ENTITLEMENTS_FILE"; then
+              echo "📝 Adding GIDSignIn keychain group..."
+              if command -v /usr/libexec/PlistBuddy &> /dev/null; then
+                GROUP_COUNT=$(/usr/libexec/PlistBuddy -c "Print :keychain-access-groups" "$ENTITLEMENTS_FILE" 2>/dev/null | grep -c "string" || echo "0")
+                /usr/libexec/PlistBuddy -c "Add :keychain-access-groups:$GROUP_COUNT string $KEYCHAIN_GROUP" "$ENTITLEMENTS_FILE" 2>/dev/null || {
+                  echo "⚠️  Trying alternative method..."
+                  sed -i '' "/<\/array>/i\\
+		<string>$KEYCHAIN_GROUP</string>
+" "$ENTITLEMENTS_FILE" 2>/dev/null || sed -i "/<\/array>/i\\
+		<string>$KEYCHAIN_GROUP</string>
+" "$ENTITLEMENTS_FILE"
+                }
+                echo "✅ GIDSignIn keychain group added"
+              else
+                echo "⚠️  PlistBuddy not available, using sed..."
+                sed -i '' "/<\/array>/i\\
+		<string>$KEYCHAIN_GROUP</string>
+" "$ENTITLEMENTS_FILE" 2>/dev/null || sed -i "/<\/array>/i\\
+		<string>$KEYCHAIN_GROUP</string>
+" "$ENTITLEMENTS_FILE"
+                echo "✅ GIDSignIn keychain group added via sed"
+              fi
+            else
+              echo "✅ GIDSignIn keychain group already exists"
+            fi
+          fi
+          
+          echo "📋 Verifying entitlements content:"
+          cat "$ENTITLEMENTS_FILE"
+
       - name: Setup Google Sign-In for iOS
         run: |
           if [ -f scripts/setup_ios_google_signin.sh ]; then
