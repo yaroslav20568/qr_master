@@ -84,7 +84,10 @@ class AppHudService {
     try {
       LoggerService.info('Initializing AppHud...');
       await Apphud.enableDebugLogs();
-      await Apphud.start(apiKey: apiKey).timeout(
+      await Apphud.start(
+        apiKey: apiKey,
+        userID: 'C14DBEF5-A275-43D1-9DA9-CDAD67A663E6', // TODO: WILL DELETE
+      ).timeout(
         const Duration(seconds: 10),
         onTimeout: () {
           LoggerService.warning('AppHud initialization timeout');
