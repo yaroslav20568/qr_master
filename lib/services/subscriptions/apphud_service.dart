@@ -134,6 +134,7 @@ class AppHudService {
     try {
       final hasActive = await Apphud.hasActiveSubscription();
       _hasActiveSubscription = hasActive;
+      LoggerService.info('Has active status: $_hasActiveSubscription');
       LoggerService.info(
         'Subscription status: ${_hasActiveSubscription ? "Active" : "Inactive"}',
       );
