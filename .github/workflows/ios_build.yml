@@ -224,7 +224,7 @@ jobs:
             printf '<dict>\n' >> "$ENTITLEMENTS_FILE"
             printf '\t<key>keychain-access-groups</key>\n' >> "$ENTITLEMENTS_FILE"
             printf '\t<array>\n' >> "$ENTITLEMENTS_FILE"
-            printf '\t\t<string>$(AppIdentifierPrefix)com.bodyaiface.sergeyai</string>\n' >> "$ENTITLEMENTS_FILE"
+            printf '\t\t<string>$(AppIdentifierPrefix)com.nicfuno.sonicforgeflow</string>\n' >> "$ENTITLEMENTS_FILE"
             printf '\t\t<string>$(AppIdentifierPrefix)com.google.GIDSignIn</string>\n' >> "$ENTITLEMENTS_FILE"
             printf '\t</array>\n' >> "$ENTITLEMENTS_FILE"
             printf '</dict>\n' >> "$ENTITLEMENTS_FILE"
