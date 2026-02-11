@@ -8,17 +8,17 @@ QR Master — это мобильное приложение на Flutter, об�
 
 ## Демонстрация
 
-|            App-icon and Splash-Screen            |            Onboarding Screen            |            Auth Screen            |
-| :----------------------------------------------: | :-------------------------------------: | :-------------------------------: |
-| ![Демо 1](videos/app-icon-and-splash-screen.gif) | ![Демо 2](videos/onboarding-screen.gif) | ![Демо 3](videos/auth-screen.gif) |
+|                  App-icon and Splash-Screen                   |                  Onboarding Screen                   |                  Auth Screen                   |
+| :-----------------------------------------------------------: | :--------------------------------------------------: | :--------------------------------------------: |
+| <img src="videos/app-icon-and-splash-screen.gif" width="250"> | <img src="videos/onboarding-screen.gif" width="250"> | <img src="videos/auth-screen.gif" width="250"> |
 
-|                      Home screen                      |            Scan QR Screen            |               Create QR Code                |
-| :---------------------------------------------------: | :----------------------------------: | :-----------------------------------------: |
-| ![Демо 4](videos/home-screen-and-home-navigation.gif) | ![Демо 5](videos/scan-qr-screen.gif) | ![Демо 6](videos/create-qr-code-screen.gif) |
+|                            Home screen                             |                  Scan QR Screen                   |                      Create QR Code                      |
+| :----------------------------------------------------------------: | :-----------------------------------------------: | :------------------------------------------------------: |
+| <img src="videos/home-screen-and-home-navigation.gif" width="250"> | <img src="videos/scan-qr-screen.gif" width="250"> | <img src="videos/create-qr-code-screen.gif" width="250"> |
 
-|               My QR Codes                |            History Screen            |            Logout            |
-| :--------------------------------------: | :----------------------------------: | :--------------------------: |
-| ![Демо 7](videos/my-qr-codes-screen.gif) | ![Демо 8](videos/history-screen.gif) | ![Демо 9](videos/logout.gif) |
+|                      My QR Codes                      |                  History Screen                   |                  Logout                   |
+| :---------------------------------------------------: | :-----------------------------------------------: | :---------------------------------------: |
+| <img src="videos/my-qr-codes-screen.gif" width="250"> | <img src="videos/history-screen.gif" width="250"> | <img src="videos/logout.gif" width="250"> |
 
 ---
 
@@ -32,4 +32,14 @@ QR Master is a Flutter mobile app that combines a powerful QR code generator and
 
 ## Demo
 
-(See the demonstration table above)
+|                  App-icon and Splash-Screen                   |                  Onboarding Screen                   |                  Auth Screen                   |
+| :-----------------------------------------------------------: | :--------------------------------------------------: | :--------------------------------------------: |
+| <img src="videos/app-icon-and-splash-screen.gif" width="250"> | <img src="videos/onboarding-screen.gif" width="250"> | <img src="videos/auth-screen.gif" width="250"> |
+
+|                            Home screen                             |                  Scan QR Screen                   |                      Create QR Code                      |
+| :----------------------------------------------------------------: | :-----------------------------------------------: | :------------------------------------------------------: |
+| <img src="videos/home-screen-and-home-navigation.gif" width="250"> | <img src="videos/scan-qr-screen.gif" width="250"> | <img src="videos/create-qr-code-screen.gif" width="250"> |
+
+|                      My QR Codes                      |                  History Screen                   |                  Logout                   |
+| :---------------------------------------------------: | :-----------------------------------------------: | :---------------------------------------: |
+| <img src="videos/my-qr-codes-screen.gif" width="250"> | <img src="videos/history-screen.gif" width="250"> | <img src="videos/logout.gif" width="250"> |
