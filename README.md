@@ -1,6 +1,6 @@
 # QR Master
 
-Приложение для создания и автоматического распознования qr кодов.
+Приложение для создания и автоматического распознавания QR-кодов.
 
 ## Описание проекта
 
@@ -8,19 +8,21 @@ QR Master — это мобильное приложение на Flutter, об�
 
 ## Демонстрация
 
-|              App-icon and Splash-Screen               |            Onboarding Screen            |                 Auth Screen                 |
-| :---------------------------------------------------: | :-------------------------------------: | :-----------------------------------------: |
-|   ![Демо 1](videos/app-icon-and-splash-screen.gif)    | ![Демо 2](videos/onboarding-screen.gif) |      ![Демо 3](videos/auth-screen.gif)      |
-|                      Home screen                      |             Scan QR Screen              |               Create QR Code                |
-|   :----------------------------------------------:    |       :-------------------------:       |         :-------------------------:         |
-| ![Демо 4](videos/home-screen-and-home-navigation.gif) |  ![Демо 5](videos/scan-qr-screen.gif)   | ![Демо 6](videos/create-qr-code-screen.gif) |
-|                      My QR Codes                      |             History Screen              |                   Logout                    |
-|   :----------------------------------------------:    |       :-------------------------:       |         :-------------------------:         |
-|       ![Демо 4](videos/my-qr-codes-screen.gif)        |  ![Демо 5](videos/history-screen.gif)   |        ![Демо 6](videos/logout.gif)         |
+|            App-icon and Splash-Screen            |            Onboarding Screen            |            Auth Screen            |
+| :----------------------------------------------: | :-------------------------------------: | :-------------------------------: |
+| ![Демо 1](videos/app-icon-and-splash-screen.gif) | ![Демо 2](videos/onboarding-screen.gif) | ![Демо 3](videos/auth-screen.gif) |
+
+|                      Home screen                      |            Scan QR Screen            |               Create QR Code                |
+| :---------------------------------------------------: | :----------------------------------: | :-----------------------------------------: |
+| ![Демо 4](videos/home-screen-and-home-navigation.gif) | ![Демо 5](videos/scan-qr-screen.gif) | ![Демо 6](videos/create-qr-code-screen.gif) |
+
+|               My QR Codes                |            History Screen            |            Logout            |
+| :--------------------------------------: | :----------------------------------: | :--------------------------: |
+| ![Демо 7](videos/my-qr-codes-screen.gif) | ![Демо 8](videos/history-screen.gif) | ![Демо 9](videos/logout.gif) |
 
 ---
 
-# QR Master
+# QR Master (English)
 
 An application for creating and automatically recognizing QR codes.
 
@@ -30,12 +32,4 @@ QR Master is a Flutter mobile app that combines a powerful QR code generator and
 
 ## Demo
 
-|              App-icon and Splash-Screen               |            Onboarding Screen            |                 Auth Screen                 |
-| :---------------------------------------------------: | :-------------------------------------: | :-----------------------------------------: |
-|   ![Демо 1](videos/app-icon-and-splash-screen.gif)    | ![Демо 2](videos/onboarding-screen.gif) |      ![Демо 3](videos/auth-screen.gif)      |
-|                      Home screen                      |             Scan QR Screen              |               Create QR Code                |
-|   :----------------------------------------------:    |       :-------------------------:       |         :-------------------------:         |
-| ![Демо 4](videos/home-screen-and-home-navigation.gif) |  ![Демо 5](videos/scan-qr-screen.gif)   | ![Демо 6](videos/create-qr-code-screen.gif) |
-|                      My QR Codes                      |             History Screen              |                   Logout                    |
-|   :----------------------------------------------:    |       :-------------------------:       |         :-------------------------:         |
-|       ![Демо 4](videos/my-qr-codes-screen.gif)        |  ![Демо 5](videos/history-screen.gif)   |        ![Демо 6](videos/logout.gif)         |
+(See the demonstration table above)
