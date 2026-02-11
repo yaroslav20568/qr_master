@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(useMaterial3: true),
       initialRoute: AppRoutes.splash,
       routes: appRoutes,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
